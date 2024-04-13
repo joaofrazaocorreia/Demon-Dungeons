@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private RectTransform _healthFill;
     [SerializeField] private RectTransform _staminaFill;
 
     private float _staminaFillSize;
@@ -25,5 +26,10 @@ public class UIManager : MonoBehaviour
     {
         _staminaFill.transform.GetComponent<RawImage>().color = amount >= limit ?
              _staminaFillDefaultColor : _staminaFillStaggerColor;
+    }
+
+    public void SetHealthFill(float ratio)
+    {
+        _healthFill.localScale = new Vector3(1, ratio, 1);
     }
 }
