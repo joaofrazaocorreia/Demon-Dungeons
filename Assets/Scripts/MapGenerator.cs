@@ -6,6 +6,7 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private Tile[] tiles;
     [SerializeField] private Transform map;
+    [SerializeField] private Tile debugTile;
 
     private Vector3 startingCoords;
 
@@ -33,8 +34,8 @@ public class MapGenerator : MonoBehaviour
 
     private void CreateMap()
     {
-        //Tile[] startingTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.Start).ToArray();
-        Tile[] startingTiles = tiles.Where(tile => tile.exits.childCount >= 4).ToArray();
+        Tile[] startingTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.Start).ToArray();
+        //Tile[] startingTiles = tiles.Where(tile => tile.exits.childCount >= 4).ToArray();
         Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Length)], parent:map, position:startingCoords, rotation:new Quaternion());
 
         StartGeneratingExits(start);
@@ -57,7 +58,10 @@ public class MapGenerator : MonoBehaviour
 
             // Different tiles can be chosen/forced depending on the amount of tiles already generated
             if (map.childCount < 20)
-                tilesToChoose = tiles.Where(tile => tile.exits.childCount >= 1 && tile.TileData.type == TileData.Type.Regular).ToArray();
+                tilesToChoose = tiles.Where(tile => tile.exits.childCount >= 2 && tile.TileData.type == TileData.Type.Regular).ToArray();
+
+            else if (map.childCount == 34)
+                tilesToChoose = tiles.Where(tile => tile.exits.childCount >= 3 && tile.TileData.type == TileData.Type.Regular).ToArray();
 
             else if (map.childCount == 35)
                 tilesToChoose = tiles.Where(tile => tile.TileData.type == TileData.Type.EnemyGate).ToArray();
@@ -75,39 +79,40 @@ public class MapGenerator : MonoBehaviour
             // Picks a random tile from the filtered ones and instantiates it
             newTile = Instantiate(tilesToChoose[Random.Range(0, tilesToChoose.Length)], parent: map, position: startingCoords, rotation: Quaternion.Euler(Vector3.zero));
 
+
             // Picks a random exit from the chosen random tile to connect to the current exit
             Transform chosenEntrance = newTile.exits.GetChild(Random.Range(0, newTile.exits.childCount));
 
 
-
-
             // Rotates the new tile to match the direction of its exit
-            Quaternion pivotRotation1 = chosenEntrance.rotation * newTile.transform.rotation;
-            newTile.transform.rotation = chosenEntrance.rotation;
+            Quaternion pivotRotation = Quaternion.Euler(Vector3.up * (chosenEntrance.eulerAngles.y - newTile.transform.eulerAngles.y));
 
+            newTile.transform.rotation = Quaternion.Euler(Vector3.up * chosenEntrance.eulerAngles.y);
+            
             for (int i = 0; i < newTile.transform.childCount; i++)
             {
-                newTile.transform.GetChild(i).rotation *= Quaternion.Inverse(pivotRotation1);
+                newTile.transform.GetChild(i).rotation = Quaternion.Euler(Vector3.up * (newTile.transform.GetChild(i).eulerAngles.y - pivotRotation.eulerAngles.y));
             }
+            
 
             // Changes the pivot of the new tile to its exit so it rotates around it
             Vector3 pivotVector = chosenEntrance.position - newTile.transform.position;
             newTile.transform.position += pivotVector;
+            
 
             for (int i = 0; i < newTile.transform.childCount; i++)
             {
                 newTile.transform.GetChild(i).position -= pivotVector;
             }
+            
 
             // Rotates the new tile to match the inverse direction of the exit to connect
-            Quaternion pivotRotation2 = newTile.transform.rotation * chosenExit.rotation;
-            newTile.transform.rotation *= pivotRotation2;
+            newTile.transform.rotation = Quaternion.Euler(Vector3.up * (chosenExit.eulerAngles.y + 180));
+            
 
             // Moves the tile to allign both exits
-            Vector3 distanceVector = chosenExit.position - chosenEntrance.position;
+            Vector3 distanceVector = chosenExit.position - newTile.transform.position;
             newTile.transform.position += distanceVector;
-
-
 
 
             // Destroys both connected exits to prevent them from being connected again
@@ -118,7 +123,7 @@ public class MapGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
 
             // Generates the exits for the new tile, to keep the loop going until there's no more exits left
-            //StartGeneratingExits(newTile);
+            StartGeneratingExits(newTile);
         }
     }
 
