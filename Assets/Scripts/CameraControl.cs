@@ -32,7 +32,7 @@ public class CameraControl : MonoBehaviour
 
     private void Update()
     {
-        UpdatePitch();
+        //UpdatePitch();
         UpdateYaw();
         UpdateZoom();
 

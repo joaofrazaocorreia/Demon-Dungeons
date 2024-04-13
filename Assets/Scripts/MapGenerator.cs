@@ -6,7 +6,6 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private Tile[] tiles;
     [SerializeField] private Transform map;
-    [SerializeField] private Tile debugTile;
 
     private Vector3 startingCoords;
 
@@ -32,6 +31,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    // Creates the starting tile and begins generating the map from there
     private void CreateMap()
     {
         Tile[] startingTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.Start).ToArray();
@@ -41,11 +41,13 @@ public class MapGenerator : MonoBehaviour
         StartGeneratingExits(start);
     }
 
+    // Coroutine to generate the map procedurally
     private void StartGeneratingExits(Tile tile)
     {
         StartCoroutine(GenerateExits(tile));
     }
 
+    // Randomly generates a new tile for every empty exit in every existing tile, with filters for specific tile numbers
     private IEnumerator GenerateExits(Tile tile)
     {
         while (tile.exits.childCount > 0)
@@ -127,6 +129,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    // Coroutine to delete all map tiles currently generated
     private IEnumerator DeleteMap()
     {
         while(map.childCount > 0)
