@@ -986,7 +986,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthFill: {fileID: 398755905366145515}
+  _healthBG: {fileID: 5942064653694108176}
   _staminaFill: {fileID: 2735758913678148646}
+  _staminaBG: {fileID: 8974541046279547357}
+  _staminaFillDefaultColor: {r: 0, g: 0.58431375, b: 1, a: 1}
+  _staminaFillStaggerColor: {r: 0.2509804, g: 0, b: 0.6117647, a: 1}
+  _healthFillDefaultColor: {r: 0, g: 1, b: 0, a: 1}
+  _healthFillDangerColor: {r: 1, g: 0, b: 0, a: 1}
+  _healthFillInvulnerableColor: {r: 0.88235295, g: 0.88235295, b: 0.078431375, a: 1}
 --- !u!114 &1146125863694566404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1483,7 +1490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8867924, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1533,7 +1540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7075472, g: 0.32910746, b: 0.29703632, a: 1}
+  m_Color: {r: 0, g: 0.5882353, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1777,8 +1784,56 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8668796094697979956, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 8355673827681031802}
   m_SourcePrefab: {fileID: 100100000, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+--- !u!1 &8355673827681031799 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8668796094697979956, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+  m_PrefabInstance: {fileID: 8355673827681031798}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8355673827681031800 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 180806522715282475, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+  m_PrefabInstance: {fileID: 8355673827681031798}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8355673827681031799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8200b35e6a218874f9865cf5b15d3cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8355673827681031801 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9155410695107720046, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+  m_PrefabInstance: {fileID: 8355673827681031798}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8355673827681031799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2f5660a21b0c0409314c1573b7034d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8355673827681031802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8355673827681031799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0709d7a51a5cd61479b78deced70c1ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiManager: {fileID: 954843815567441965}
+  _playerHealth: {fileID: 8355673827681031801}
+  _playerMovement: {fileID: 8355673827681031800}
+  _baseAttackDamage: 15
+  _baseAttackCooldown: 1
+  _baseAttackRange: 3
 --- !u!222 &8415407470102778046
 CanvasRenderer:
   m_ObjectHideFlags: 0

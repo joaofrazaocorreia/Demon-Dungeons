@@ -24,6 +24,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float  _rollVelocity;
     [SerializeField] private float  _rollDuration;
 
+    public float StaminaRegenMultiplier { get; set; }
+    public float StaggerRegenMultiplier { get; set; }
+    public float StaminaCostMultiplier { get; set; }
+    public float SpeedMultiplier { get; set; }
+
     private CharacterController _controller;
     private Vector3 _acceleration;
     private Vector3 _velocity;
@@ -49,6 +54,11 @@ public class PlayerMovement : MonoBehaviour
         _sprint         = false;
         _sprintResting  = false;
         _sinPI4         = Mathf.Sin(Mathf.PI / 4);
+        
+        StaminaRegenMultiplier = 1.0f;
+        StaggerRegenMultiplier = 1.0f;
+        StaminaCostMultiplier = 1.0f;
+        SpeedMultiplier = 1.0f;
 
         HideCursor();
         UpdateUI();
@@ -155,9 +165,9 @@ public class PlayerMovement : MonoBehaviour
         if (_acceleration.z == 0f || (_acceleration.z * _velocity.z < 0f))
             _velocity.z = 0f;
         else if (_acceleration.x == 0f)
-            _velocity.z = Mathf.Clamp(_velocity.z, _maxBackwardVelocity, _maxForwardVelocity);
+            _velocity.z = Mathf.Clamp(_velocity.z, _maxBackwardVelocity * SpeedMultiplier, _maxForwardVelocity * SpeedMultiplier);
         else
-            _velocity.z = Mathf.Clamp(_velocity.z, _maxBackwardVelocity * _sinPI4, _maxForwardVelocity * _sinPI4);
+            _velocity.z = Mathf.Clamp(_velocity.z, _maxBackwardVelocity * _sinPI4 * SpeedMultiplier, _maxForwardVelocity * _sinPI4 * SpeedMultiplier);
     }
 
     private void UpdateStrafeVelocity()
@@ -165,9 +175,9 @@ public class PlayerMovement : MonoBehaviour
         if (_acceleration.x == 0f || (_acceleration.x * _velocity.x < 0f))
             _velocity.x = 0f;
         else if (_acceleration.z == 0f)
-            _velocity.x = Mathf.Clamp(_velocity.x, -_maxStrafeVelocity, _maxStrafeVelocity);
+            _velocity.x = Mathf.Clamp(_velocity.x, -_maxStrafeVelocity * SpeedMultiplier, _maxStrafeVelocity * SpeedMultiplier);
         else
-            _velocity.x = Mathf.Clamp(_velocity.x, -_maxStrafeVelocity * _sinPI4, _maxStrafeVelocity * _sinPI4);
+            _velocity.x = Mathf.Clamp(_velocity.x, -_maxStrafeVelocity * _sinPI4 * SpeedMultiplier, _maxStrafeVelocity * _sinPI4 * SpeedMultiplier);
     }
 
     private void UpdateVerticalVelocity()
@@ -183,13 +193,13 @@ public class PlayerMovement : MonoBehaviour
         if (_roll)
         {
             _roll       = false;
-            _velocity.z = _rollVelocity;
+            _velocity.z = _rollVelocity * SpeedMultiplier;
             _rollTimer  = _rollDuration;
-            DecStamina(_rollStaminaCost);
+            DecStamina(_rollStaminaCost * StaminaCostMultiplier);
         }
         else if (_rollTimer > 0f)
         {
-            _velocity.z = _rollVelocity;
+            _velocity.z = _rollVelocity * SpeedMultiplier;
             _rollTimer -= Time.fixedDeltaTime;
         }
     }
@@ -200,7 +210,7 @@ public class PlayerMovement : MonoBehaviour
         {
             _velocity.z *= _sprintVelocityFactor;
             _velocity.x *= _sprintVelocityFactor;
-            DecStamina(_sprintStaminaCost * Time.fixedDeltaTime);
+            DecStamina(_sprintStaminaCost * Time.fixedDeltaTime * StaminaCostMultiplier);
         }
 
         if ((_stamina < _staggerLimit && !_sprint) || _stamina == 0f)
@@ -221,19 +231,19 @@ public class PlayerMovement : MonoBehaviour
     private void RegenStamina()
     {
         if (_stamina < _maxStamina && (!_sprint || !_moving) && _staggerTimer <= 0)
-            AddStamina(_staminaRegenRate * Time.fixedDeltaTime);
+            AddStamina(_staminaRegenRate * Time.fixedDeltaTime * StaminaRegenMultiplier);
         else
-            _staggerTimer = Mathf.Max(_staggerTimer - _staggerRegenRate * Time.fixedDeltaTime, 0f);
+            _staggerTimer = Mathf.Max(_staggerTimer - _staggerRegenRate * Time.fixedDeltaTime * StaggerRegenMultiplier, 0f);
     }
 
-    private void AddStamina(float amount)
+    public void AddStamina(float amount)
     {
         _stamina = Mathf.Min(_stamina + amount, _maxStamina);
 
         UpdateUI();
     }
 
-    private void DecStamina(float amount)
+    public void DecStamina(float amount)
     {
         _stamina = Mathf.Max(_stamina - amount, 0f);
         _staggerTimer = _staggerCooldown;
@@ -245,5 +255,17 @@ public class PlayerMovement : MonoBehaviour
     {
         _uiManager.SetStaminaFill(_stamina / _maxStamina);
         _uiManager.SetStaminaColor(_stamina, _staggerLimit);
+    }
+
+    public void SetMaxStamina(float value)
+    {
+        _maxStamina = value;
+        UpdateUI();
+    }
+
+    public void SetStaggerLimit(float value)
+    {
+        _staggerLimit = value;
+        UpdateUI();
     }
 }
