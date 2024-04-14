@@ -56,7 +56,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3375983256927098801}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.24230437, y: -0, z: -0, w: 0.9702003}
   m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -64,7 +64,7 @@ Transform:
   - {fileID: 5426808031186006802}
   - {fileID: 4058225292700019814}
   m_Father: {fileID: 4026492081025638106}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 28.045, y: 0, z: 0}
 --- !u!114 &1116508003840861297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 3831762977669812971}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalPosition: {x: 0, y: -0, z: -5.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -435,6 +435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4026492081025638106}
   - component: {fileID: 4643864463873785192}
+  - component: {fileID: 9155410695107720046}
   - component: {fileID: 180806522715282475}
   m_Layer: 0
   m_Name: Player
@@ -486,6 +487,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9155410695107720046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8668796094697979956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2f5660a21b0c0409314c1573b7034d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiManager: {fileID: 0}
+  _maxHealth: 100
 --- !u!114 &180806522715282475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,20 +514,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiManager: {fileID: 0}
-  _forwardAcceleration: 10
-  _backwardAcceleration: -10
-  _strafeAcceleration: 10
+  _forwardAcceleration: 16
+  _backwardAcceleration: -12
+  _strafeAcceleration: 12
   _gravityAcceleration: -30
-  _jumpAcceleration: 500
-  _maxForwardVelocity: 4
-  _maxBackwardVelocity: -2
-  _maxStrafeVelocity: 3
+  _maxForwardVelocity: 8
+  _maxBackwardVelocity: -6
+  _maxStrafeVelocity: 6
   _maxFallVelocity: -20
   _rotationVelocityFactor: 2
   _maxStamina: 100
-  _staminaRegenRate: 10
+  _staminaRegenRate: 7
+  _staggerLimit: 20
+  _staggerCooldown: 20
+  _staggerRegenRate: 10
   _sprintStaminaCost: 20
-  _sprintVelocityFactor: 2
-  _dashStaminaCost: 60
-  _dashVelocity: 100
-  _dashDuration: 0.1
+  _sprintVelocityFactor: 1.75
+  _rollStaminaCost: 30
+  _rollVelocity: 40
+  _rollDuration: 0.25
