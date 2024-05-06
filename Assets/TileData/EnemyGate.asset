@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9660bc2113ed93418c44674ad57f21b, type: 3}
   m_Name: EnemyGate
   m_EditorClassIdentifier: 
-  type: 3
+  type: 4
   spawnsEnemies: 0
+  numberID: 161

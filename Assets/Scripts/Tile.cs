@@ -5,17 +5,29 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField] private TileData tileData;
-    private bool exitsSet = false;
+    private bool isSetup = false;
+    private bool colliding = false;
 
-    [HideInInspector] public TileData TileData { get => tileData; }
-    [HideInInspector] public Transform exits;
+    [HideInInspector] public TileData      TileData { get => tileData; }
+    [HideInInspector] public Transform     exits;
+    [HideInInspector] public Transform     model;
+    [HideInInspector] public TileCollision tileCollision;
+    [HideInInspector] public bool          Colliding { get => colliding; }
 
-    public void SetExits()
+    public void Setup()
     {
-        if(!exitsSet)
+        if(!isSetup)
         {
             exits = transform.Find("Exits");
-            exitsSet = true;
+            model = transform.Find("Model");
+            tileCollision = transform.GetComponentInChildren<TileCollision>();
+            isSetup = true;
         }
+    }
+
+    public void FixedUpdate()
+    {
+        if(isSetup)
+            colliding = tileCollision.CollisionDetected;
     }
 }

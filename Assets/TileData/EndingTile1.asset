@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9660bc2113ed93418c44674ad57f21b, type: 3}
   m_Name: EndingTile1
   m_EditorClassIdentifier: 
-  type: 2
-  model: {fileID: 6197366253205741446, guid: aec6e75c12d95824db855481fd20d5ef, type: 3}
+  type: 3
   spawnsEnemies: 0
+  numberID: 171

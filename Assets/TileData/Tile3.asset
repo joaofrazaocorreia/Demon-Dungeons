@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Tile3
   m_EditorClassIdentifier: 
   type: 0
-  model: {fileID: 3550687360648426577, guid: b4db14b23c62f5c4581f421ec43cbf70, type: 3}
   spawnsEnemies: 0
+  numberID: 3
