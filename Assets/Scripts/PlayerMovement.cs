@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private UIManager _uiManager;
+    [SerializeField] private UIManager    _uiManager;
+    [SerializeField] private PlayerHealth _playerHealth;
 
     [SerializeField] private float  _forwardAcceleration;
     [SerializeField] private float  _backwardAcceleration;
@@ -193,6 +194,7 @@ public class PlayerMovement : MonoBehaviour
         if (_roll)
         {
             _roll       = false;
+            _playerHealth.BecomeInvulnerable(_rollDuration * 0.5f);
             _velocity.z = _rollVelocity * SpeedMultiplier;
             _rollTimer  = _rollDuration;
             DecStamina(_rollStaminaCost * StaminaCostMultiplier);
@@ -201,6 +203,9 @@ public class PlayerMovement : MonoBehaviour
         {
             _velocity.z = _rollVelocity * SpeedMultiplier;
             _rollTimer -= Time.fixedDeltaTime;
+
+            if (_rollTimer < 0)
+                _velocity.z = 0f;
         }
     }
 

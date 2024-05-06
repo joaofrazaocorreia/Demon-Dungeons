@@ -17,10 +17,10 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        waypoints = new Transform[transform.parent.Find("Waypoints").childCount];
+        waypoints = new Transform[transform.parent.parent.Find("Waypoints").childCount];
 
-        for(int i = 0; i < transform.parent.Find("Waypoints").childCount; i++)
-        waypoints[i] = transform.parent.Find("Waypoints").GetChild(i);
+        for(int i = 0; i < transform.parent.parent.Find("Waypoints").childCount; i++)
+        waypoints[i] = transform.parent.parent.Find("Waypoints").GetChild(i);
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -37,7 +37,8 @@ public class Enemy : MonoBehaviour
         state = State.Idle;
 
         navMeshAgent.isStopped = true;
-        animator.SetFloat("Velocity", 0);
+        animator.SetFloat("Velocity", 0f);
+        navMeshAgent.speed = 0f;
 
         stateTimer = Random.Range(0f, enemyData.maxIdleTime);
     }
@@ -178,7 +179,7 @@ public class Enemy : MonoBehaviour
         if (IsPlayerOnSight())
             StartChasing();
 
-        else if (navMeshAgent.remainingDistance == 0f)
+        else if (navMeshAgent.remainingDistance <= 1.5f)
             StartIdling();
     }
 
@@ -191,7 +192,7 @@ public class Enemy : MonoBehaviour
             else
                 navMeshAgent.SetDestination(playerHealth.transform.position);
         }
-        else if (navMeshAgent.remainingDistance == 0f)
+        else if (navMeshAgent.remainingDistance <= 1.5f)
             StartIdling();
     }
 
