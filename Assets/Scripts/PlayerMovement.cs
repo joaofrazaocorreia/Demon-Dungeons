@@ -4,6 +4,8 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private UIManager    _uiManager;
     [SerializeField] private PlayerHealth _playerHealth;
+    [SerializeField] private PlayerStats  _playerStats;
+    [SerializeField] private Animator     _animator;
 
     [SerializeField] private float  _forwardAcceleration;
     [SerializeField] private float  _backwardAcceleration;
@@ -41,20 +43,28 @@ public class PlayerMovement : MonoBehaviour
     private bool    _sprintResting;
     private bool    _roll;
     private float   _rollTimer;
+    private bool    _baseAttack;
+    private float   _baseAttackNum;
+    private float   _baseAttackLimit;
+    private float   _baseAttackCooldown;
     private float   _sinPI4;
 
     private void Start()
     {
-        _controller     = GetComponent<CharacterController>();
-        _acceleration   = Vector3.zero;
-        _velocity       = Vector3.zero;
-        _motion         = Vector3.zero;
-        _stamina        = _maxStamina;
-        _staggerTimer   = 0;
-        _moving         = false;
-        _sprint         = false;
-        _sprintResting  = false;
-        _sinPI4         = Mathf.Sin(Mathf.PI / 4);
+        _controller      = GetComponent<CharacterController>();
+        _acceleration    = Vector3.zero;
+        _velocity        = Vector3.zero;
+        _motion          = Vector3.zero;
+        _stamina         = _maxStamina;
+        _staggerTimer    = 0;
+        _moving          = false;
+        _sprint          = false;
+        _sprintResting   = false;
+        _baseAttack      = false;
+        _baseAttackNum   = 1;
+        _baseAttackLimit = 2;
+        _baseAttackCooldown = 0;
+        _sinPI4          = Mathf.Sin(Mathf.PI / 4);
         
         StaminaRegenMultiplier = 1.0f;
         StaggerRegenMultiplier = 1.0f;
@@ -76,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
         CheckForSprint();
         CheckForSprintRest();
         CheckForRoll();
+        CheckForBaseAttack();
     }
 
     private void UpdateRotation()
@@ -103,6 +114,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetButtonDown("Roll") && _stamina > _rollStaminaCost && _stamina >= _staggerLimit)
             _roll = true;
+    }
+
+    private void CheckForBaseAttack()
+    {
+        if(Input.GetButtonDown("BaseAttack"))
+            if(_baseAttackCooldown <= 0)
+            {
+                _baseAttack = true;
+            }
+
+            else if(_playerStats._baseAttackCooldown - _baseAttackCooldown > 0.25f
+                && _playerStats._baseAttackCooldown - _baseAttackCooldown < 0.4f
+                    && _baseAttackNum <= _baseAttackLimit)
+            {
+                _baseAttack = true;
+                Debug.Log("attacked on cooldown");
+            }
     }
 
     private void FixedUpdate()
@@ -159,6 +187,7 @@ public class PlayerMovement : MonoBehaviour
         UpdateVerticalVelocity();
         UpdateRoll();
         UpdateSprint();
+        UpdateBaseAttack();
     }
 
     private void UpdateForwardVelocity()
@@ -220,6 +249,38 @@ public class PlayerMovement : MonoBehaviour
 
         if ((_stamina < _staggerLimit && !_sprint) || _stamina == 0f)
                 _sprintResting = true;
+    }
+
+    private void UpdateBaseAttack()
+    {
+        if(_baseAttack)
+        {
+            _baseAttack = false;
+
+            string animation = "Attack" + _baseAttackNum;
+            Debug.Log(animation);
+            _velocity *= 0.5f;
+            _baseAttackCooldown = _playerStats._baseAttackCooldown;
+
+            _animator.SetTrigger(animation);
+
+            if (_baseAttackNum >= _baseAttackLimit)
+                _baseAttackNum = 1;
+
+            else _baseAttackNum++;
+        }
+
+        else if(_baseAttackCooldown > 0)
+        {
+            if (_playerStats._baseAttackCooldown - _baseAttackCooldown > 0.4f && _baseAttackNum != 1)
+            {
+                _baseAttackNum = 1;
+                _animator.SetTrigger("Idle");
+                Debug.Log("idle");
+            }
+                
+            _baseAttackCooldown -= Time.fixedDeltaTime;
+        }
     }
 
     private void UpdateMotion()

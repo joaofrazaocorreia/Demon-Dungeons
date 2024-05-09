@@ -5,6 +5,7 @@ public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private UIManager  _uiManager;
     [SerializeField] private float      _maxHealth;
+    [SerializeField] private Animator   _animator;
 
     public float DefenseMultiplier { get; set; }
     public float HealthRegenMultiplier { get; set; }
@@ -54,17 +55,23 @@ public class PlayerHealth : MonoBehaviour
 
     public void Damage(float amount)
     {
-        if (_invulnerable)
+        if (_invulnerable || _health <= 0)
             return;
         
         float damageAmount = amount * DefenseMultiplier;
 
         _health = Mathf.Max(_health - damageAmount, 0f);
+        _animator.SetTrigger("Hurt");
 
         UpdateUI();
 
         if (_health == 0)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            _animator.SetTrigger("Die");
+    }
+
+    public void Respawn()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void BecomeInvulnerable(float durationInSeconds)

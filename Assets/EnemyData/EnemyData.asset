@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5e9bc8b69c20a94a8260084f4c420ca, type: 3}
   m_Name: EnemyData
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 30
   maxIdleTime: 10
   sensingRange: 10
   detectionRange: 50

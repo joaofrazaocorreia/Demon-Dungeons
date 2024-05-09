@@ -15,6 +15,8 @@ public class Enemy : MonoBehaviour
     private float health;
     private float stateTimer;
 
+    public float Health { get => health; set{ health = Mathf.Max(value, 0f); }}
+
     private void Awake()
     {
         waypoints = new Transform[transform.parent.parent.Find("Waypoints").childCount];
@@ -222,7 +224,7 @@ public class Enemy : MonoBehaviour
             StartChasing();
     }
 
-    public void Damage(int amount)
+    public void Damage(float amount)
     {
         if (state != State.Hurting)
         {
