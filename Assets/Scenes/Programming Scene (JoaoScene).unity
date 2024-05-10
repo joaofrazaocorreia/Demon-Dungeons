@@ -49647,6 +49647,18 @@ PrefabInstance:
       propertyPath: _uiManager
       value: 
       objectReference: {fileID: 954843815567441965}
+    - target: {fileID: 520362707441542734, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+      propertyPath: _baseAttackCooldown
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 520362707441542734, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+      propertyPath: _baseAttackComboDelay
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 520362707441542734, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
+      propertyPath: _baseAttackComboTimeLimit
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4026492081025638106, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -118,18 +118,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckForBaseAttack()
     {
-        if(Input.GetButtonDown("BaseAttack"))
+        if(Input.GetButton("BaseAttack"))
             if(_baseAttackCooldown <= 0)
             {
                 _baseAttack = true;
             }
 
-            else if(_playerStats._baseAttackCooldown - _baseAttackCooldown > 0.25f
-                && _playerStats._baseAttackCooldown - _baseAttackCooldown < 0.4f
+            else if(_playerStats.BaseAttackCooldown - _baseAttackCooldown > _playerStats.BaseAttackComboDelay
+                && _playerStats.BaseAttackCooldown - _baseAttackCooldown < _playerStats.BaseAttackComboTimeLimit
                     && _baseAttackNum <= _baseAttackLimit)
             {
                 _baseAttack = true;
-                Debug.Log("attacked on cooldown");
             }
     }
 
@@ -139,6 +138,7 @@ public class PlayerMovement : MonoBehaviour
         UpdateVelocity();
         UpdateMotion();
         RegenStamina();
+        UpdateBaseAttack();
     }
 
     private void UpdateAcceleration()
@@ -187,7 +187,6 @@ public class PlayerMovement : MonoBehaviour
         UpdateVerticalVelocity();
         UpdateRoll();
         UpdateSprint();
-        UpdateBaseAttack();
     }
 
     private void UpdateForwardVelocity()
@@ -253,14 +252,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateBaseAttack()
     {
-        if(_baseAttack)
+        if(_baseAttack && _playerStats.BaseAttackCooldown - _baseAttackCooldown >= _playerStats.BaseAttackComboDelay)
         {
             _baseAttack = false;
 
             string animation = "Attack" + _baseAttackNum;
-            Debug.Log(animation);
-            _velocity *= 0.5f;
-            _baseAttackCooldown = _playerStats._baseAttackCooldown;
+
+            SpeedMultiplier = 0.5f;
+            _baseAttackCooldown = _playerStats.BaseAttackCooldown;
 
             _animator.SetTrigger(animation);
 
@@ -270,16 +269,20 @@ public class PlayerMovement : MonoBehaviour
             else _baseAttackNum++;
         }
 
-        else if(_baseAttackCooldown > 0)
+        if(_baseAttackCooldown > 0)
         {
-            if (_playerStats._baseAttackCooldown - _baseAttackCooldown > 0.4f && _baseAttackNum != 1)
+            if (_baseAttackCooldown + _playerStats.BaseAttackComboTimeLimit < _playerStats.BaseAttackCooldown  && _baseAttackNum != 1)
             {
                 _baseAttackNum = 1;
                 _animator.SetTrigger("Idle");
-                Debug.Log("idle");
+                SpeedMultiplier = 1f;
             }
                 
             _baseAttackCooldown -= Time.fixedDeltaTime;
+            if (_baseAttackCooldown <= 0)
+            {
+                SpeedMultiplier = 1f;
+            }
         }
     }
 
