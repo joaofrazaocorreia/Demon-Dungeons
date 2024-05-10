@@ -113,13 +113,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _occlusionPivot: {fileID: 5426808031186006802}
   _rotationVelocityFactor: 2
-  _maxPitchUpAngle: 60
-  _minPitchDownAngle: 320
+  _maxPitchUpAngle: 30
+  _minPitchDownAngle: 0
   _resetYawSpeed: 360
   _zoomAccelerationFactor: 10000
   _zoomDeceleration: 30
-  _zoomMinDistance: 2
-  _zoomMaxDistance: 15
+  _zoomMinDistance: 3
+  _zoomMaxDistance: 10
   _deocclusionThreshold: 1
   _deocclusionVelocity: 25
 --- !u!1 &3831762977669812971
@@ -223,13 +223,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6841299591232570490}
+  - component: {fileID: 8353844108373620788}
   m_Layer: 0
   m_Name: BaseAttackHitboxRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6841299591232570490
 Transform:
   m_ObjectHideFlags: 0
@@ -246,6 +247,19 @@ Transform:
   - {fileID: 566803021401712205}
   m_Father: {fileID: 4026492081025638106}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8353844108373620788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3914058981673623994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8214de3100bf9941a987b4b558a6701, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerStats: {fileID: 520362707441542734}
 --- !u!1 &4516488307448550822
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,7 +907,7 @@ MonoBehaviour:
   _uiManager: {fileID: 0}
   _playerHealth: {fileID: 9155410695107720046}
   _playerMovement: {fileID: 180806522715282475}
-  _baseAttackDamage: 15
+  _baseAttackDamage: 30
   _baseAttackCooldown: 1
   _baseAttackRange: 3
 --- !u!114 &9155410695107720046

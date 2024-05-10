@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    [SerializeField] private PlayerMovement player;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
     [SerializeField] private float generationIntervals = 0.01f;
@@ -14,6 +15,8 @@ public class MapGenerator : MonoBehaviour
     private bool hasEnding;
     private List<Coroutine> coroutinesQueue;
     private float coroutinesQueueDeadTimer;
+    private Tile currentStartingTile;
+    private Tile currentEndingTile;
 
     private void Awake()
     {
@@ -44,24 +47,39 @@ public class MapGenerator : MonoBehaviour
         }
 
         if (coroutinesQueue.Count > 0)
+        {
             if (coroutinesQueue.First() == null)
                 coroutinesQueueDeadTimer -= Time.deltaTime;
 
-
-        if (coroutinesQueue.Count > 0)
-            if (coroutinesQueueDeadTimer <= 0 && (!hasEnding || !hasEnemyGate))
+            if (coroutinesQueueDeadTimer <= 0)
             {
-                StopAllCoroutines();
-                StartCoroutine(DeleteMap(true));
+                if (!hasEnding || !hasEnemyGate)
+                {
+                    StopAllCoroutines();
+                    StartCoroutine(DeleteMap(true));
+                }
+
+                if (player.transform.position.y < startingCoords.y)
+                {
+                    player.MoveTo(startingCoords);
+                }
             }
+        }
+
     }
 
     // Creates the starting tile and begins generating the map from there
     private void CreateMap()
     {
+        if (coroutinesQueue.Count > 0)
+            return;
+
         List<Tile> startingTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.Start).ToList();
         //List<Tile> startingTiles = tiles.Where(tile => tile.exits.childCount >= 4).ToList();
-        Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)], parent:map, position:startingCoords, rotation:new Quaternion());
+        Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)], parent: map, position: startingCoords, rotation: new Quaternion());
+        currentStartingTile = start;
+
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 500, 0));
 
         StartGeneratingExits(start);
     }
@@ -213,10 +231,15 @@ public class MapGenerator : MonoBehaviour
                 tileAccepted = true;
 
                 if (newTile.TileData.type == TileData.Type.EnemyGate)
+                {
                     hasEnemyGate = true;
+                }
 
                 if (newTile.TileData.type == TileData.Type.End)
+                {
                     hasEnding = true;
+                    currentEndingTile = newTile;
+                }
 
 
                 yield return new WaitForSeconds(generationIntervals);
@@ -226,13 +249,17 @@ public class MapGenerator : MonoBehaviour
                 StartGeneratingExits(newTile);
             }
         }
+
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 3.5f, 0));
     }
 
     // Coroutine to delete all map tiles currently generated
     private IEnumerator DeleteMap(bool regenerate)
     {
-        Debug.Log("DELETING MAP");
+        // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
+        coroutinesQueue = new List<Coroutine>();
 
+        Debug.Log("DELETING MAP");
         while(map.childCount > 0)
         {
             Destroy(map.GetChild(0).gameObject);

@@ -334,4 +334,10 @@ public class PlayerMovement : MonoBehaviour
         _staggerLimit = value;
         UpdateUI();
     }
+
+    public void MoveTo(Vector3 endPos)
+    {
+        _controller.Move(transform.TransformVector(endPos - transform.position));
+        _controller.transform.rotation = Quaternion.identity;
+    }
 }
