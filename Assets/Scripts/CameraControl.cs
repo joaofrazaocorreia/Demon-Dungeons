@@ -32,7 +32,7 @@ public class CameraControl : MonoBehaviour
 
     private void Update()
     {
-        //UpdatePitch();
+        UpdatePitch();
         UpdateYaw();
         UpdateZoom();
 
@@ -44,11 +44,7 @@ public class CameraControl : MonoBehaviour
         Vector3 rotation = transform.localEulerAngles;
 
         rotation.x -= Input.GetAxis("Mouse Y") * _rotationVelocityFactor;
-
-        if (rotation.x < 180f)
-            rotation.x = Mathf.Min(rotation.x, _maxPitchUpAngle);
-        else
-            rotation.x = Mathf.Max(rotation.x, _minPitchDownAngle);
+        rotation.x = Mathf.Clamp(rotation.x, _minPitchDownAngle, _maxPitchUpAngle);
 
         transform.localEulerAngles = rotation;
     }
@@ -142,7 +138,7 @@ public class CameraControl : MonoBehaviour
             {
                 _cameraTransform.position = hitInfo.point + _cameraTransform.TransformDirection(_deocclusionVector);
             }
-            else
+            else if (!hitInfo.collider.CompareTag("IgnoreOcclusion"))
             {
                 Vector3 position = _cameraTransform.localPosition;
                 position.z += _deocclusionVelocity * Time.deltaTime;
