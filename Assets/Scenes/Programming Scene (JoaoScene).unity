@@ -40538,6 +40538,11 @@ MonoBehaviour:
   - {fileID: 626356715914876480}
   map: {fileID: 395649829}
   generationIntervals: 0.01
+  minStartingMapSize: 35
+  minTilesToSpawnEnding: 50
+  minTilesToCloseMap: 60
+  minDistanceToEnding: 100
+  minTotalTiles: 80
 --- !u!114 &1798149615
 MonoBehaviour:
   m_ObjectHideFlags: 0

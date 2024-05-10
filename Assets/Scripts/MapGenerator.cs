@@ -9,6 +9,11 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
     [SerializeField] private float generationIntervals = 0.01f;
+    [SerializeField] private float minStartingMapSize = 35f;
+    [SerializeField] private float minTilesToSpawnEnding = 50f;
+    [SerializeField] private float minTilesToCloseMap = 60f;
+    [SerializeField] private float minDistanceToEnding = 100f;
+    [SerializeField] private float minTotalTiles = 80f;
 
     private Vector3 startingCoords;
     private bool hasEnemyGate;
@@ -49,11 +54,22 @@ public class MapGenerator : MonoBehaviour
         if (coroutinesQueue.Count > 0)
         {
             if (coroutinesQueue.First() == null)
+            {
                 coroutinesQueueDeadTimer -= Time.deltaTime;
+
+                if (coroutinesQueueDeadTimer <= 0)
+                {
+                    Debug.Log($"Finished map with {map.childCount} tiles");
+                    coroutinesQueue = new List<Coroutine>();
+                }
+            }
 
             if (coroutinesQueueDeadTimer <= 0)
             {
-                if (!hasEnding || !hasEnemyGate)
+                if (!hasEnding || !hasEnemyGate || map.childCount <
+                    minTotalTiles || (currentEndingTile.transform.position -
+                        currentStartingTile.transform.position).magnitude <=
+                            minDistanceToEnding)
                 {
                     StopAllCoroutines();
                     StartCoroutine(DeleteMap(true));
@@ -115,25 +131,22 @@ public class MapGenerator : MonoBehaviour
             Transform chosenExit = tile.exits.GetChild(Random.Range(0, tile.exits.childCount));
 
             // Different tiles can be chosen/forced depending on the amount of tiles already generated
-            if (map.childCount < 20)
+            if (map.childCount < minStartingMapSize)
                 tilesToChoose = tiles.Where(tile => tile.exits.childCount >= 2 && tile.TileData.type == TileData.Type.Regular).ToList();
 
-            else if (map.childCount == 34)
-                tilesToChoose = tiles.Where(tile => tile.exits.childCount >= 3 && tile.TileData.type == TileData.Type.Regular).ToList();
-
-            else if (map.childCount >= 35 && !hasEnemyGate)
+            else if (map.childCount >= minTilesToSpawnEnding - 1 && !hasEnemyGate)
             {
                 tilesToChoose = tiles.Where(tile => tile.TileData.type == TileData.Type.EnemyGate).ToList();
                 hasEnemyGate = true;
             }
 
-            else if (map.childCount >= 36 && !hasEnding && hasEnemyGate)
+            else if (map.childCount >= minTilesToSpawnEnding && !hasEnding && hasEnemyGate)
             {
                 tilesToChoose = tiles.Where(tile => tile.TileData.type == TileData.Type.End).ToList();
                 hasEnding = true;
             }
 
-            else if (map.childCount > 40)
+            else if (map.childCount > minTilesToCloseMap)
                 tilesToChoose = tiles.Where(tile => tile.exits.childCount <= 2 && tile.TileData.type == TileData.Type.Regular).ToList();
 
             else
@@ -259,7 +272,7 @@ public class MapGenerator : MonoBehaviour
         // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
         coroutinesQueue = new List<Coroutine>();
 
-        Debug.Log("DELETING MAP");
+        Debug.Log($"Deleting map ({map.childCount} tiles)");
         while(map.childCount > 0)
         {
             Destroy(map.GetChild(0).gameObject);
@@ -271,9 +284,6 @@ public class MapGenerator : MonoBehaviour
         hasEnding = false;
 
         if(regenerate)
-        {
-            Debug.Log("REGENERATING MAP");
             CreateMap();
-        }
     }
 }
