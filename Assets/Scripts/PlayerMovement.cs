@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _acceleration;
     private Vector3 _velocity;
     private Vector3 _motion;
+    private bool    _dead;
     private bool    _moving;
     private float   _stamina;
     private float   _staggerTimer;
@@ -57,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
         _motion          = Vector3.zero;
         _stamina         = _maxStamina;
         _staggerTimer    = 0;
+        _dead            = false;
         _moving          = false;
         _sprint          = false;
         _sprintResting   = false;
@@ -83,10 +85,14 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         UpdateRotation();
-        CheckForSprint();
-        CheckForSprintRest();
-        CheckForRoll();
-        CheckForBaseAttack();
+
+        if (!_dead)
+        {
+            CheckForSprint();
+            CheckForSprintRest();
+            CheckForRoll();
+            CheckForBaseAttack();
+        }
     }
 
     private void UpdateRotation()
@@ -134,11 +140,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        UpdateAcceleration();
-        UpdateVelocity();
-        UpdateMotion();
-        RegenStamina();
-        UpdateBaseAttack();
+        if (!_dead)
+        { 
+            CheckHealth();
+            UpdateAcceleration();
+            UpdateVelocity();
+            UpdateMotion();
+            RegenStamina();
+            UpdateBaseAttack();
+        }
     }
 
     private void UpdateAcceleration()
@@ -288,6 +298,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateMotion()
     {
+        _animator.SetFloat("Velocity", _velocity.magnitude);
         _motion = _velocity * Time.fixedDeltaTime;
 
         _motion = transform.TransformVector(_motion);
@@ -342,5 +353,11 @@ public class PlayerMovement : MonoBehaviour
     {
         _controller.Move(transform.TransformVector(endPos - transform.position));
         _controller.transform.rotation = Quaternion.identity;
+    }
+
+    private void CheckHealth()
+    {
+        if (_playerHealth.Health <= 0)
+            _dead = true;
     }
 }

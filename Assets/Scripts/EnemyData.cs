@@ -6,6 +6,7 @@ public class EnemyData : ScriptableObject
     public float maxHealth;
     public float maxIdleTime;
     public float sensingRange;
+    public float alertRange;
     public float detectionRange;
     public float detectionAngle;
     public float attackRange;

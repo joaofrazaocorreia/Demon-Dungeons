@@ -7,10 +7,11 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private UIManager      _uiManager;
     [SerializeField] private PlayerHealth   _playerHealth;
     [SerializeField] private PlayerMovement _playerMovement;
-    [SerializeField] public float          _baseAttackDamage;
-    [SerializeField] public float          _baseAttackCooldown;
-    [SerializeField] public float          _baseAttackComboDelay;
-    [SerializeField] public float          _baseAttackComboTimeLimit;
+    [SerializeField] private DamageHitbox   _hitbox;
+    [SerializeField] public float           _baseAttackDamage;
+    [SerializeField] public float           _baseAttackCooldown;
+    [SerializeField] public float           _baseAttackComboDelay;
+    [SerializeField] public float           _baseAttackComboTimeLimit;
     [SerializeField] private float          _baseAttackRange;
 
     public float DamageMultiplier { get; set; }
@@ -49,5 +50,10 @@ public class PlayerStats : MonoBehaviour
         {
             _playerHealth.BecomeInvulnerable(3f);
         }
+    }
+
+    private void ResetHitbox()
+    {
+        _hitbox.enemiesHit = new List<Enemy>();
     }
 }

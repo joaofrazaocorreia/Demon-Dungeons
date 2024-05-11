@@ -357,6 +357,7 @@ public class MapGenerator : MonoBehaviour
                 GameObject newEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
                 newEnemy.transform.parent = enemies;
                 newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
+                newEnemy.name = "Enemy " + enemies.childCount;
 
                 foreach(Transform t in enemies)
                     t.GetComponent<Enemy>().waypoints.Add(newWaypoint.transform);

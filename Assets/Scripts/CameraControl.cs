@@ -140,6 +140,8 @@ public class CameraControl : MonoBehaviour
             }
             else if (!hitInfo.collider.CompareTag("IgnoreOcclusion"))
             {
+                //Debug.Log(hitInfo.collider.gameObject.name);
+                
                 Vector3 position = _cameraTransform.localPosition;
                 position.z += _deocclusionVelocity * Time.deltaTime;
                 _cameraTransform.localPosition = position;

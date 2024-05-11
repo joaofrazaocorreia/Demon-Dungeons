@@ -15,7 +15,8 @@ MonoBehaviour:
   maxHealth: 30
   maxIdleTime: 10
   sensingRange: 10
-  detectionRange: 50
+  alertRange: 17.5
+  detectionRange: 25
   detectionAngle: 70
   attackRange: 2
   attackDamage: 10
