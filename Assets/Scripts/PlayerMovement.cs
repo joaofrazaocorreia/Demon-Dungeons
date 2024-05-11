@@ -31,6 +31,10 @@ public class PlayerMovement : MonoBehaviour
     public float StaggerRegenMultiplier { get; set; }
     public float StaminaCostMultiplier { get; set; }
     public float SpeedMultiplier { get; set; }
+    public bool Dead { get => _dead; set{ _dead = value; }}
+    
+    public bool Attacking { get => _attacking; set{ _attacking = value; }}
+    public Animator Animator { get => _animator; }
 
     private CharacterController _controller;
     private Vector3 _acceleration;
@@ -38,16 +42,13 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _motion;
     private bool    _dead;
     private bool    _moving;
+    private bool    _attacking;
     private float   _stamina;
     private float   _staggerTimer;
     private bool    _sprint;
     private bool    _sprintResting;
     private bool    _roll;
     private float   _rollTimer;
-    private bool    _baseAttack;
-    private float   _baseAttackNum;
-    private float   _baseAttackLimit;
-    private float   _baseAttackCooldown;
     private float   _sinPI4;
 
     private void Start()
@@ -60,12 +61,9 @@ public class PlayerMovement : MonoBehaviour
         _staggerTimer    = 0;
         _dead            = false;
         _moving          = false;
+        _attacking       = false;
         _sprint          = false;
         _sprintResting   = false;
-        _baseAttack      = false;
-        _baseAttackNum   = 1;
-        _baseAttackLimit = 2;
-        _baseAttackCooldown = 0;
         _sinPI4          = Mathf.Sin(Mathf.PI / 4);
         
         StaminaRegenMultiplier = 1.0f;
@@ -91,7 +89,6 @@ public class PlayerMovement : MonoBehaviour
             CheckForSprint();
             CheckForSprintRest();
             CheckForRoll();
-            CheckForBaseAttack();
         }
     }
 
@@ -122,22 +119,6 @@ public class PlayerMovement : MonoBehaviour
             _roll = true;
     }
 
-    private void CheckForBaseAttack()
-    {
-        if(Input.GetButton("BaseAttack"))
-            if(_baseAttackCooldown <= 0)
-            {
-                _baseAttack = true;
-            }
-
-            else if(_playerStats.BaseAttackCooldown - _baseAttackCooldown > _playerStats.BaseAttackComboDelay
-                && _playerStats.BaseAttackCooldown - _baseAttackCooldown < _playerStats.BaseAttackComboTimeLimit
-                    && _baseAttackNum <= _baseAttackLimit)
-            {
-                _baseAttack = true;
-            }
-    }
-
     private void FixedUpdate()
     {
         if (!_dead)
@@ -147,7 +128,6 @@ public class PlayerMovement : MonoBehaviour
             UpdateVelocity();
             UpdateMotion();
             RegenStamina();
-            UpdateBaseAttack();
         }
     }
 
@@ -260,42 +240,6 @@ public class PlayerMovement : MonoBehaviour
                 _sprintResting = true;
     }
 
-    private void UpdateBaseAttack()
-    {
-        if(_baseAttack && _playerStats.BaseAttackCooldown - _baseAttackCooldown >= _playerStats.BaseAttackComboDelay)
-        {
-            _baseAttack = false;
-
-            string animation = "Attack" + _baseAttackNum;
-
-            SpeedMultiplier = 0.5f;
-            _baseAttackCooldown = _playerStats.BaseAttackCooldown;
-
-            _animator.SetTrigger(animation);
-
-            if (_baseAttackNum >= _baseAttackLimit)
-                _baseAttackNum = 1;
-
-            else _baseAttackNum++;
-        }
-
-        if(_baseAttackCooldown > 0)
-        {
-            if (_baseAttackCooldown + _playerStats.BaseAttackComboTimeLimit < _playerStats.BaseAttackCooldown  && _baseAttackNum != 1)
-            {
-                _baseAttackNum = 1;
-                _animator.SetTrigger("Idle");
-                SpeedMultiplier = 1f;
-            }
-                
-            _baseAttackCooldown -= Time.fixedDeltaTime;
-            if (_baseAttackCooldown <= 0)
-            {
-                SpeedMultiplier = 1f;
-            }
-        }
-    }
-
     private void UpdateMotion()
     {
         _animator.SetFloat("Velocity", _velocity.magnitude);
@@ -303,7 +247,11 @@ public class PlayerMovement : MonoBehaviour
 
         _motion = transform.TransformVector(_motion);
 
-        _controller.Move(_motion);
+        if(_attacking)
+            _controller.Move(_motion / 2);
+        
+        else
+            _controller.Move(_motion);
 
         _moving = _motion.z != 0f || _motion.x != 0f;
     }
@@ -351,7 +299,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void MoveTo(Vector3 endPos)
     {
-        _controller.Move(transform.TransformVector(endPos - transform.position));
+        GetComponent<CharacterController>().enabled = false;
+
+        transform.position = endPos;
+        
+        GetComponent<CharacterController>().enabled = true;
+
         _controller.transform.rotation = Quaternion.identity;
     }
 
