@@ -1,19 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private PlayerMovement player;
+    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
+    [SerializeField] private Transform enemies;
+    [SerializeField] private Transform waypoints;
     [SerializeField] private float generationIntervals = 0.01f;
     [SerializeField] private float minStartingMapSize = 35f;
     [SerializeField] private float minTilesToSpawnEnding = 50f;
     [SerializeField] private float minTilesToCloseMap = 60f;
     [SerializeField] private float minDistanceToEnding = 100f;
     [SerializeField] private float minTotalTiles = 80f;
+    [SerializeField] private float enemyCount = 30f;
 
     private Vector3 startingCoords;
     private bool hasEnemyGate;
@@ -59,7 +66,6 @@ public class MapGenerator : MonoBehaviour
 
                 if (coroutinesQueueDeadTimer <= 0)
                 {
-                    Debug.Log($"Finished map with {map.childCount} tiles");
                     coroutinesQueue = new List<Coroutine>();
                 }
             }
@@ -75,9 +81,16 @@ public class MapGenerator : MonoBehaviour
                     StartCoroutine(DeleteMap(true));
                 }
 
-                if (player.transform.position.y < startingCoords.y)
+                else if (player.transform.position.y < startingCoords.y)
                 {
                     player.MoveTo(startingCoords);
+                }
+
+                else
+                {
+                    GetComponent<NavMeshSurface>().BuildNavMesh();
+                    StartGeneratingEnemies();
+                    Debug.Log($"Finished map with {map.childCount} tiles");
                 }
             }
         }
@@ -271,6 +284,7 @@ public class MapGenerator : MonoBehaviour
     {
         // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
         coroutinesQueue = new List<Coroutine>();
+        StartCoroutine(DeleteEnemies());
 
         Debug.Log($"Deleting map ({map.childCount} tiles)");
         while(map.childCount > 0)
@@ -279,11 +293,80 @@ public class MapGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.001f);
         }
 
+        GetComponent<NavMeshSurface>().RemoveData();
         coroutinesQueue = new List<Coroutine>();
         hasEnemyGate = false;
         hasEnding = false;
 
         if(regenerate)
             CreateMap();
+    }
+
+    // Coroutine to delete all enemies currently generated
+    private IEnumerator DeleteEnemies()
+    {
+        Debug.Log($"Deleting enemies ({enemies.childCount} entities)");
+        while(enemies.childCount > 0)
+        {
+            Destroy(enemies.GetChild(0).gameObject);
+            yield return new WaitForSeconds(0.001f);
+        }
+    }
+
+    // Coroutine to generate the enemies procedurally
+    private void StartGeneratingEnemies()
+    {
+        StartCoroutine(SpawnEnemies());
+    }
+
+    private IEnumerator SpawnEnemies()
+    {
+        List<Transform> tilesWithEnemies = new List<Transform>();
+
+        for(int i = 0; i < map.childCount; i++)
+        {
+            if(map.GetChild(i).GetComponent<Tile>().TileData.spawnsEnemies)
+                tilesWithEnemies.Add(map.GetChild(i));
+        }
+
+        while(enemies.childCount < enemyCount && tilesWithEnemies.Count > 0)
+        {
+            Transform chosenSpot;
+            Transform chosenTile = tilesWithEnemies[Random.Range(0, tilesWithEnemies.Count)].Find("EnemySpawns");
+
+            if(chosenTile.childCount > 0)
+                chosenSpot = chosenTile.GetChild(Random.Range(0, chosenTile.childCount));
+            
+            else
+            {
+                tilesWithEnemies.Remove(chosenTile.parent);
+            
+                yield return new WaitForSeconds(generationIntervals);
+                continue;
+            }
+
+            GameObject newWaypoint = new GameObject("waypoint");
+            NavMeshHit closestHit;
+            newWaypoint.transform.parent = waypoints;
+            newWaypoint.transform.position = chosenSpot.position;
+            
+            yield return new WaitForSeconds(generationIntervals);
+
+            if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
+            {
+                GameObject newEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                newEnemy.transform.parent = enemies;
+                newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
+
+                foreach(Transform t in enemies)
+                    t.GetComponent<Enemy>().waypoints.Add(newWaypoint.transform);
+            }
+        
+            Destroy(chosenSpot.gameObject);
+            
+            yield return new WaitForSeconds(generationIntervals);
+        }
+
+        coroutinesQueue = new List<Coroutine>();
     }
 }

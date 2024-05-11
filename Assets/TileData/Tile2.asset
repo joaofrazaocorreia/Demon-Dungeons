@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Tile2
   m_EditorClassIdentifier: 
   type: 0
-  spawnsEnemies: 0
+  spawnsEnemies: 1
   numberID: 2

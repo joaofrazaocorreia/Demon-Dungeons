@@ -1,13 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private EnemyData enemyData;
-    [SerializeField] private PlayerHealth playerHealth;
-
     private enum State { Idle, Patrolling, Chasing, Attacking, Hurting, Dead };
-    private Transform[] waypoints;
+    public PlayerHealth playerHealth;
+    public List<Transform> waypoints;
+
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private State state;
@@ -19,11 +20,6 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        waypoints = new Transform[transform.parent.parent.Find("Waypoints").childCount];
-
-        for(int i = 0; i < transform.parent.parent.Find("Waypoints").childCount; i++)
-        waypoints[i] = transform.parent.parent.Find("Waypoints").GetChild(i);
-
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         health = enemyData.maxHealth;
@@ -151,9 +147,9 @@ public class Enemy : MonoBehaviour
         {
             stateTimer -= Time.deltaTime;
 
-            if (stateTimer <= 0f)
+            if (stateTimer <= 0f && waypoints.Count > 0)
             {
-                nextWaypoint = (nextWaypoint + Random.Range(1, waypoints.Length)) % waypoints.Length;
+                nextWaypoint = (nextWaypoint + Random.Range(1, waypoints.Count)) % waypoints.Count;
                 StartPatrolling();
             }
         }
