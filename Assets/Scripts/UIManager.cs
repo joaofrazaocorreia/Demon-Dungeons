@@ -1,8 +1,12 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private Image _loadingScreen;
+    [SerializeField] private TextMeshProUGUI _loadingText;
     [SerializeField] private RectTransform _healthFill;
     [SerializeField] private RectTransform _healthBG;
     [SerializeField] private RectTransform _staminaFill;
@@ -77,5 +81,65 @@ public class UIManager : MonoBehaviour
 
         _bossHealthFill.transform.GetComponent<RawImage>().color = color;
         _bossHealthBG.transform.GetComponent<RawImage>().color = color * 0.75f;
+    }
+
+    public IEnumerator FadeOutScreen(Image screen)
+    {
+        yield return new WaitForSeconds(2.5f);
+
+
+        while(screen.color.a > 0)
+        {
+            float alpha = Mathf.Max(screen.color.a - Time.deltaTime * 2.5f, 0f);
+
+            screen.color = new Color(screen.color.r, screen.color.g, screen.color.b, alpha);
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        screen.gameObject.SetActive(false);
+    }
+
+    public IEnumerator FadeInScreen(Image screen)
+    {
+        screen.gameObject.SetActive(true);
+
+        while(screen.color.a < 1)
+        {
+            float alpha = Mathf.Min(screen.color.a + Time.deltaTime * 5f, 1f);
+
+            screen.color = new Color(screen.color.r, screen.color.g, screen.color.b, alpha);
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+    public IEnumerator LoadingScreenText()
+    {
+        int numOfDots = 0;
+        while(_loadingText.transform.parent.gameObject.activeSelf)
+        {
+            string text = "Loading Map";
+            for(int i = 0; i < numOfDots; i++)
+            {
+                text += " .";
+            }
+            _loadingText.text = text;
+
+            if (++numOfDots > 3)
+                numOfDots = 0;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    public void FadeInLoadingScreen()
+    {
+        if(_loadingText.transform.parent.gameObject.activeSelf)
+            StartCoroutine(LoadingScreenText());
+
+        StartCoroutine(FadeInScreen(_loadingScreen));
+    }
+
+    public void FadeOutLoadingScreen()
+    {
+        StartCoroutine(FadeOutScreen(_loadingScreen));
     }
 }

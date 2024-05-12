@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour
 {
+    [SerializeField] private UIManager uIManager;
     [SerializeField] private PlayerMovement player;
     [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private GameObject bossPrefab;
@@ -110,9 +110,10 @@ public class MapGenerator : MonoBehaviour
                     GetComponent<NavMeshSurface>().BuildNavMesh();
                     StartGeneratingEnemies();
 
-                    Debug.Log(player);
                     player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
                     Debug.Log($"Finished map with {map.childCount} tiles");
+                    
+                    uIManager.FadeOutLoadingScreen();
                 }
             }
         }
@@ -123,6 +124,8 @@ public class MapGenerator : MonoBehaviour
     {
         if (coroutinesQueue.Count > 0)
             return;
+        
+        uIManager.FadeInLoadingScreen();
 
         List<Tile> startingTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.Start).ToList();
         Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)],
@@ -305,6 +308,7 @@ public class MapGenerator : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(DeleteMap(regenerateMap, createSafeRoom));
+        uIManager.FadeInLoadingScreen();
     }
 
     // Coroutine to delete all map tiles currently generated
@@ -412,21 +416,27 @@ public class MapGenerator : MonoBehaviour
     // Creates the safe room tile
     private void CreateSafeRoom()
     {
+        uIManager.FadeInLoadingScreen();
+
         List<Tile> safeRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.SafeRoom).ToList();
         currentStartingTile = Instantiate(safeRoomTiles[Random.Range(0, safeRoomTiles.Count)], parent: map, position: startingCoords, rotation: Quaternion.identity);
 
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -19f));
+
+        uIManager.FadeOutLoadingScreen();
     }
 
     // Creates the boss room tile
     private void CreateBossRoom()
     {
+        uIManager.FadeInLoadingScreen();
+
         List<Tile> bossRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.BossRoom).ToList();
         currentStartingTile = Instantiate(bossRoomTiles[0], parent: map, position: startingCoords, rotation: Quaternion.identity);
         GetComponent<NavMeshSurface>().BuildNavMesh();
 
         NavMeshHit closestHit;
-        if (NavMesh.SamplePosition(currentStartingTile.transform.position, out closestHit, 500, 1))
+        if (NavMesh.SamplePosition(currentStartingTile.transform.position + new Vector3(0,0,50), out closestHit, 500, 1))
         {
             GameObject newBoss = Instantiate(bossPrefab, position: closestHit.position, Quaternion.Euler(new Vector3(0, 180, 0)));
             newBoss.transform.parent = boss;
@@ -434,5 +444,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -50));
+
+        uIManager.FadeOutLoadingScreen();
     }
 }

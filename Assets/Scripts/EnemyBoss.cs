@@ -143,11 +143,6 @@ public class EnemyBoss : MonoBehaviour
         prevAttack = CurrentAttack;
     }
 
-    private void DamagePlayer()
-    {
-        playerHealth.Damage(CurrentAttackDamage);
-    }
-
     private void StartStunning()
     {
         state = State.Stunned;
