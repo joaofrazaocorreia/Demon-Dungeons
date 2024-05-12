@@ -1508,9 +1508,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileData: {fileID: 11400000, guid: e635c3b94109963429d4f4948df34f46, type: 2}
-  exits: {fileID: 0}
+  exits: {fileID: 6813172126164654496}
   model: {fileID: 3449428877035398412}
-  tileCollision: {fileID: 0}
+  tileCollision: {fileID: 6605923859074725285}
 --- !u!1 &4777205735786189612
 GameObject:
   m_ObjectHideFlags: 0
@@ -2155,7 +2155,7 @@ GameObject:
   - component: {fileID: 6480956813554543033}
   m_Layer: 0
   m_Name: Wall (9)
-  m_TagString: Untagged
+  m_TagString: IgnoreOcclusion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2244,8 +2244,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 5, z: 1}
+  m_Center: {x: 0, y: -2, z: 0}
 --- !u!1 &8731293960026645422
 GameObject:
   m_ObjectHideFlags: 0

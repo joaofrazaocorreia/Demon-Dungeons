@@ -67,7 +67,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeOfDoor: 0
-  mapGenerator: {fileID: 0}
 --- !u!1 &801504677036817892
 GameObject:
   m_ObjectHideFlags: 0

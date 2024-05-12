@@ -29,6 +29,12 @@ public class PlayerCheats : MonoBehaviour
                 playerMovement.MoveTo(mapGenerator.CurrentEndingTile.transform.position + new Vector3(0, 5, 0));
         }
 
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            mapGenerator.LayerCount = 3;
+            mapGenerator.StartDeletingMap(true, true);
+        }
+
         // IMPORTANT
         //
         // TURN THIS INTO A CHEAT-UPGRADE LATER, INSTEAD OF A KEYBIND

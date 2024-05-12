@@ -4431,7 +4431,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeOfDoor: 1
-  mapGenerator: {fileID: 0}
 --- !u!1 &6105163039673936018
 GameObject:
   m_ObjectHideFlags: 0
@@ -5940,7 +5939,7 @@ GameObject:
   - component: {fileID: 5009552513259877356}
   m_Layer: 0
   m_Name: Wall (9)
-  m_TagString: Untagged
+  m_TagString: IgnoreOcclusion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6029,8 +6028,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 5, z: 1}
+  m_Center: {x: 0, y: -2, z: 0}
 --- !u!1 &8730778671122699836
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,10 +10,12 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private PlayerMovement player;
     [SerializeField] private List<GameObject> enemyPrefabs;
+    [SerializeField] private GameObject bossPrefab;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
     [SerializeField] private Transform enemies;
     [SerializeField] private Transform waypoints;
+    [SerializeField] private Transform boss;
     [SerializeField] private float generationIntervals = 0.01f;
     [SerializeField] private float minStartingMapSize = 35f;
     [SerializeField] private float minTilesToSpawnEnding = 50f;
@@ -402,7 +404,7 @@ public class MapGenerator : MonoBehaviour
         List<Tile> safeRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.SafeRoom).ToList();
         currentStartingTile = Instantiate(safeRoomTiles[Random.Range(0, safeRoomTiles.Count)], parent: map, position: startingCoords, rotation: Quaternion.identity);
 
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -17.5f));
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -19f));
     }
 
     // Creates the boss room tile
@@ -410,6 +412,15 @@ public class MapGenerator : MonoBehaviour
     {
         List<Tile> bossRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.BossRoom).ToList();
         currentStartingTile = Instantiate(bossRoomTiles[0], parent: map, position: startingCoords, rotation: Quaternion.identity);
+        GetComponent<NavMeshSurface>().BuildNavMesh();
+
+        NavMeshHit closestHit;
+        if (NavMesh.SamplePosition(currentStartingTile.transform.position, out closestHit, 500, 1))
+        {
+            GameObject newBoss = Instantiate(bossPrefab, position: closestHit.position, Quaternion.Euler(new Vector3(0, 180, 0)));
+            newBoss.transform.parent = boss;
+            newBoss.name = "Demon General";
+        }
 
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -50));
     }
