@@ -10,6 +10,7 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private PlayerMovement player;
     [SerializeField] private List<GameObject> enemyPrefabs;
+    [SerializeField] private GameObject bossPrefab;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
     [SerializeField] private Transform enemies;
@@ -416,10 +417,9 @@ public class MapGenerator : MonoBehaviour
         NavMeshHit closestHit;
         if (NavMesh.SamplePosition(currentStartingTile.transform.position, out closestHit, 500, 1))
         {
-            GameObject newEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], position: closestHit.position, Quaternion.Euler(new Vector3(0, 180, 0)));
-            newEnemy.transform.parent = boss;
-            newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
-            newEnemy.name = "Demon General";
+            GameObject newBoss = Instantiate(bossPrefab, position: closestHit.position, Quaternion.Euler(new Vector3(0, 180, 0)));
+            newBoss.transform.parent = boss;
+            newBoss.name = "Demon General";
         }
 
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -50));

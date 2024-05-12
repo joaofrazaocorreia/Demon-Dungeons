@@ -111,8 +111,9 @@ public class PlayerStats : MonoBehaviour
             }
         }
     }
-    private void ResetHitbox()
+    private void ResetHits()
     {
         _hitbox.enemiesHit = new List<Enemy>();
+        _hitbox.hitBoss = false;
     }
 }
