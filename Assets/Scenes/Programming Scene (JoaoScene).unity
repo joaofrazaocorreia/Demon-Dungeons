@@ -7081,6 +7081,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1436478590}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &323291611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 323291612}
+  m_Layer: 0
+  m_Name: Boss
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &323291612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 323291611}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1540787456}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &327852227
 GameObject:
   m_ObjectHideFlags: 0
@@ -34451,9 +34482,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1515468982}
   - {fileID: 1828379058}
   - {fileID: 1879378063}
-  - {fileID: 1515468982}
+  - {fileID: 323291612}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1544691469
@@ -39990,6 +40022,7 @@ MonoBehaviour:
   map: {fileID: 395649829}
   enemies: {fileID: 1879378063}
   waypoints: {fileID: 1828379058}
+  boss: {fileID: 0}
   generationIntervals: 0.01
   minStartingMapSize: 35
   minTilesToSpawnEnding: 50
@@ -48313,10 +48346,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1984767407}
     m_Modifications:
-    - target: {fileID: 1005594037313525486, guid: 2663b556dfbc652478bdc87cde33f5c8, type: 3}
-      propertyPath: mapGenerator
-      value: 
-      objectReference: {fileID: 1798149614}
     - target: {fileID: 8913339809323122447, guid: 2663b556dfbc652478bdc87cde33f5c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -146.5
@@ -48693,10 +48722,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3701460174575197381, guid: aec6e75c12d95824db855481fd20d5ef, type: 3}
-      propertyPath: mapGenerator
-      value: 
-      objectReference: {fileID: 1798149614}
     - target: {fileID: 6197366253205741446, guid: aec6e75c12d95824db855481fd20d5ef, type: 3}
       propertyPath: m_Name
       value: EndingTile1
