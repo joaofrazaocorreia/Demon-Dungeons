@@ -52,6 +52,14 @@ public class MapGenerator : MonoBehaviour
         hasEnding = false;
         validMap = false;
         LayerCount = 0;
+
+        coroutinesQueue.Add(StartCoroutine(Begin()));
+    }
+
+    // Initial coroutine to wait for the project to load before generating the map
+    private IEnumerator Begin()
+    {
+        yield return new WaitForSeconds(10f);
     }
 
 
@@ -101,7 +109,8 @@ public class MapGenerator : MonoBehaviour
                     validMap = true;
                     GetComponent<NavMeshSurface>().BuildNavMesh();
                     StartGeneratingEnemies();
-                    
+
+                    Debug.Log(player);
                     player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
                     Debug.Log($"Finished map with {map.childCount} tiles");
                 }
@@ -284,7 +293,8 @@ public class MapGenerator : MonoBehaviour
 
                 yield return new WaitForSeconds(generationIntervals);
 
-                coroutinesQueue.Remove(coroutinesQueue[0]);
+                if(coroutinesQueue.Count > 0)
+                    coroutinesQueue.Remove(coroutinesQueue[0]);
                 // Generates the exits for the new tile, to keep the loop going until there's no more exits left
                 StartGeneratingExits(newTile);
             }
@@ -293,6 +303,7 @@ public class MapGenerator : MonoBehaviour
 
     public void StartDeletingMap(bool regenerateMap = false, bool createSafeRoom = false)
     {
+        StopAllCoroutines();
         StartCoroutine(DeleteMap(regenerateMap, createSafeRoom));
     }
 
