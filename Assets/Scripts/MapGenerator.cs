@@ -1,27 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private PlayerMovement player;
+    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
+    [SerializeField] private Transform enemies;
+    [SerializeField] private Transform waypoints;
     [SerializeField] private float generationIntervals = 0.01f;
     [SerializeField] private float minStartingMapSize = 35f;
     [SerializeField] private float minTilesToSpawnEnding = 50f;
     [SerializeField] private float minTilesToCloseMap = 60f;
     [SerializeField] private float minDistanceToEnding = 100f;
     [SerializeField] private float minTotalTiles = 80f;
+    [SerializeField] private float enemyCount = 30f;
+    [SerializeField] private float layerIncrements = 5f;
 
     private Vector3 startingCoords;
     private bool hasEnemyGate;
     private bool hasEnding;
+    private bool validMap;
     private List<Coroutine> coroutinesQueue;
     private float coroutinesQueueDeadTimer;
     private Tile currentStartingTile;
     private Tile currentEndingTile;
+
+    public Tile CurrentStartingTile { get => currentStartingTile; }
+    public Tile CurrentEndingTile { get => currentEndingTile; }
+    public int LayerCount { get; set; }
 
     private void Awake()
     {
@@ -35,6 +48,8 @@ public class MapGenerator : MonoBehaviour
         startingCoords = new Vector3(100f, 50f, 100f);
         hasEnemyGate = false;
         hasEnding = false;
+        validMap = false;
+        LayerCount = 0;
     }
 
 
@@ -48,9 +63,14 @@ public class MapGenerator : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.J))
         {
-            CreateMap();
+            CreateMapStart();
         }
 
+        UpdateCoroutines();
+    }
+
+    private void UpdateCoroutines()
+    {
         if (coroutinesQueue.Count > 0)
         {
             if (coroutinesQueue.First() == null)
@@ -59,7 +79,6 @@ public class MapGenerator : MonoBehaviour
 
                 if (coroutinesQueueDeadTimer <= 0)
                 {
-                    Debug.Log($"Finished map with {map.childCount} tiles");
                     coroutinesQueue = new List<Coroutine>();
                 }
             }
@@ -67,35 +86,39 @@ public class MapGenerator : MonoBehaviour
             if (coroutinesQueueDeadTimer <= 0)
             {
                 if (!hasEnding || !hasEnemyGate || map.childCount <
-                    minTotalTiles || (currentEndingTile.transform.position -
-                        currentStartingTile.transform.position).magnitude <=
-                            minDistanceToEnding)
+                    minTotalTiles + (LayerCount * layerIncrements) ||
+                        (currentEndingTile.transform.position - currentStartingTile.
+                            transform.position).magnitude <= minDistanceToEnding)
                 {
                     StopAllCoroutines();
                     StartCoroutine(DeleteMap(true));
                 }
 
-                if (player.transform.position.y < startingCoords.y)
+                else if (!validMap)
                 {
-                    player.MoveTo(startingCoords);
+                    validMap = true;
+                    GetComponent<NavMeshSurface>().BuildNavMesh();
+                    StartGeneratingEnemies();
+                    
+                    player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
+                    Debug.Log($"Finished map with {map.childCount} tiles");
                 }
             }
         }
-
     }
 
     // Creates the starting tile and begins generating the map from there
-    private void CreateMap()
+    private void CreateMapStart()
     {
         if (coroutinesQueue.Count > 0)
             return;
 
         List<Tile> startingTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.Start).ToList();
-        //List<Tile> startingTiles = tiles.Where(tile => tile.exits.childCount >= 4).ToList();
-        Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)], parent: map, position: startingCoords, rotation: new Quaternion());
+        Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)],
+            parent: map, position: startingCoords, rotation: Quaternion.identity);
         currentStartingTile = start;
 
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 500, 0));
+        player.MoveTo(new Vector3(0, 20, 0));
 
         StartGeneratingExits(start);
     }
@@ -121,6 +144,8 @@ public class MapGenerator : MonoBehaviour
     // Randomly generates a new tile for every empty exit in every existing tile, with filters for specific tile numbers
     private IEnumerator GenerateExits(Tile tile)
     {
+        tile.Setup();
+        
         while (tile.exits.childCount > 0)
         {
             List<Tile> tilesToChoose;
@@ -131,22 +156,22 @@ public class MapGenerator : MonoBehaviour
             Transform chosenExit = tile.exits.GetChild(Random.Range(0, tile.exits.childCount));
 
             // Different tiles can be chosen/forced depending on the amount of tiles already generated
-            if (map.childCount < minStartingMapSize)
+            if (map.childCount < minStartingMapSize + (LayerCount * layerIncrements))
                 tilesToChoose = tiles.Where(tile => tile.exits.childCount >= 2 && tile.TileData.type == TileData.Type.Regular).ToList();
 
-            else if (map.childCount >= minTilesToSpawnEnding - 1 && !hasEnemyGate)
+            else if (map.childCount >= minTilesToSpawnEnding - 1 + (LayerCount * layerIncrements) && !hasEnemyGate)
             {
                 tilesToChoose = tiles.Where(tile => tile.TileData.type == TileData.Type.EnemyGate).ToList();
                 hasEnemyGate = true;
             }
 
-            else if (map.childCount >= minTilesToSpawnEnding && !hasEnding && hasEnemyGate)
+            else if (map.childCount >= minTilesToSpawnEnding + (LayerCount * layerIncrements) && !hasEnding && hasEnemyGate)
             {
                 tilesToChoose = tiles.Where(tile => tile.TileData.type == TileData.Type.End).ToList();
                 hasEnding = true;
             }
 
-            else if (map.childCount > minTilesToCloseMap)
+            else if (map.childCount > minTilesToCloseMap + (LayerCount * layerIncrements))
                 tilesToChoose = tiles.Where(tile => tile.exits.childCount <= 2 && tile.TileData.type == TileData.Type.Regular).ToList();
 
             else
@@ -262,15 +287,19 @@ public class MapGenerator : MonoBehaviour
                 StartGeneratingExits(newTile);
             }
         }
+    }
 
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 3.5f, 0));
+    public void StartDeletingMap(bool regenerateMap = false, bool createSafeRoom = false)
+    {
+        StartCoroutine(DeleteMap(regenerateMap, createSafeRoom));
     }
 
     // Coroutine to delete all map tiles currently generated
-    private IEnumerator DeleteMap(bool regenerate)
+    private IEnumerator DeleteMap(bool regenerateMap = false, bool createSafeRoom = false)
     {
         // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
         coroutinesQueue = new List<Coroutine>();
+        StartCoroutine(DeleteEnemies());
 
         Debug.Log($"Deleting map ({map.childCount} tiles)");
         while(map.childCount > 0)
@@ -279,11 +308,109 @@ public class MapGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.001f);
         }
 
+        GetComponent<NavMeshSurface>().RemoveData();
         coroutinesQueue = new List<Coroutine>();
         hasEnemyGate = false;
         hasEnding = false;
+        validMap = false;
 
-        if(regenerate)
-            CreateMap();
+        if (regenerateMap)
+        {
+            if (createSafeRoom)
+                CreateSafeRoom();
+
+            else if (LayerCount >= 3)
+                CreateBossRoom();
+
+            else
+                CreateMapStart();
+        }
+    }
+
+    // Coroutine to delete all enemies currently generated
+    private IEnumerator DeleteEnemies()
+    {
+        Debug.Log($"Deleting enemies ({enemies.childCount} entities)");
+        while(enemies.childCount > 0)
+        {
+            Destroy(enemies.GetChild(0).gameObject);
+            yield return new WaitForSeconds(0.001f);
+        }
+    }
+
+    // Coroutine to generate the enemies procedurally
+    private void StartGeneratingEnemies()
+    {
+        StartCoroutine(SpawnEnemies());
+    }
+
+    private IEnumerator SpawnEnemies()
+    {
+        List<Transform> tilesWithEnemies = new List<Transform>();
+
+        for(int i = 0; i < map.childCount; i++)
+        {
+            if(map.GetChild(i).GetComponent<Tile>().TileData.spawnsEnemies)
+                tilesWithEnemies.Add(map.GetChild(i));
+        }
+
+        while(enemies.childCount < enemyCount + (LayerCount * layerIncrements) && tilesWithEnemies.Count > 0)
+        {
+            Transform chosenSpot;
+            Transform chosenTile = tilesWithEnemies[Random.Range(0, tilesWithEnemies.Count)].Find("EnemySpawns");
+
+            if(chosenTile.childCount > 0)
+                chosenSpot = chosenTile.GetChild(Random.Range(0, chosenTile.childCount));
+            
+            else
+            {
+                tilesWithEnemies.Remove(chosenTile.parent);
+            
+                yield return new WaitForSeconds(generationIntervals);
+                continue;
+            }
+
+            GameObject newWaypoint = new GameObject("waypoint");
+            NavMeshHit closestHit;
+            newWaypoint.transform.parent = waypoints;
+            newWaypoint.transform.position = chosenSpot.position;
+            
+            yield return new WaitForSeconds(generationIntervals);
+
+            if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
+            {
+                GameObject newEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                newEnemy.transform.parent = enemies;
+                newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
+                newEnemy.name = "Enemy " + enemies.childCount;
+
+                foreach(Transform t in enemies)
+                    t.GetComponent<Enemy>().waypoints.Add(newWaypoint.transform);
+            }
+        
+            Destroy(chosenSpot.gameObject);
+            
+            yield return new WaitForSeconds(generationIntervals);
+        }
+
+        coroutinesQueue = new List<Coroutine>();
+    }
+
+    // Creates the safe room tile
+    private void CreateSafeRoom()
+    {
+        List<Tile> safeRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.SafeRoom).ToList();
+        currentStartingTile = Instantiate(safeRoomTiles[Random.Range(0, safeRoomTiles.Count)], parent: map, position: startingCoords, rotation: Quaternion.identity);
+
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -17.5f));
+    }
+
+    // Creates the boss room tile
+    private void CreateBossRoom()
+    {
+        List<Tile> bossRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.BossRoom).ToList();
+        currentStartingTile = Instantiate(bossRoomTiles[0], parent: map, position: startingCoords, rotation: Quaternion.identity);
+
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -50));
     }
 }

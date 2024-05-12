@@ -4,16 +4,25 @@ using UnityEngine;
 
 public class DamageHitbox : MonoBehaviour
 {
-    [SerializeField] private PlayerStats  _playerStats;
+    [SerializeField] private PlayerStats playerStats;
+    [HideInInspector] public List<Enemy> enemiesHit;
 
-    void OnTriggerEnter(Collider other)
+    private void Awake()
+    {
+        enemiesHit = new List<Enemy>();
+        GetComponent<BoxCollider>().enabled = false;
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         Enemy enemy = other.gameObject.GetComponent<Enemy>();
 
-        if (enemy != null && enemy.Health > 0)
+        if (enemy != null && enemy.Health > 0 && !enemiesHit.Contains(enemy))
         {
-            enemy.Damage(_playerStats._baseAttackDamage);
-            Debug.Log($"hit {enemy} for {_playerStats._baseAttackDamage} damage, {enemy.Health} HP");
+            enemy.Damage(playerStats.BaseAttackDamage);
+            Debug.Log($"hit {enemy.name} for {playerStats.BaseAttackDamage} damage, {enemy.Health} HP");
+
+            enemiesHit.Add(enemy);
         }
     }
 }

@@ -9,16 +9,20 @@ public class PlayerHealth : MonoBehaviour
 
     public float DefenseMultiplier { get; set; }
     public float HealthRegenMultiplier { get; set; }
+    public float Health { get => _health; set{ _health = Mathf.Clamp(value, 0f, _maxHealth); } }
 
     private float _health;
     private bool _invulnerable;
+    
+    private bool _godmode;
     private float _invulnerabilityTimer;
 
     private void Start()
     {
-        _health = _maxHealth;
+        Health = _maxHealth;
         DefenseMultiplier = 1.0f;
         HealthRegenMultiplier = 1.0f;
+        _godmode = false;
 
         UpdateUI();
     }
@@ -38,35 +42,32 @@ public class PlayerHealth : MonoBehaviour
 
     private void UpdateUI()
     {
-        _uiManager.SetHealthFill(_health / _maxHealth);
-        _uiManager.SetHealthColor(_health, _maxHealth * 0.25f, _invulnerable);
+        _uiManager.SetHealthFill(Health / _maxHealth);
+        _uiManager.SetHealthColor(Health, _maxHealth * 0.25f, _invulnerable || _godmode);
     }
 
-    public bool IsFullHealth() => _health == _maxHealth;
+    public bool IsFullHealth() => Health == _maxHealth;
 
     public void Regen(float amount)
     {
-        float healAmount = amount * HealthRegenMultiplier;
-
-        _health = Mathf.Min(_health + healAmount, _maxHealth);
-
+        Health += amount * HealthRegenMultiplier;
         UpdateUI();
     }
 
     public void Damage(float amount)
     {
-        if (_invulnerable || _health <= 0)
+        if (_invulnerable || Health <= 0 || _godmode)
             return;
         
-        float damageAmount = amount * DefenseMultiplier;
-
-        _health = Mathf.Max(_health - damageAmount, 0f);
-        _animator.SetTrigger("Hurt");
+        Health -= amount / DefenseMultiplier;
 
         UpdateUI();
 
-        if (_health == 0)
+        if (Health == 0)
             _animator.SetTrigger("Die");
+            
+        else 
+            _animator.SetTrigger("Hurt");
     }
 
     public void Respawn()
@@ -84,6 +85,12 @@ public class PlayerHealth : MonoBehaviour
     public void SetMaxHealth(float value)
     {
         _maxHealth = value;
+        UpdateUI();
+    }
+
+    public void ToggleGodmode()
+    {
+        _godmode = !_godmode;
         UpdateUI();
     }
 }

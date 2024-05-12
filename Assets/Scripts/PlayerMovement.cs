@@ -31,22 +31,24 @@ public class PlayerMovement : MonoBehaviour
     public float StaggerRegenMultiplier { get; set; }
     public float StaminaCostMultiplier { get; set; }
     public float SpeedMultiplier { get; set; }
+    public bool Dead { get => _dead; set{ _dead = value; }}
+    
+    public bool Attacking { get => _attacking; set{ _attacking = value; }}
+    public Animator Animator { get => _animator; }
 
     private CharacterController _controller;
     private Vector3 _acceleration;
     private Vector3 _velocity;
     private Vector3 _motion;
+    private bool    _dead;
     private bool    _moving;
+    private bool    _attacking;
     private float   _stamina;
     private float   _staggerTimer;
     private bool    _sprint;
     private bool    _sprintResting;
     private bool    _roll;
     private float   _rollTimer;
-    private bool    _baseAttack;
-    private float   _baseAttackNum;
-    private float   _baseAttackLimit;
-    private float   _baseAttackCooldown;
     private float   _sinPI4;
 
     private void Start()
@@ -57,13 +59,11 @@ public class PlayerMovement : MonoBehaviour
         _motion          = Vector3.zero;
         _stamina         = _maxStamina;
         _staggerTimer    = 0;
+        _dead            = false;
         _moving          = false;
+        _attacking       = false;
         _sprint          = false;
         _sprintResting   = false;
-        _baseAttack      = false;
-        _baseAttackNum   = 1;
-        _baseAttackLimit = 2;
-        _baseAttackCooldown = 0;
         _sinPI4          = Mathf.Sin(Mathf.PI / 4);
         
         StaminaRegenMultiplier = 1.0f;
@@ -83,10 +83,13 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         UpdateRotation();
-        CheckForSprint();
-        CheckForSprintRest();
-        CheckForRoll();
-        CheckForBaseAttack();
+
+        if (!_dead)
+        {
+            CheckForSprint();
+            CheckForSprintRest();
+            CheckForRoll();
+        }
     }
 
     private void UpdateRotation()
@@ -116,29 +119,16 @@ public class PlayerMovement : MonoBehaviour
             _roll = true;
     }
 
-    private void CheckForBaseAttack()
-    {
-        if(Input.GetButtonDown("BaseAttack"))
-            if(_baseAttackCooldown <= 0)
-            {
-                _baseAttack = true;
-            }
-
-            else if(_playerStats._baseAttackCooldown - _baseAttackCooldown > 0.25f
-                && _playerStats._baseAttackCooldown - _baseAttackCooldown < 0.4f
-                    && _baseAttackNum <= _baseAttackLimit)
-            {
-                _baseAttack = true;
-                Debug.Log("attacked on cooldown");
-            }
-    }
-
     private void FixedUpdate()
     {
-        UpdateAcceleration();
-        UpdateVelocity();
-        UpdateMotion();
-        RegenStamina();
+        if (!_dead)
+        { 
+            CheckHealth();
+            UpdateAcceleration();
+            UpdateVelocity();
+            UpdateMotion();
+            RegenStamina();
+        }
     }
 
     private void UpdateAcceleration()
@@ -187,7 +177,6 @@ public class PlayerMovement : MonoBehaviour
         UpdateVerticalVelocity();
         UpdateRoll();
         UpdateSprint();
-        UpdateBaseAttack();
     }
 
     private void UpdateForwardVelocity()
@@ -251,45 +240,18 @@ public class PlayerMovement : MonoBehaviour
                 _sprintResting = true;
     }
 
-    private void UpdateBaseAttack()
-    {
-        if(_baseAttack)
-        {
-            _baseAttack = false;
-
-            string animation = "Attack" + _baseAttackNum;
-            Debug.Log(animation);
-            _velocity *= 0.5f;
-            _baseAttackCooldown = _playerStats._baseAttackCooldown;
-
-            _animator.SetTrigger(animation);
-
-            if (_baseAttackNum >= _baseAttackLimit)
-                _baseAttackNum = 1;
-
-            else _baseAttackNum++;
-        }
-
-        else if(_baseAttackCooldown > 0)
-        {
-            if (_playerStats._baseAttackCooldown - _baseAttackCooldown > 0.4f && _baseAttackNum != 1)
-            {
-                _baseAttackNum = 1;
-                _animator.SetTrigger("Idle");
-                Debug.Log("idle");
-            }
-                
-            _baseAttackCooldown -= Time.fixedDeltaTime;
-        }
-    }
-
     private void UpdateMotion()
     {
+        _animator.SetFloat("Velocity", _velocity.magnitude);
         _motion = _velocity * Time.fixedDeltaTime;
 
         _motion = transform.TransformVector(_motion);
 
-        _controller.Move(_motion);
+        if(_attacking)
+            _controller.Move(_motion / 2);
+        
+        else
+            _controller.Move(_motion);
 
         _moving = _motion.z != 0f || _motion.x != 0f;
     }
@@ -337,7 +299,18 @@ public class PlayerMovement : MonoBehaviour
 
     public void MoveTo(Vector3 endPos)
     {
-        _controller.Move(transform.TransformVector(endPos - transform.position));
+        GetComponent<CharacterController>().enabled = false;
+
+        transform.position = endPos;
+        
+        GetComponent<CharacterController>().enabled = true;
+
         _controller.transform.rotation = Quaternion.identity;
+    }
+
+    private void CheckHealth()
+    {
+        if (_playerHealth.Health <= 0)
+            _dead = true;
     }
 }

@@ -1,35 +1,37 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private EnemyData enemyData;
-    [SerializeField] private PlayerHealth playerHealth;
 
     private enum State { Idle, Patrolling, Chasing, Attacking, Hurting, Dead };
-    private Transform[] waypoints;
+    public PlayerHealth playerHealth;
+    public List<Transform> waypoints;
+
     private NavMeshAgent navMeshAgent;
     private Animator animator;
+    private EnemyAlertRange alertRange;
     private State state;
     private int nextWaypoint;
     private float health;
     private float stateTimer;
+    private bool sawPlayer;
 
     public float Health { get => health; set{ health = Mathf.Max(value, 0f); }}
 
     private void Awake()
     {
-        waypoints = new Transform[transform.parent.parent.Find("Waypoints").childCount];
-
-        for(int i = 0; i < transform.parent.parent.Find("Waypoints").childCount; i++)
-        waypoints[i] = transform.parent.parent.Find("Waypoints").GetChild(i);
-
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        alertRange = GetComponentInChildren<EnemyAlertRange>();
         health = enemyData.maxHealth;
         nextWaypoint = 0;
+        sawPlayer = false;
 
         stateTimer = 0;
+        alertRange.GetComponent<SphereCollider>().radius = enemyData.alertRange;
 
         StartIdling();
     }
@@ -151,9 +153,9 @@ public class Enemy : MonoBehaviour
         {
             stateTimer -= Time.deltaTime;
 
-            if (stateTimer <= 0f)
+            if (stateTimer <= 0f && waypoints.Count > 0)
             {
-                nextWaypoint = (nextWaypoint + Random.Range(1, waypoints.Length)) % waypoints.Length;
+                nextWaypoint = (nextWaypoint + Random.Range(1, waypoints.Count)) % waypoints.Count;
                 StartPatrolling();
             }
         }
@@ -161,6 +163,10 @@ public class Enemy : MonoBehaviour
 
     private bool IsPlayerOnSight()
     {
+        if (sawPlayer)
+            return true;
+
+
         float distance = Vector3.Distance(playerHealth.transform.position, transform.position);
 
         if (distance > enemyData.detectionRange)
@@ -173,6 +179,7 @@ public class Enemy : MonoBehaviour
             hitInfo.collider.transform != playerHealth.transform)
             return false;
 
+        BecomeAlerted();
         return true;
     }
 
@@ -195,7 +202,7 @@ public class Enemy : MonoBehaviour
                 navMeshAgent.SetDestination(playerHealth.transform.position);
         }
         else if (navMeshAgent.remainingDistance <= 1.5f)
-            StartIdling();
+            StartChasing();
     }
 
     private void UpdateAttack()
@@ -226,14 +233,26 @@ public class Enemy : MonoBehaviour
 
     public void Damage(float amount)
     {
-        if (state != State.Hurting)
-        {
-            health = Mathf.Max(health - amount, 0);
+        health = Mathf.Max(health - amount, 0);
 
-            if (health > 0)
-                StartHurting();
-            else
-                Die();
+        if (health > 0)
+            StartHurting();
+        else
+            Die();
+
+    }
+
+    private void BecomeAlerted()
+    {
+        sawPlayer = true;
+
+
+        foreach(Enemy e in alertRange.enemiesInRange)
+        {
+            if(!e.sawPlayer)
+            {
+                e.BecomeAlerted();
+            }
         }
     }
 }
