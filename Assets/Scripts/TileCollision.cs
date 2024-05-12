@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Class that handles all possible scenarios of tile collision for map generation.
+/// </summary>
 public class TileCollision : MonoBehaviour
 {
     private bool collisionDetected;

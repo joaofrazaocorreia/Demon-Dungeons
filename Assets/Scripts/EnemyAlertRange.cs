@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class to trigger and alert enemies to attack the player.
+/// </summary>
 public class EnemyAlertRange : MonoBehaviour
 {
     [HideInInspector] public List<Enemy> enemiesInRange;
@@ -11,6 +14,10 @@ public class EnemyAlertRange : MonoBehaviour
         enemiesInRange = new List<Enemy>();
     }
 
+    /// <summary>
+    /// Stores all the enemies within range to alert later.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if(other.GetComponent<Enemy>() != null && Physics.Linecast
@@ -22,6 +29,10 @@ public class EnemyAlertRange : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes any enemies that left the alerting range.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if(other.GetComponent<Enemy>() != null && enemiesInRange.Contains

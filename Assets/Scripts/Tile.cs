@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class that defines Tiles and their properties.
+/// </summary>
 public class Tile : MonoBehaviour
 {
     [SerializeField] private TileData tileData;
@@ -25,6 +28,9 @@ public class Tile : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if the tile is colliding with another.
+    /// </summary>
     public void FixedUpdate()
     {
         if(isSetup)

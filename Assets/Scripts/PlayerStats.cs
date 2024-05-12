@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class that defines the player's Attacks and respective stats.
+/// </summary>
 public class PlayerStats : MonoBehaviour
 {
     [SerializeField] private UIManager      _uiManager;
@@ -43,6 +46,9 @@ public class PlayerStats : MonoBehaviour
         _baseAttackCooldownTimer = 0f;
     }
 
+    /// <summary>
+    /// Checks if the player is using the base attack to trigger it.
+    /// </summary>
     private void CheckForBaseAttack()
     {
         if(Input.GetButton("BaseAttack"))
@@ -52,6 +58,7 @@ public class PlayerStats : MonoBehaviour
                 _baseAttack = true;
             }
 
+            // The attack can be triggered on cooldown as a combo instead.
             else if(BaseAttackCooldown - _baseAttackCooldownTimer > BaseAttackComboDelay
                 && BaseAttackCooldown - _baseAttackCooldownTimer < BaseAttackComboTimeLimit
                     && _baseAttackNum <= _baseAttackLimit)
@@ -61,7 +68,9 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// Checks if the player is attacking unless it's dead.
+    /// </summary>
     private void Update()
     {
         if (!_playerMovement.Dead)
@@ -70,11 +79,18 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the base attack behaviour.
+    /// </summary>
     private void FixedUpdate()
     {
         UpdateBaseAttack();
     }
 
+    /// <summary>
+    /// Uses the base attack if it was triggered and checks if it's a combo or
+    /// when the combo breaks.
+    /// </summary>
     private void UpdateBaseAttack()
     {
         if(_baseAttack && BaseAttackCooldown - _baseAttackCooldownTimer >= BaseAttackComboDelay)
@@ -111,6 +127,10 @@ public class PlayerStats : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// Resets the enemies hit by the attack hitbox. (Called by animator)
+    /// </summary>
     private void ResetHits()
     {
         _hitbox.enemiesHit = new List<Enemy>();

@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Class that defines a basic enemy and their properties.
+/// </summary>
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private EnemyData enemyData;
@@ -36,6 +39,9 @@ public class Enemy : MonoBehaviour
         StartIdling();
     }
 
+    /// <summary>
+    /// Idle behaviour, for when the enemy is at a waypoint not seeing the player.
+    /// </summary>
     private void StartIdling()
     {
         state = State.Idle;
@@ -47,6 +53,9 @@ public class Enemy : MonoBehaviour
         stateTimer = Random.Range(0f, enemyData.maxIdleTime);
     }
 
+    /// <summary>
+    /// Patrol behaviour, the enemy moves between waypoints.
+    /// </summary>
     private void StartPatrolling()
     {
         state = State.Patrolling;
@@ -61,6 +70,9 @@ public class Enemy : MonoBehaviour
         animator.SetFloat("Velocity", navMeshAgent.speed);
     }
 
+    /// <summary>
+    /// Chase behaviour, the enemy chases the player's position.
+    /// </summary>
     private void StartChasing()
     {
         state = State.Chasing;
@@ -73,6 +85,10 @@ public class Enemy : MonoBehaviour
         animator.SetFloat("Velocity", navMeshAgent.speed);
     }
 
+    /// <summary>
+    /// Attack behaviour, the enemy tries to attack and damge the player if its
+    /// close enough.
+    /// </summary>
     private void StartAttacking()
     {
         state = State.Attacking;
@@ -84,6 +100,9 @@ public class Enemy : MonoBehaviour
         Attack();
     }
 
+    /// <summary>
+    /// Attacks and sets its cooldown.
+    /// </summary>
     private void Attack()
     {
         animator.SetTrigger("Attack");
@@ -91,12 +110,18 @@ public class Enemy : MonoBehaviour
         stateTimer = enemyData.attackCooldown;
     }
 
+    /// <summary>
+    /// Damages the player if hes close enough (called by the animator).
+    /// </summary>
     private void DamagePlayer()
     {
         if (Vector3.Distance(playerHealth.transform.position, transform.position) <= enemyData.attackRange)
             playerHealth.Damage(enemyData.attackDamage);
     }
 
+    /// <summary>
+    /// Hurt behaviour, when the enemy takes damage.
+    /// </summary>
     private void StartHurting()
     {
         state = State.Hurting;
@@ -109,6 +134,9 @@ public class Enemy : MonoBehaviour
         animator.SetTrigger("Hurt");
     }
 
+    /// <summary>
+    /// Death behaviour, when the enemy's health reaches 0 and it dies.
+    /// </summary>
     private void Die()
     {
         state = State.Dead;
@@ -119,6 +147,9 @@ public class Enemy : MonoBehaviour
         animator.SetTrigger("Die");
     }
 
+    /// <summary>
+    /// Updates the enemy's current state.
+    /// </summary>
     private void Update()
     {
         switch (state)
@@ -145,6 +176,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the Idle behaviour.
+    /// </summary>
     private void UpdateIdle()
     {
         if (IsPlayerOnSight())
@@ -161,6 +195,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks whether the enemy detects the player.
+    /// </summary>
+    /// <returns></returns>
     private bool IsPlayerOnSight()
     {
         if (sawPlayer)
@@ -183,6 +221,9 @@ public class Enemy : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Updates the patrol behaviour.
+    /// </summary>
     private void UpdatePatrol()
     {
         if (IsPlayerOnSight())
@@ -192,6 +233,9 @@ public class Enemy : MonoBehaviour
             StartIdling();
     }
 
+    /// <summary>
+    /// Updates the chase behaviour.
+    /// </summary>
     private void UpdateChase()
     {
         if (IsPlayerOnSight())
@@ -205,6 +249,9 @@ public class Enemy : MonoBehaviour
             StartChasing();
     }
 
+    /// <summary>
+    /// Updates the attack behaviour.
+    /// </summary>
     private void UpdateAttack()
     {
         stateTimer -= Time.deltaTime;
@@ -223,6 +270,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the hurt behaviour.
+    /// </summary>
     private void UpdateHurt()
     {
         stateTimer -= Time.deltaTime;
@@ -231,6 +281,11 @@ public class Enemy : MonoBehaviour
             StartChasing();
     }
 
+    /// <summary>
+    /// Deals a given amount of damage to the enemy and kills it if the health
+    /// goes below 0.
+    /// </summary>
+    /// <param name="amount"></param>
     public void Damage(float amount)
     {
         health = Mathf.Max(health - amount, 0);
@@ -242,10 +297,13 @@ public class Enemy : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Alerts itself and all nearby enemies to start chasing and attacking
+    /// the player when it sees him.
+    /// </summary>
     private void BecomeAlerted()
     {
         sawPlayer = true;
-
 
         foreach(Enemy e in alertRange.enemiesInRange)
         {
