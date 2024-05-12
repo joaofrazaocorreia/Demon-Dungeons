@@ -3,6 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class that handles the UIs in the scene.
+/// </summary>
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private Image _loadingScreen;
@@ -23,16 +26,28 @@ public class UIManager : MonoBehaviour
 
     private float _staminaFillSize;
 
+    /// <summary>
+    /// Sets the stamina bar size.
+    /// </summary>
     private void Awake()
     {
         _staminaFillSize = _staminaFill.rect.height;
     }
 
+    /// <summary>
+    /// Sets the size of the Stamina fill according to the ratio of stamina spent.
+    /// </summary>
+    /// <param name="ratio">Current stamina divided by the max stamina value.</param>
     public void SetStaminaFill(float ratio)
     {
         _staminaFill.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ratio * _staminaFillSize);
     }
 
+    /// <summary>
+    /// Updates the color of the stamina bar if it's below the stagger limit.
+    /// </summary>
+    /// <param name="amount">The current amount of stamina the player has.</param>
+    /// <param name="limit">The limit of stamina for the bar to change color.</param>
     public void SetStaminaColor(float amount, float limit)
     {
         Color color = amount >= limit ? _staminaFillDefaultColor : _staminaFillStaggerColor;
@@ -41,11 +56,23 @@ public class UIManager : MonoBehaviour
         _staminaBG.transform.GetComponent<RawImage>().color = color * 0.75f;
     }
 
+    /// <summary>
+    /// Sets the size of the Health fill according to the ratio of health lost.
+    /// </summary>
+    /// <param name="ratio">Current health divided by the max health value.</param>
     public void SetHealthFill(float ratio)
     {
         _healthFill.localScale = new Vector3(1, ratio, 1);
     }
 
+    /// <summary>
+    /// Updates the color of the health bar if it's below the danger limit or if
+    /// the player is invulnerable.
+    /// </summary>
+    /// <param name="amount">The current amount of health the player has.</param>
+    /// <param name="limit">The limit of health for the bar to change color.</param>
+    /// <param name="invulnerable">Whether the player is currently immune to 
+    /// damage or not.</param>
     public void SetHealthColor(float amount, float limit, bool invulnerable)
     {
         Color color;
@@ -60,16 +87,29 @@ public class UIManager : MonoBehaviour
         _healthBG.transform.GetComponent<RawImage>().color = color * 0.75f;
     }
 
+    /// <summary>
+    /// Enables the boss HP bar.
+    /// </summary>
     public void ToggleBossHPBar()
     {
         _bossHealthBG.gameObject.SetActive(!_bossHealthBG.gameObject.activeSelf);
     }
 
+    /// <summary>
+    /// Sets the size of the fill in the Boss Health Bar according to how much 
+    /// damage he has taken.
+    /// </summary>
+    /// <param name="ratio">Current boss HP divided by the boss's max HP value.</param>
     public void SetBossHealthFill(float ratio)
     {
         _bossHealthFill.localScale = new Vector3(1, ratio, 1);
     }
 
+    /// <summary>
+    /// Changes the boss's health bar color depending on whether it is 
+    /// vulnerable to attacks or not.
+    /// </summary>
+    /// <param name="vulnerable"></param>
     public void SetBossHealthColor(bool vulnerable)
     {
         Color color;
@@ -83,6 +123,11 @@ public class UIManager : MonoBehaviour
         _bossHealthBG.transform.GetComponent<RawImage>().color = color * 0.75f;
     }
 
+    /// <summary>
+    /// Coroutine that causes the given screen to fade out and disable.
+    /// </summary>
+    /// <param name="screen">The screen to fade out.</param>
+    /// <returns></returns>
     public IEnumerator FadeOutScreen(Image screen)
     {
         yield return new WaitForSeconds(2.5f);
@@ -99,6 +144,11 @@ public class UIManager : MonoBehaviour
         screen.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Coroutine that causes the given screen to enable and fade in.
+    /// </summary>
+    /// <param name="screen">The screen to fade in.</param>
+    /// <returns></returns>
     public IEnumerator FadeInScreen(Image screen)
     {
         screen.gameObject.SetActive(true);
@@ -111,6 +161,11 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
     }
+
+    /// <summary>
+    /// Coroutine that changes the Text on the loading screen.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator LoadingScreenText()
     {
         int numOfDots = 0;
@@ -130,6 +185,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Fades the loading screen into the screen.
+    /// </summary>
     public void FadeInLoadingScreen()
     {
         if(_loadingText.transform.parent.gameObject.activeSelf)
@@ -138,6 +196,9 @@ public class UIManager : MonoBehaviour
         StartCoroutine(FadeInScreen(_loadingScreen));
     }
 
+    /// <summary>
+    /// Fades the loading screen out of the screen.
+    /// </summary>
     public void FadeOutLoadingScreen()
     {
         StartCoroutine(FadeOutScreen(_loadingScreen));

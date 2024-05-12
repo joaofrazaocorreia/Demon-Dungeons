@@ -1,6 +1,9 @@
 using System.ComponentModel.Design;
 using UnityEngine;
 
+/// <summary>
+/// Class that handles camera movement and rotation.
+/// </summary>
 public class CameraControl : MonoBehaviour
 {
     [SerializeField] private Transform _occlusionPivot;

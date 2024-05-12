@@ -5,6 +5,9 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Class that generates the dungeon maps and spawns enemies.
+/// </summary>
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private UIManager uIManager;
@@ -56,13 +59,18 @@ public class MapGenerator : MonoBehaviour
         coroutinesQueue.Add(StartCoroutine(Begin()));
     }
 
-    // Initial coroutine to wait for the project to load before generating the map
+    /// <summary>
+    /// Initial coroutine to wait for the project to load before generating the map.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Begin()
     {
         yield return new WaitForSeconds(10f);
     }
 
-
+    /// <summary>
+    /// Checks two player cheats to manually generate and delete maps.
+    /// </summary>
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.H))
@@ -79,6 +87,9 @@ public class MapGenerator : MonoBehaviour
         UpdateCoroutines();
     }
 
+    /// <summary>
+    /// Checks if the coroutine queue is empty or dead to mark it as finished.
+    /// </summary>
     private void UpdateCoroutines()
     {
         if (coroutinesQueue.Count > 0)
@@ -93,6 +104,7 @@ public class MapGenerator : MonoBehaviour
                 }
             }
 
+            // Resets the map if it didn't meet the criteria and is done generating.
             if (coroutinesQueueDeadTimer <= 0)
             {
                 if (!hasEnding || !hasEnemyGate || map.childCount <
@@ -104,6 +116,7 @@ public class MapGenerator : MonoBehaviour
                     StartCoroutine(DeleteMap(true));
                 }
 
+                // Spawns the enemies if the map is accepted.
                 else if (!validMap)
                 {
                     validMap = true;
@@ -119,7 +132,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    // Creates the starting tile and begins generating the map from there
+    /// <summary>
+    /// Creates the starting tile and begins generating the map from there.
+    /// </summary>
     private void CreateMapStart()
     {
         if (coroutinesQueue.Count > 0)
@@ -137,7 +152,10 @@ public class MapGenerator : MonoBehaviour
         StartGeneratingExits(start);
     }
 
-    // Coroutine to generate the map procedurally
+    /// <summary>
+    /// Coroutine to generate the map procedurally by filling each tile's exits.
+    /// </summary>
+    /// <param name="tile">The tile whose exits are being filled.</param>
     private void StartGeneratingExits(Tile tile)
     {
         while(true)
@@ -155,7 +173,11 @@ public class MapGenerator : MonoBehaviour
         
     }
 
-    // Randomly generates a new tile for every empty exit in every existing tile, with filters for specific tile numbers
+    /// <summary>
+    /// Coroutine that randomly generates a new tile for every empty exit in every existing tile, with filters for specific tile numbers.
+    /// </summary>
+    /// <param name="tile">The tile whose exits are being filled.</param>
+    /// <returns></returns>
     private IEnumerator GenerateExits(Tile tile)
     {
         tile.Setup();
@@ -304,6 +326,11 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Begins deleting the current map.
+    /// </summary>
+    /// <param name="regenerateMap">Whether a new map should be generated right after.</param>
+    /// <param name="createSafeRoom">Whether the new map should always be a safe room.</param>
     public void StartDeletingMap(bool regenerateMap = false, bool createSafeRoom = false)
     {
         StopAllCoroutines();
@@ -311,7 +338,12 @@ public class MapGenerator : MonoBehaviour
         uIManager.FadeInLoadingScreen();
     }
 
-    // Coroutine to delete all map tiles currently generated
+    /// <summary>
+    /// Coroutine to delete all map tiles and enemies currently generated.
+    /// </summary>
+    /// <param name="regenerateMap">Whether a new map should be generated right after.</param>
+    /// <param name="createSafeRoom">Whether the new map should always be a safe room.</param>
+    /// <returns></returns>
     private IEnumerator DeleteMap(bool regenerateMap = false, bool createSafeRoom = false)
     {
         // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
@@ -325,11 +357,13 @@ public class MapGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.001f);
         }
 
+        // Resets Navmesh and map requirements
         GetComponent<NavMeshSurface>().RemoveData();
         coroutinesQueue = new List<Coroutine>();
         hasEnemyGate = false;
         hasEnding = false;
         validMap = false;
+
 
         if (regenerateMap)
         {
@@ -344,7 +378,10 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    // Coroutine to delete all enemies currently generated
+    /// <summary>
+    /// Coroutine to delete all enemies currently generated.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DeleteEnemies()
     {
         Debug.Log($"Deleting enemies ({enemies.childCount} entities)");
@@ -355,16 +392,23 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    // Coroutine to generate the enemies procedurally
+    /// <summary>
+    /// Starts generating enemies on the map.
+    /// </summary>
     private void StartGeneratingEnemies()
     {
         StartCoroutine(SpawnEnemies());
     }
 
+    /// <summary>
+    /// Coroutine to generate the enemies procedurally.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator SpawnEnemies()
     {
         List<Transform> tilesWithEnemies = new List<Transform>();
 
+        // Filters which tiles can spawn enemies.
         for(int i = 0; i < map.childCount; i++)
         {
             if(map.GetChild(i).GetComponent<Tile>().TileData.spawnsEnemies)
@@ -373,6 +417,7 @@ public class MapGenerator : MonoBehaviour
 
         while(enemies.childCount < enemyCount + (LayerCount * layerIncrements) && tilesWithEnemies.Count > 0)
         {
+            // Choses the spot to spawn the enemy.
             Transform chosenSpot;
             Transform chosenTile = tilesWithEnemies[Random.Range(0, tilesWithEnemies.Count)].Find("EnemySpawns");
 
@@ -387,6 +432,7 @@ public class MapGenerator : MonoBehaviour
                 continue;
             }
 
+            // Generates a waypoint on the enemy's spawn for other enemies to visit it too.
             GameObject newWaypoint = new GameObject("waypoint");
             NavMeshHit closestHit;
             newWaypoint.transform.parent = waypoints;
@@ -394,6 +440,7 @@ public class MapGenerator : MonoBehaviour
             
             yield return new WaitForSeconds(generationIntervals);
 
+            // Instantiates the enemy.
             if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
             {
                 GameObject newEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
@@ -413,7 +460,9 @@ public class MapGenerator : MonoBehaviour
         coroutinesQueue = new List<Coroutine>();
     }
 
-    // Creates the safe room tile
+    /// <summary>
+    /// Creates the safe room tile.
+    /// </summary>
     private void CreateSafeRoom()
     {
         uIManager.FadeInLoadingScreen();
@@ -426,7 +475,9 @@ public class MapGenerator : MonoBehaviour
         uIManager.FadeOutLoadingScreen();
     }
 
-    // Creates the boss room tile
+    /// <summary>
+    /// Creates the boss room tile.
+    /// </summary>
     private void CreateBossRoom()
     {
         uIManager.FadeInLoadingScreen();

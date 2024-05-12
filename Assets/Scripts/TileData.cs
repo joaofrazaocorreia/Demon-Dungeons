@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Defines the Scriptable Object to store the data and properties of every Tile.
+/// </summary>
 [CreateAssetMenu(menuName = "TileData", fileName = "TileData")]
 public class TileData : ScriptableObject
 {

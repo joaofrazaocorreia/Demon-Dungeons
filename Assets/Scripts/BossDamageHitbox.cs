@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class to trigger attack damage to the player when the boss attacks.
+/// </summary>
 public class BossDamageHitbox : MonoBehaviour
 {
     [HideInInspector] public bool hitPlayer;
@@ -18,7 +21,10 @@ public class BossDamageHitbox : MonoBehaviour
         else GetComponent<CapsuleCollider>().enabled = false;
     }
 
-    
+    /// <summary>
+    /// Damages the player once if he's in the hitbox and notes it.
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
         PlayerHealth player = other.gameObject.GetComponent<PlayerHealth>();

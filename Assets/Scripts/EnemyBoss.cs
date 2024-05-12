@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Class that defines the enemy boss and their behaviours.
+/// </summary>
 public class EnemyBoss : MonoBehaviour
 {
     public float maxHealth;
@@ -27,6 +30,8 @@ public class EnemyBoss : MonoBehaviour
     public int CurrentAttack { get; set; }
     public float CurrentAttackRange { get; set; }
     public float CurrentAttackDamage { get; set; }
+
+    // Stores the boss's moveset
     private Dictionary<int, (string, float, float, float)> attacks = new Dictionary<int, (string, float, float, float)>
     {
         // {index, (name, range, damage, cooldown)}
@@ -55,6 +60,7 @@ public class EnemyBoss : MonoBehaviour
             attackCooldowns.Add(0f);
         }
 
+        // Enables the boss HP bar when the boss is spawned
         UpdateUI();
         uiManager.ToggleBossHPBar();
 
@@ -62,12 +68,20 @@ public class EnemyBoss : MonoBehaviour
         StartChasing();
     }
 
+    /// <summary>
+    /// Updates the health on the health bar, as well as its color depending on 
+    /// whether the boss is stunned or not
+    /// </summary>
     private void UpdateUI()
     {
         uiManager.SetBossHealthFill(health / maxHealth);
         uiManager.SetBossHealthColor(state == State.Stunned);
     }
 
+    /// <summary>
+    /// Resets the damage hitboxes' hits so the attacks can damage the player 
+    /// again (Called in the animator)
+    /// </summary>
     public void ResetHits()
     {
         foreach(BossDamageHitbox bh in hitboxes)
@@ -76,6 +90,10 @@ public class EnemyBoss : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Idle behaviour, mostly to transition between states or when all attacks 
+    /// are on cooldown
+    /// </summary>
     private void StartIdling()
     {
         state = State.Idle;
@@ -87,6 +105,10 @@ public class EnemyBoss : MonoBehaviour
         SelectAttack();
     }
 
+    /// <summary>
+    /// Chasing behaviour, the boss moves towards the player if they're out of 
+    /// range for the attacks to hit.
+    /// </summary>
     private void StartChasing()
     {
         state = State.Chasing;
@@ -99,6 +121,10 @@ public class EnemyBoss : MonoBehaviour
         animator.SetFloat("Velocity", navMeshAgent.speed);
     }
 
+    /// <summary>
+    /// Attack behaviour, stops and uses a randomly selected attack if the 
+    /// player is close enough.
+    /// </summary>
     private void StartAttacking()
     {
         state = State.Attacking;
@@ -108,6 +134,9 @@ public class EnemyBoss : MonoBehaviour
         animator.SetFloat("Velocity", 0);
     }
 
+    /// <summary>
+    /// Uses the currently selected attack and triggers its cooldown.
+    /// </summary>
     private void Attack()
     {
         animator.SetTrigger(attacks[CurrentAttack].Item1);
@@ -118,6 +147,9 @@ public class EnemyBoss : MonoBehaviour
         SelectAttack();
     }
 
+    /// <summary>
+    /// Selects a random attack to use (different than the previous one used).
+    /// </summary>
     private void SelectAttack()
     {
         float lowestCD = 100f;
@@ -143,6 +175,10 @@ public class EnemyBoss : MonoBehaviour
         prevAttack = CurrentAttack;
     }
 
+    /// <summary>
+    /// Stunned behaviour, called by the animator after using the Bull Charge
+    /// attack and lasting until the timer is up.
+    /// </summary>
     private void StartStunning()
     {
         state = State.Stunned;
@@ -154,6 +190,9 @@ public class EnemyBoss : MonoBehaviour
         animator.SetTrigger("Stun");
     }
 
+    /// <summary>
+    /// Death behaviour, kills the entity when its hp falls to 0.
+    /// </summary>
     private void Die()
     {
         state = State.Dead;
@@ -165,6 +204,9 @@ public class EnemyBoss : MonoBehaviour
         uiManager.ToggleBossHPBar();
     }
 
+    /// <summary>
+    /// Updates the UI and the current state of the Boss.
+    /// </summary>
     private void Update()
     {
         UpdateUI();
@@ -189,6 +231,9 @@ public class EnemyBoss : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Lowers the cooldowns and timers in real time.
+    /// </summary>
     private void FixedUpdate()
     {
         stateTimer -= Time.deltaTime;
@@ -199,6 +244,9 @@ public class EnemyBoss : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates if currently in the Idle behaviour.
+    /// </summary>
     private void UpdateIdle()
     {
         if (Vector3.Distance(playerHealth.transform.position, transform.position) > CurrentAttackRange)
@@ -211,6 +259,9 @@ public class EnemyBoss : MonoBehaviour
             StartIdling();
     }
 
+    /// <summary>
+    /// Updates if currently in the stun behaviour.
+    /// </summary>
     private void UpdateStun()
     {
         if (stunTimer > 0)
@@ -230,6 +281,9 @@ public class EnemyBoss : MonoBehaviour
         UpdateUI();
     }
 
+    /// <summary>
+    /// Updates if currently in the chase behaviour.
+    /// </summary>
     private void UpdateChase()
     {
         if (Vector3.Distance(playerHealth.transform.position, transform.position) <= CurrentAttackRange)
@@ -244,6 +298,9 @@ public class EnemyBoss : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates if currently in the attack behaviour.
+    /// </summary>
     private void UpdateAttack()
     {
         if (stateTimer <= 0f && attackCooldowns[CurrentAttack] <= 0)
@@ -252,6 +309,10 @@ public class EnemyBoss : MonoBehaviour
             StartIdling();
     }
 
+    /// <summary>
+    /// Receives given damage only if stunned, and dies if health goes below zero.
+    /// </summary>
+    /// <param name="amount">The amount of damage received.</param>
     public void Damage(float amount)
     {
         if (state != State.Stunned)

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class to store various Player cheats to help with testing and demonstrating.
+/// </summary>
 public class PlayerCheats : MonoBehaviour
 {
     public PlayerMovement playerMovement;
@@ -40,11 +43,8 @@ public class PlayerCheats : MonoBehaviour
             mapGenerator.StartDeletingMap(true, true);
         }
 
-        // IMPORTANT
-        //
-        // TURN THIS INTO A CHEAT-UPGRADE LATER, INSTEAD OF A KEYBIND
-        //
-        // IMPORTANT
+        // This cheat will later be turned into an Upgrade instead, to better work
+        // with the multipliers.
         if (Input.GetKeyDown(KeyCode.G))
         {
             playerMovement.SetMaxStamina(1000000f);
