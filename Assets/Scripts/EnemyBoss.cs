@@ -20,6 +20,7 @@ public class EnemyBoss : MonoBehaviour
     private float stateTimer;
     private float stunTimer;
     private float health;
+    private int prevAttack;
 
     public float Health { get => health; set{ health = Mathf.Max(value, 0f); }}
     
@@ -30,9 +31,9 @@ public class EnemyBoss : MonoBehaviour
     {
         // {index, (name, range, damage, cooldown)}
 
-        {0, ("DoubleAxeSlash", 10f, 20f, 1.5f)},
-        {1, ("BullCharge", 100f, 40f, 1f)},
-        {2, ("QuakingStomp", 15f, 15f, 2.5f)},
+        {0, ("DoubleAxeSlash", 4f, 20f, 5f)},
+        {1, ("BullCharge", 5f, 45f, 10f)},
+        {2, ("QuakingStomp", 6f, 15f, 12f)},
     };
     private List<float> attackCooldowns;
 
@@ -45,6 +46,7 @@ public class EnemyBoss : MonoBehaviour
         health = maxHealth;
         stunTimer = 0f;
         stateTimer = 0f;
+        prevAttack = 1;
         attackCooldowns = new List<float>();
         hitboxes = GetComponentsInChildren<BossDamageHitbox>();
 
@@ -83,7 +85,6 @@ public class EnemyBoss : MonoBehaviour
         navMeshAgent.speed = 0f;
 
         SelectAttack();
-        StartChasing();
     }
 
     private void StartChasing()
@@ -124,12 +125,12 @@ public class EnemyBoss : MonoBehaviour
 
         for(int i = 0; i < attackCooldowns.Count; i++)
         {
-            if (attackCooldowns[i] == lowestCD)
+            if (attackCooldowns[i] == lowestCD && i != prevAttack)
             {
                 lowestCDsIndex.Add(i);
             }
 
-            if(attackCooldowns[i] < lowestCD)
+            if(attackCooldowns[i] < lowestCD && i != prevAttack)
             {
                 lowestCD = attackCooldowns[i];
                 lowestCDsIndex = new List<int>() {i};
@@ -139,11 +140,7 @@ public class EnemyBoss : MonoBehaviour
         CurrentAttack = lowestCDsIndex[Random.Range(0, lowestCDsIndex.Count)];
         CurrentAttackRange = attacks[CurrentAttack].Item2;
         CurrentAttackDamage = attacks[CurrentAttack].Item3;
-    }
-
-    private void DamagePlayer()
-    {
-        playerHealth.Damage(CurrentAttackDamage);
+        prevAttack = CurrentAttack;
     }
 
     private void StartStunning()

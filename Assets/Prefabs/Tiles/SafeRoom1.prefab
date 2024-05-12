@@ -2706,6 +2706,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3209421835314159913}
   - component: {fileID: 6191693681794380810}
+  - component: {fileID: 88873241232204628}
   m_Layer: 0
   m_Name: Collider
   m_TagString: Untagged
@@ -2751,6 +2752,18 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &88873241232204628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3340246787774275959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a36671f79a428b45aba0b97ef350105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3404884193853903766
 GameObject:
   m_ObjectHideFlags: 0
