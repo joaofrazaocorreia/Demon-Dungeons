@@ -245,7 +245,6 @@ public class Enemy : MonoBehaviour
     private void BecomeAlerted()
     {
         sawPlayer = true;
-        Debug.Log($"{transform.name} became alerted!");
 
 
         foreach(Enemy e in alertRange.enemiesInRange)
@@ -253,7 +252,6 @@ public class Enemy : MonoBehaviour
             if(!e.sawPlayer)
             {
                 e.BecomeAlerted();
-                Debug.Log($"{transform.name} alerts {e.transform.name}!");
             }
         }
     }

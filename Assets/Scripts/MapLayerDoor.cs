@@ -8,12 +8,19 @@ public class MapLayerDoor : MonoBehaviour
     public enum TypeOfDoor { LayerExit, SafeRoomExit}
 
     [SerializeField] private TypeOfDoor typeOfDoor;
-    [SerializeField] private MapGenerator mapGenerator;
+    private MapGenerator mapGenerator;
+
+    private void Start()
+    {
+        mapGenerator = GameObject.Find("World").GetComponent<MapGenerator>();
+    }
     
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerMovement>() != null)
         {
+            other.GetComponent<PlayerMovement>().MoveTo(new Vector3(0, 20, 0));
+            
             if (typeOfDoor == TypeOfDoor.LayerExit)
             {
                 mapGenerator.StartDeletingMap(true, true);
@@ -23,7 +30,6 @@ public class MapLayerDoor : MonoBehaviour
             {
                 mapGenerator.LayerCount++;
                 mapGenerator.StartDeletingMap(true, false);
-                if (mapGenerator.LayerCount == 3) Debug.Log("boss room!");
             }
         }
     }

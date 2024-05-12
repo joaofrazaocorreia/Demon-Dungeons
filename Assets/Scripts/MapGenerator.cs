@@ -99,12 +99,9 @@ public class MapGenerator : MonoBehaviour
                     validMap = true;
                     GetComponent<NavMeshSurface>().BuildNavMesh();
                     StartGeneratingEnemies();
+                    
+                    player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
                     Debug.Log($"Finished map with {map.childCount} tiles");
-                }
-
-                else if (player.transform.position.y < startingCoords.y)
-                {
-                    player.MoveTo(startingCoords);
                 }
             }
         }
@@ -121,7 +118,7 @@ public class MapGenerator : MonoBehaviour
             parent: map, position: startingCoords, rotation: Quaternion.identity);
         currentStartingTile = start;
 
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
+        player.MoveTo(new Vector3(0, 20, 0));
 
         StartGeneratingExits(start);
     }
@@ -147,6 +144,8 @@ public class MapGenerator : MonoBehaviour
     // Randomly generates a new tile for every empty exit in every existing tile, with filters for specific tile numbers
     private IEnumerator GenerateExits(Tile tile)
     {
+        tile.Setup();
+        
         while (tile.exits.childCount > 0)
         {
             List<Tile> tilesToChoose;
@@ -288,8 +287,6 @@ public class MapGenerator : MonoBehaviour
                 StartGeneratingExits(newTile);
             }
         }
-
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 3.5f, 0));
     }
 
     public void StartDeletingMap(bool regenerateMap = false, bool createSafeRoom = false)
@@ -321,6 +318,9 @@ public class MapGenerator : MonoBehaviour
         {
             if (createSafeRoom)
                 CreateSafeRoom();
+
+            else if (LayerCount >= 3)
+                CreateBossRoom();
 
             else
                 CreateMapStart();
@@ -400,9 +400,17 @@ public class MapGenerator : MonoBehaviour
     private void CreateSafeRoom()
     {
         List<Tile> safeRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.SafeRoom).ToList();
-        Tile chosenTile = Instantiate(safeRoomTiles[Random.Range(0, safeRoomTiles.Count)], parent: map, position: startingCoords, rotation: Quaternion.identity);
-        currentStartingTile = chosenTile;
+        currentStartingTile = Instantiate(safeRoomTiles[Random.Range(0, safeRoomTiles.Count)], parent: map, position: startingCoords, rotation: Quaternion.identity);
 
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -15));
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -17.5f));
+    }
+
+    // Creates the boss room tile
+    private void CreateBossRoom()
+    {
+        List<Tile> bossRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.BossRoom).ToList();
+        currentStartingTile = Instantiate(bossRoomTiles[0], parent: map, position: startingCoords, rotation: Quaternion.identity);
+
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -50));
     }
 }
