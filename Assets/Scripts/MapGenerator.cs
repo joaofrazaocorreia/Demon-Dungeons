@@ -10,6 +10,7 @@ using UnityEngine.AI;
 /// </summary>
 public class MapGenerator : MonoBehaviour
 {
+    [SerializeField] private bool startGeneratingOnPlay;
     [SerializeField] private UIManager uIManager;
     [SerializeField] private PlayerMovement player;
     [SerializeField] private List<GameObject> enemyPrefabs;
@@ -56,7 +57,8 @@ public class MapGenerator : MonoBehaviour
         validMap = false;
         LayerCount = 0;
 
-        coroutinesQueue.Add(StartCoroutine(Begin()));
+        if(startGeneratingOnPlay)
+            coroutinesQueue.Add(StartCoroutine(Begin()));
     }
 
     /// <summary>

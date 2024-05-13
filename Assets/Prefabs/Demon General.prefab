@@ -292,10 +292,7 @@ Transform:
   m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5866048248339434557}
-  - {fileID: 4860747120684010080}
-  - {fileID: 3566172806354018016}
-  - {fileID: 6867908159251149784}
+  - {fileID: 2032962205451004112}
   m_Father: {fileID: 2899546889627600759}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1695092207595037777
@@ -902,6 +899,41 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3438339020017671371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2032962205451004112}
+  m_Layer: 0
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2032962205451004112
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438339020017671371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5866048248339434557}
+  - {fileID: 4860747120684010080}
+  - {fileID: 3566172806354018016}
+  - {fileID: 6867908159251149784}
+  m_Father: {fileID: 2480425503494896351}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3609081493077811070
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,7 +1607,7 @@ Transform:
   m_GameObject: {fileID: 5357570374390297964}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5416665, z: 0}
+  m_LocalPosition: {x: 0, y: -0.658333, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1585,7 +1617,7 @@ Transform:
   - {fileID: 5052756812088426133}
   - {fileID: 3834352882290789995}
   - {fileID: 2943512174783639258}
-  m_Father: {fileID: 2480425503494896351}
+  m_Father: {fileID: 2032962205451004112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5378643968070848191
 GameObject:
@@ -1614,11 +1646,11 @@ Transform:
   m_GameObject: {fileID: 5378643968070848191}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.1, z: 0.03}
-  m_LocalScale: {x: 0.5, y: 0.15, z: 0.55}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0.030000001}
+  m_LocalScale: {x: 0.49999997, y: 0.14999999, z: 0.54999995}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2480425503494896351}
+  m_Father: {fileID: 2032962205451004112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3574348470030179972
 MeshFilter:
@@ -2563,13 +2595,13 @@ Transform:
   m_GameObject: {fileID: 6489223788450660641}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.8749995, z: -0.19166663}
-  m_LocalScale: {x: 0.83333325, y: 0.83333325, z: 0.83333325}
+  m_LocalPosition: {x: 0, y: -0.325, z: -0.19166662}
+  m_LocalScale: {x: 0.8333332, y: 0.8333332, z: 0.8333332}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6378764736236446016}
   - {fileID: 6267266348324869025}
-  m_Father: {fileID: 2480425503494896351}
+  m_Father: {fileID: 2032962205451004112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6987165039095878417
 GameObject:
@@ -2833,11 +2865,11 @@ Transform:
   m_GameObject: {fileID: 7635439698923529301}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.25, z: 0}
-  m_LocalScale: {x: 0.49, y: 0.2, z: 0.49}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalScale: {x: 0.49, y: 0.19999999, z: 0.49}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2480425503494896351}
+  m_Father: {fileID: 2032962205451004112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7082837748104702327
 MeshFilter:
