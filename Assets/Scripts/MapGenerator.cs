@@ -58,16 +58,20 @@ public class MapGenerator : MonoBehaviour
         LayerCount = 0;
 
         if(startGeneratingOnPlay)
-            coroutinesQueue.Add(StartCoroutine(Begin()));
+        {
+            StartCoroutine(Begin());
+        }
     }
 
     /// <summary>
-    /// Initial coroutine to wait for the project to load before generating the map.
+    /// Initial coroutine to wait for the project to load before generating the
+    /// map, then creates the first Safe Room.
     /// </summary>
     /// <returns></returns>
     private IEnumerator Begin()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(0.001f);
+        CreateSafeRoom();
     }
 
     /// <summary>
@@ -372,7 +376,7 @@ public class MapGenerator : MonoBehaviour
             if (createSafeRoom)
                 CreateSafeRoom();
 
-            else if (LayerCount >= 3)
+            else if (LayerCount > 3)
                 CreateBossRoom();
 
             else
