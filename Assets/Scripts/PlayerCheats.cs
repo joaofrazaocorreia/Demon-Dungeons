@@ -53,7 +53,7 @@ public class PlayerCheats : MonoBehaviour
             
             playerHealth.ToggleGodmode();
 
-            playerStats.DamageMultiplier = 2.0f;
+            playerStats.DamageMultiplier = 100.0f;
         }
     }
 }

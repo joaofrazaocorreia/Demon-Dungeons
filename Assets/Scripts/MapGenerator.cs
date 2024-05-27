@@ -13,13 +13,16 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private bool startGeneratingOnPlay;
     [SerializeField] private UIManager uIManager;
     [SerializeField] private PlayerMovement player;
-    [SerializeField] private List<GameObject> enemyPrefabs;
+    [SerializeField] private List<GameObject> layer1EnemyPrefabs;
+    [SerializeField] private List<GameObject> layer2EnemyPrefabs;
+    [SerializeField] private List<GameObject> layer3EnemyPrefabs;
     [SerializeField] private GameObject bossPrefab;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
     [SerializeField] private Transform enemies;
     [SerializeField] private Transform waypoints;
     [SerializeField] private Transform boss;
+    [SerializeField] private int seed = 0;
     [SerializeField] private float generationIntervals = 0.01f;
     [SerializeField] private float minStartingMapSize = 35f;
     [SerializeField] private float minTilesToSpawnEnding = 50f;
@@ -56,6 +59,9 @@ public class MapGenerator : MonoBehaviour
         hasEnding = false;
         validMap = false;
         LayerCount = 0;
+
+        if (seed != 0)
+            Random.InitState(seed);
 
         if(startGeneratingOnPlay)
         {
@@ -449,7 +455,23 @@ public class MapGenerator : MonoBehaviour
             // Instantiates the enemy.
             if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
             {
-                GameObject newEnemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                GameObject newEnemy;
+                switch(LayerCount)
+                {
+                    case 1:
+                        newEnemy = Instantiate(layer1EnemyPrefabs[Random.Range(0, layer1EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                        break;
+                    case 2:
+                        newEnemy = Instantiate(layer2EnemyPrefabs[Random.Range(0, layer2EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                        break;
+                    case 3:
+                        newEnemy = Instantiate(layer3EnemyPrefabs[Random.Range(0, layer3EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                        break;
+                    default:
+                        newEnemy = Instantiate(layer1EnemyPrefabs[Random.Range(0, layer1EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+                        break;
+                }
+
                 newEnemy.transform.parent = enemies;
                 newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
                 newEnemy.name = "Enemy " + enemies.childCount;
