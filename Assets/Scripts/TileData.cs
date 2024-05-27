@@ -13,7 +13,8 @@ public class TileData : ScriptableObject
     public int                  numberID;
     
     /* ID:
-        1 - 100 : regular tiles
+        1 - 50 : regular (corridor) tiles
+        51 - 100 : regular (room) tiles
         101 - 150 : walls
         151 - 160 : starting tiles
         161 - 170 : enemy gates

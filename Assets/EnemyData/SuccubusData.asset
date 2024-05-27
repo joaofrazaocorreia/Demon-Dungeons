@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5e9bc8b69c20a94a8260084f4c420ca, type: 3}
-  m_Name: EnemyData
+  m_Name: SuccubusData
   m_EditorClassIdentifier: 
-  maxHealth: 30
-  maxIdleTime: 10
-  sensingRange: 15
-  alertRange: 35
-  detectionRange: 50
-  detectionAngle: 70
-  attackRange: 2
-  attackDamage: 10
-  attackCooldown: 0.5
-  hitStunCooldown: 1
+  maxHealth: 65
+  maxIdleTime: 14
+  sensingRange: 20
+  alertRange: 60
+  detectionRange: 75
+  detectionAngle: 90
+  attackRange: 5
+  attackDamage: 20
+  attackCooldown: 2
+  hitStunCooldown: 1.5
   walkSpeed: 5
-  runSpeed: 15
+  runSpeed: 10

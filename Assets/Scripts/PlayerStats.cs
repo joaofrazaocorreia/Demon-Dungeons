@@ -93,7 +93,7 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     private void UpdateBaseAttack()
     {
-        if(_baseAttack && BaseAttackCooldown - _baseAttackCooldownTimer >= BaseAttackComboDelay)
+        if(_baseAttack && BaseAttackCooldown - _baseAttackCooldownTimer >= BaseAttackComboDelay && _playerHealth.Health > 0)
         {
             _baseAttack = false;
 
@@ -110,7 +110,7 @@ public class PlayerStats : MonoBehaviour
             else _baseAttackNum++;
         }
 
-        if(_baseAttackCooldownTimer > 0)
+        if(_baseAttackCooldownTimer > 0 && _playerHealth.Health > 0)
         {
             if (_baseAttackCooldownTimer + BaseAttackComboTimeLimit < BaseAttackCooldown  && _baseAttackNum != 1)
             {
