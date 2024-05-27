@@ -35,6 +35,10 @@ public class PlayerHealth : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
+        if (Health == 0 && _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name != "die")
+            _animator.SetTrigger("Die");
+        
+        
         if (_invulnerable && _invulnerabilityTimer <= 0f)
         {
             _invulnerable = false;
@@ -77,6 +81,9 @@ public class PlayerHealth : MonoBehaviour
     /// <param name="amount">The amount to damage.</param>
     public void Damage(float amount)
     {
+        if (Health == 0 && _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name != "die")
+            _animator.SetTrigger("Die");
+        
         if (_invulnerable || Health <= 0 || _godmode)
             return;
         
@@ -85,9 +92,9 @@ public class PlayerHealth : MonoBehaviour
         UpdateUI();
 
         if (Health == 0)
-            _animator.SetTrigger("Die");
-            
-        else 
+             _animator.SetTrigger("Die");
+
+        else if(amount / DefenseMultiplier > 0)
             _animator.SetTrigger("Hurt");
     }
 

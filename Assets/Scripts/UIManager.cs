@@ -24,14 +24,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Color _bossHealthFillDefaultColor;
     [SerializeField] private Color _bossHealthFillVulnerableColor;
 
+    private bool loading;
+
     private float _staminaFillSize;
 
-    /// <summary>
-    /// Sets the stamina bar size.
-    /// </summary>
     private void Awake()
     {
         _staminaFillSize = _staminaFill.rect.height;
+        loading = false;
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public class UIManager : MonoBehaviour
 
         while(screen.color.a > 0)
         {
-            float alpha = Mathf.Max(screen.color.a - Time.deltaTime * 2.5f, 0f);
+            float alpha = Mathf.Max(screen.color.a - Time.fixedDeltaTime * 2.5f, 0f);
 
             screen.color = new Color(screen.color.r, screen.color.g, screen.color.b, alpha);
             yield return new WaitForSeconds(0.01f);
@@ -155,7 +155,7 @@ public class UIManager : MonoBehaviour
 
         while(screen.color.a < 1)
         {
-            float alpha = Mathf.Min(screen.color.a + Time.deltaTime * 5f, 1f);
+            float alpha = Mathf.Min(screen.color.a + Time.fixedDeltaTime * 5f, 1f);
 
             screen.color = new Color(screen.color.r, screen.color.g, screen.color.b, alpha);
             yield return new WaitForSeconds(0.01f);
@@ -168,6 +168,7 @@ public class UIManager : MonoBehaviour
     /// <returns></returns>
     public IEnumerator LoadingScreenText()
     {
+        loading = true;
         int numOfDots = 0;
         while(_loadingText.transform.parent.gameObject.activeSelf)
         {
@@ -183,6 +184,8 @@ public class UIManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
         }
+
+        loading = false;
     }
 
     /// <summary>
@@ -190,10 +193,10 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void FadeInLoadingScreen()
     {
-        if(_loadingText.transform.parent.gameObject.activeSelf)
-            StartCoroutine(LoadingScreenText());
-
         StartCoroutine(FadeInScreen(_loadingScreen));
+
+        if(_loadingText.transform.parent.gameObject.activeSelf && !loading)
+            StartCoroutine(LoadingScreenText());
     }
 
     /// <summary>
