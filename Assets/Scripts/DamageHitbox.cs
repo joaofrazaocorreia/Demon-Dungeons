@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class DamageHitbox : MonoBehaviour
 {
-    [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private PlayerAttacks playerAttacks;
     [HideInInspector] public List<Enemy> enemiesHit;
     [HideInInspector] public bool hitBoss;
 
@@ -31,8 +31,8 @@ public class DamageHitbox : MonoBehaviour
         // Stores enemies hit in a list after damaging them
         if (enemy != null && enemy.Health > 0 && !enemiesHit.Contains(enemy))
         {
-            enemy.Damage(playerStats.BaseAttackDamage);
-            Debug.Log($"hit {enemy.name} for {playerStats.BaseAttackDamage} damage, {enemy.Health} HP");
+            enemy.Damage(playerAttacks.BaseAttackDamage);
+            Debug.Log($"hit {enemy.name} for {playerAttacks.BaseAttackDamage} damage, {enemy.Health} HP");
 
             enemiesHit.Add(enemy);
         }
@@ -40,8 +40,8 @@ public class DamageHitbox : MonoBehaviour
         // Notes that the boss was hit after damaging them
         else if (boss != null && boss.Health > 0 && !hitBoss)
         {
-            boss.Damage(playerStats.BaseAttackDamage);
-            Debug.Log($"hit {boss.name} for {playerStats.BaseAttackDamage} damage, {boss.Health} HP");
+            boss.Damage(playerAttacks.BaseAttackDamage);
+            Debug.Log($"hit {boss.name} for {playerAttacks.BaseAttackDamage} damage, {boss.Health} HP");
 
             hitBoss = true;
         }

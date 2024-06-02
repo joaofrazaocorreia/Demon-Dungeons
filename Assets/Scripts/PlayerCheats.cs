@@ -9,7 +9,7 @@ public class PlayerCheats : MonoBehaviour
 {
     public PlayerMovement playerMovement;
     public PlayerHealth playerHealth;
-    public PlayerStats playerStats;
+    public PlayerAttacks playerAttacks;
     public MapGenerator mapGenerator;
 
 
@@ -53,7 +53,7 @@ public class PlayerCheats : MonoBehaviour
             
             playerHealth.ToggleGodmode();
 
-            playerStats.DamageMultiplier = 100.0f;
+            playerAttacks.DamageMultiplier = 100.0f;
         }
     }
 }

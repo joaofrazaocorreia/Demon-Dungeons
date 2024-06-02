@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private UIManager    _uiManager;
     [SerializeField] private PlayerHealth _playerHealth;
-    [SerializeField] private PlayerStats  _playerStats;
+    [SerializeField] private PlayerAttacks  _playerAttacks;
     [SerializeField] private Animator     _animator;
 
     [SerializeField] private float  _forwardAcceleration;

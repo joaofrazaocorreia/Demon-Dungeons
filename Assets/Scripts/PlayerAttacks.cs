@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Class that defines the player's Attacks and respective stats.
 /// </summary>
-public class PlayerStats : MonoBehaviour
+public class PlayerAttacks : MonoBehaviour
 {
     [SerializeField] private UIManager      _uiManager;
     [SerializeField] private PlayerHealth   _playerHealth;
