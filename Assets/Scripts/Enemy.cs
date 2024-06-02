@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private EnemyData enemyData;
-    [SerializeField] private GameObject essenceDrop;
 
     private enum State { Idle, Patrolling, Chasing, Attacking, Hurting, Dead };
     public PlayerHealth playerHealth;
@@ -150,7 +149,7 @@ public class Enemy : MonoBehaviour
         if(Random.Range(0f, 100f) <= enemyData.dropRate)
         {
             GameObject newDrop = Instantiate(enemyData.drop, transform.position, Quaternion.identity);
-            newDrop.GetComponent<EssenceDrop>().Value = 15;
+            newDrop.GetComponent<EssenceDrop>().Value = Random.Range(enemyData.minDropValue, enemyData.maxDropValue + 1);
         }
     }
 

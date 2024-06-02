@@ -17,10 +17,12 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private List<GameObject> layer2EnemyPrefabs;
     [SerializeField] private List<GameObject> layer3EnemyPrefabs;
     [SerializeField] private GameObject bossPrefab;
+    [SerializeField] private List<GameObject> breakablesPrefabs;
     [SerializeField] private List<Tile> tiles;
     [SerializeField] private Transform map;
     [SerializeField] private Transform enemies;
     [SerializeField] private Transform waypoints;
+    [SerializeField] private Transform breakables;
     [SerializeField] private Transform boss;
     [SerializeField] private int seed = 0;
     [SerializeField] private float generationIntervals = 0.01f;
@@ -29,7 +31,8 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float minTilesToCloseMap = 60f;
     [SerializeField] private float minDistanceToEnding = 100f;
     [SerializeField] private float minTotalTiles = 80f;
-    [SerializeField] private float enemyCount = 30f;
+    [SerializeField] private float enemyCount = 50f;
+    [SerializeField] private float breakableCount = 30f;
     [SerializeField] private float layerIncrements = 5f;
 
     private Vector3 startingCoords;
@@ -61,7 +64,10 @@ public class MapGenerator : MonoBehaviour
         LayerCount = 0;
 
         if (seed != 0)
+        {
             Random.InitState(seed);
+            Debug.Log("seed init");
+        }
 
         if(startGeneratingOnPlay)
         {
@@ -134,6 +140,7 @@ public class MapGenerator : MonoBehaviour
                     validMap = true;
                     GetComponent<NavMeshSurface>().BuildNavMesh();
                     StartGeneratingEnemies();
+                    StartGeneratingBreakables();
 
                     player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
                     Debug.Log($"Finished map with {map.childCount} tiles");
@@ -478,6 +485,69 @@ public class MapGenerator : MonoBehaviour
 
                 foreach(Transform t in enemies)
                     t.GetComponent<Enemy>().waypoints.Add(newWaypoint.transform);
+            }
+        
+            Destroy(chosenSpot.gameObject);
+            
+            yield return new WaitForSeconds(generationIntervals);
+        }
+
+        coroutinesQueue = new List<Coroutine>();
+    }
+
+    /// <summary>
+    /// Starts generating Breakables on the map.
+    /// </summary>
+    private void StartGeneratingBreakables()
+    {
+        StartCoroutine(SpawnBreakables());
+    }
+
+    /// <summary>
+    /// Coroutine to generate the breakables procedurally.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SpawnBreakables()
+    {
+        List<Transform> tilesWithBreakables = new List<Transform>();
+
+        // Filters which tiles can spawn enemies.
+        for(int i = 0; i < map.childCount; i++)
+        {
+            if(map.GetChild(i).GetComponent<Tile>().TileData.spawnsBreakables)
+                tilesWithBreakables.Add(map.GetChild(i));
+        }
+
+        while(breakables.childCount < breakableCount + (LayerCount * layerIncrements) && tilesWithBreakables.Count > 0)
+        {
+            // Choses the spot to spawn the enemy.
+            Transform chosenSpot;
+            Transform chosenTile = tilesWithBreakables[Random.Range(0, tilesWithBreakables.Count)].Find("BreakableSpawns");
+
+            if(chosenTile.childCount > 0)
+                chosenSpot = chosenTile.GetChild(Random.Range(0, chosenTile.childCount));
+            
+            else
+            {
+                tilesWithBreakables.Remove(chosenTile.parent);
+            
+                yield return new WaitForSeconds(generationIntervals);
+                continue;
+            }
+
+            NavMeshHit closestHit;
+            yield return new WaitForSeconds(generationIntervals);
+
+            // Instantiates the enemy.
+            if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
+            {
+                GameObject newBreakable;
+                newBreakable = Instantiate(breakablesPrefabs[Random.Range(0, breakablesPrefabs.Count)], position:closestHit.position, Quaternion.identity);
+
+                newBreakable.transform.parent = breakables;
+                newBreakable.GetComponent<Breakable>().dropMinValue = 5;
+                newBreakable.GetComponent<Breakable>().dropMaxValue = 25;
+                newBreakable.name = "Breakable " + breakables.childCount;
             }
         
             Destroy(chosenSpot.gameObject);

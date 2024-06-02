@@ -20,4 +20,6 @@ public class EnemyData : ScriptableObject
     public float runSpeed;
     public GameObject drop;
     public float dropRate;
+    public int minDropValue;
+    public int maxDropValue;
 }
