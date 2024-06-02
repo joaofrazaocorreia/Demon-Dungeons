@@ -24,3 +24,5 @@ MonoBehaviour:
   hitStunCooldown: 0.5
   walkSpeed: 7
   runSpeed: 20
+  drop: {fileID: 7635769434869574168, guid: 113ceeaf050b85e449592f9bc47589a4, type: 3}
+  dropRate: 30

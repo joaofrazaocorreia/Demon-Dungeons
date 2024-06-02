@@ -10,6 +10,7 @@ public class TileData : ScriptableObject
 
     public Type                 type;
     public bool                 spawnsEnemies;
+    public bool                 spawnsBreakables;
     public int                  numberID;
     
     /* ID:

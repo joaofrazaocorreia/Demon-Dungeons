@@ -9,7 +9,8 @@ public class PlayerCheats : MonoBehaviour
 {
     public PlayerMovement playerMovement;
     public PlayerHealth playerHealth;
-    public PlayerStats playerStats;
+    public PlayerAttacks playerAttacks;
+    public PlayerCurrency playerCurrency;
     public MapGenerator mapGenerator;
 
 
@@ -53,7 +54,22 @@ public class PlayerCheats : MonoBehaviour
             
             playerHealth.ToggleGodmode();
 
-            playerStats.DamageMultiplier = 100.0f;
+            playerAttacks.DamageMultiplier = 100.0f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            playerCurrency.Essence += 10;
+        }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            playerCurrency.Essence -= 10;
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            playerHealth.Lives++;
         }
     }
 }

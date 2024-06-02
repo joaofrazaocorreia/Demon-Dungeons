@@ -7,13 +7,26 @@ using UnityEngine.SceneManagement;
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private UIManager  _uiManager;
-    [SerializeField] private float      _maxHealth;
+    [SerializeField] private int        _startingLives = 3;
+    [SerializeField] private float      _maxHealth = 100f;
     [SerializeField] private Animator   _animator;
 
     public float DefenseMultiplier { get; set; }
     public float HealthRegenMultiplier { get; set; }
+    public int Lives
+    {
+        get => _lives;
+        
+        set
+        { 
+            _lives = Mathf.Clamp(value, 0, 99);
+            UpdateUI();
+        }  
+    }
+
     public float Health { get => _health; set{ _health = Mathf.Clamp(value, 0f, _maxHealth); } }
 
+    private int _lives;
     private float _health;
     private bool _invulnerable;
     
@@ -22,6 +35,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
+        _lives = _startingLives;
         Health = _maxHealth;
         DefenseMultiplier = 1.0f;
         HealthRegenMultiplier = 1.0f;
@@ -57,6 +71,7 @@ public class PlayerHealth : MonoBehaviour
     {
         _uiManager.SetHealthFill(Health / _maxHealth);
         _uiManager.SetHealthColor(Health, _maxHealth * 0.25f, _invulnerable || _godmode);
+        _uiManager.SetLivesText(Lives);
     }
 
     /// <summary>
@@ -103,7 +118,11 @@ public class PlayerHealth : MonoBehaviour
     /// </summary>
     public void Respawn()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if(--Lives > 0)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        
+        else
+            SceneManager.LoadScene(0);
     }
 
     /// <summary>
