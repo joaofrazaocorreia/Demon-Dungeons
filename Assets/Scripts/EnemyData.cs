@@ -18,4 +18,6 @@ public class EnemyData : ScriptableObject
     public float hitStunCooldown;
     public float walkSpeed;
     public float runSpeed;
+    public GameObject drop;
+    public float dropRate;
 }

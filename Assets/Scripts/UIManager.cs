@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _healthBG;
     [SerializeField] private RectTransform _staminaFill;
     [SerializeField] private RectTransform _staminaBG;
+    [SerializeField] private TextMeshProUGUI _livesCount;
+    [SerializeField] private TextMeshProUGUI _essenceCount;
     [SerializeField] private Color _staminaFillDefaultColor;
     [SerializeField] private Color _staminaFillStaggerColor;
     [SerializeField] private Color _healthFillDefaultColor;
@@ -85,6 +87,16 @@ public class UIManager : MonoBehaviour
 
         _healthFill.transform.GetComponent<RawImage>().color = color;
         _healthBG.transform.GetComponent<RawImage>().color = color * 0.75f;
+    }
+
+    public void SetLivesText(int lives)
+    {
+        _livesCount.text = $"x {lives}";
+    }
+
+    public void SetEssenceText(int essence)
+    {
+        _essenceCount.text = $"{essence}";
     }
 
     /// <summary>
