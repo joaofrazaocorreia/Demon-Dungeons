@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     private enum State { Idle, Patrolling, Chasing, Attacking, Hurting, Dead };
     public PlayerHealth playerHealth;
+    public MapGenerator mapGenerator;
     public List<Transform> waypoints;
 
     private NavMeshAgent navMeshAgent;
@@ -117,6 +118,8 @@ public class Enemy : MonoBehaviour
     {
         if (Vector3.Distance(playerHealth.transform.position, transform.position) <= enemyData.attackRange)
             playerHealth.Damage(enemyData.attackDamage);
+
+        Debug.Log(gameObject.name + " " + transform.position);
     }
 
     /// <summary>
@@ -139,6 +142,11 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
+        if (mapGenerator.CurrentGateTile.GetComponent<EnemyGate>() != null)
+        {
+            mapGenerator.CurrentGateTile.GetComponent<EnemyGate>().QueueEnemyForRespawn(playerHealth, mapGenerator, waypoints);
+        }
+
         state = State.Dead;
 
         navMeshAgent.isStopped = true;
@@ -307,7 +315,7 @@ public class Enemy : MonoBehaviour
     /// Alerts itself and all nearby enemies to start chasing and attacking
     /// the player when it sees him.
     /// </summary>
-    private void BecomeAlerted()
+    public void BecomeAlerted()
     {
         sawPlayer = true;
 

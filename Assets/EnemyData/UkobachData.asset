@@ -26,3 +26,5 @@ MonoBehaviour:
   runSpeed: 15
   drop: {fileID: 7635769434869574168, guid: 113ceeaf050b85e449592f9bc47589a4, type: 3}
   dropRate: 30
+  minDropValue: 1
+  maxDropValue: 15

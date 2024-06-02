@@ -43,10 +43,14 @@ public class MapGenerator : MonoBehaviour
     private float coroutinesQueueDeadTimer;
     private Tile currentStartingTile;
     private Tile currentEndingTile;
+    private Tile currentGateTile;
+    private List<GameObject> currentEnemies;
 
     public Tile CurrentStartingTile { get => currentStartingTile; }
     public Tile CurrentEndingTile { get => currentEndingTile; }
+    public Tile CurrentGateTile { get => currentGateTile; }
     public int LayerCount { get; set; }
+    public List<GameObject> CurrentEnemies { get => currentEnemies; }
 
     private void Awake()
     {
@@ -56,6 +60,8 @@ public class MapGenerator : MonoBehaviour
 
         coroutinesQueue = new List<Coroutine>();
         coroutinesQueueDeadTimer = 0f;
+
+        currentEnemies = new List<GameObject>();
 
         startingCoords = new Vector3(100f, 50f, 100f);
         hasEnemyGate = false;
@@ -165,6 +171,33 @@ public class MapGenerator : MonoBehaviour
         Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)],
             parent: map, position: startingCoords, rotation: Quaternion.identity);
         currentStartingTile = start;
+
+        switch(LayerCount)
+                {
+                    case 1:
+                        foreach(GameObject go in layer1EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+
+                    case 2:
+                        foreach(GameObject go in layer2EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+
+                    case 3:
+                        foreach(GameObject go in layer3EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+
+                    default:
+                        foreach(GameObject go in layer1EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        foreach(GameObject go in layer2EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        foreach(GameObject go in layer3EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+                }
 
         player.MoveTo(new Vector3(0, 20, 0));
 
@@ -326,6 +359,7 @@ public class MapGenerator : MonoBehaviour
                 if (newTile.TileData.type == TileData.Type.EnemyGate)
                 {
                     hasEnemyGate = true;
+                    currentGateTile = newTile;
                 }
 
                 if (newTile.TileData.type == TileData.Type.End)
@@ -389,7 +423,7 @@ public class MapGenerator : MonoBehaviour
             if (createSafeRoom)
                 CreateSafeRoom();
 
-            else if (LayerCount > 3)
+            else if (LayerCount % 3 == 0)
                 CreateBossRoom();
 
             else
@@ -462,25 +496,11 @@ public class MapGenerator : MonoBehaviour
             // Instantiates the enemy.
             if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
             {
-                GameObject newEnemy;
-                switch(LayerCount)
-                {
-                    case 1:
-                        newEnemy = Instantiate(layer1EnemyPrefabs[Random.Range(0, layer1EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                    case 2:
-                        newEnemy = Instantiate(layer2EnemyPrefabs[Random.Range(0, layer2EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                    case 3:
-                        newEnemy = Instantiate(layer3EnemyPrefabs[Random.Range(0, layer3EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                    default:
-                        newEnemy = Instantiate(layer1EnemyPrefabs[Random.Range(0, layer1EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                }
+                GameObject newEnemy = Instantiate(currentEnemies[Random.Range(0, currentEnemies.Count)], position:closestHit.position, Quaternion.identity);
 
                 newEnemy.transform.parent = enemies;
                 newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
+                newEnemy.GetComponent<Enemy>().mapGenerator = this;
                 newEnemy.name = "Enemy " + enemies.childCount;
 
                 foreach(Transform t in enemies)
