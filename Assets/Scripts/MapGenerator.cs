@@ -23,6 +23,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private Transform enemies;
     [SerializeField] private Transform waypoints;
     [SerializeField] private Transform breakables;
+    [SerializeField] public Transform drops;
     [SerializeField] private Transform boss;
     [SerializeField] private int seed = 0;
     [SerializeField] private float generationIntervals = 0.01f;
@@ -32,9 +33,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float minDistanceToEnding = 100f;
     [SerializeField] private float minTotalTiles = 80f;
     [SerializeField] private float enemyCount = 50f;
+    [SerializeField] private float enemyLimit = 250f;
     [SerializeField] private float breakableCount = 30f;
     [SerializeField] private float layerIncrements = 5f;
-
+    
     private Vector3 startingCoords;
     private bool hasEnemyGate;
     private bool hasEnding;
@@ -51,6 +53,7 @@ public class MapGenerator : MonoBehaviour
     public Tile CurrentGateTile { get => currentGateTile; }
     public int LayerCount { get; set; }
     public List<GameObject> CurrentEnemies { get => currentEnemies; }
+    public float EnemyLimit { get => enemyLimit; }
 
     private void Awake()
     {
@@ -402,6 +405,8 @@ public class MapGenerator : MonoBehaviour
         // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
         coroutinesQueue = new List<Coroutine>();
         StartCoroutine(DeleteEnemies());
+        StartCoroutine(DeleteBreakables());
+        StartCoroutine(DeleteDrops());
 
         Debug.Log($"Deleting map ({map.childCount} tiles)");
         while(map.childCount > 0)
@@ -468,7 +473,7 @@ public class MapGenerator : MonoBehaviour
                 tilesWithEnemies.Add(map.GetChild(i));
         }
 
-        while(enemies.childCount < enemyCount + (LayerCount * layerIncrements) && tilesWithEnemies.Count > 0)
+        while(enemies.childCount < Mathf.Min(enemyCount + (LayerCount * layerIncrements), enemyLimit) && tilesWithEnemies.Count > 0)
         {
             // Choses the spot to spawn the enemy.
             Transform chosenSpot;
@@ -513,6 +518,26 @@ public class MapGenerator : MonoBehaviour
         }
 
         coroutinesQueue = new List<Coroutine>();
+    }
+
+    private IEnumerator DeleteDrops()
+    {
+        Debug.Log($"Deleting drops ({drops.childCount} entities)");
+        while(drops.childCount > 0)
+        {
+            Destroy(drops.GetChild(0).gameObject);
+            yield return new WaitForSeconds(0.001f);
+        }
+    }
+    
+    private IEnumerator DeleteBreakables()
+    {
+        Debug.Log($"Deleting breakables ({breakables.childCount} entities)");
+        while(breakables.childCount > 0)
+        {
+            Destroy(breakables.GetChild(0).gameObject);
+            yield return new WaitForSeconds(0.001f);
+        }
     }
 
     /// <summary>
@@ -565,8 +590,12 @@ public class MapGenerator : MonoBehaviour
                 newBreakable = Instantiate(breakablesPrefabs[Random.Range(0, breakablesPrefabs.Count)], position:closestHit.position, Quaternion.identity);
 
                 newBreakable.transform.parent = breakables;
-                newBreakable.GetComponent<Breakable>().dropMinValue = 5;
-                newBreakable.GetComponent<Breakable>().dropMaxValue = 25;
+                newBreakable.GetComponent<Breakable>().minValue = 10;
+                newBreakable.GetComponent<Breakable>().maxValue = 25;
+                newBreakable.GetComponent<Breakable>().minHealth = 10;
+                newBreakable.GetComponent<Breakable>().maxHealth = 40;
+                newBreakable.GetComponent<Breakable>().livesAmount = 1;
+                newBreakable.GetComponent<Breakable>().drops = drops;
                 newBreakable.name = "Breakable " + breakables.childCount;
             }
         

@@ -118,8 +118,6 @@ public class Enemy : MonoBehaviour
     {
         if (Vector3.Distance(playerHealth.transform.position, transform.position) <= enemyData.attackRange)
             playerHealth.Damage(enemyData.attackDamage);
-
-        Debug.Log(gameObject.name + " " + transform.position);
     }
 
     /// <summary>
@@ -154,11 +152,33 @@ public class Enemy : MonoBehaviour
 
         animator.SetTrigger("Die");
 
-        if(Random.Range(0f, 100f) <= enemyData.dropRate)
+        Vector3 displacement;
+
+        if(Random.Range(0f, 100f) <= enemyData.healthDropRate)
         {
-            GameObject newDrop = Instantiate(enemyData.drop, transform.position, Quaternion.identity);
-            newDrop.GetComponent<EssenceDrop>().Value = Random.Range(enemyData.minDropValue, enemyData.maxDropValue + 1);
+            displacement = new Vector3(Random.Range(-0.5f, 0.5f), 0, Random.Range(-0.5f, 0.5f));
+
+            GameObject newDrop = Instantiate(enemyData.healthDrop, transform.position + displacement, Quaternion.identity);
+            newDrop.GetComponent<HealthDrop>().Amount = Random.Range(enemyData.minDropHealth, enemyData.maxDropHealth + 1);
+            newDrop.transform.parent = mapGenerator.drops;
         }
+
+        else if(Random.Range(0f, 100f) <= enemyData.essenceDropRate)
+        {
+            displacement = new Vector3(Random.Range(-0.5f, 0.5f), 0, Random.Range(-0.5f, 0.5f));
+
+            GameObject newDrop = Instantiate(enemyData.essenceDrop, transform.position + displacement, Quaternion.identity);
+            newDrop.GetComponent<EssenceDrop>().Value = Random.Range(enemyData.minDropValue, enemyData.maxDropValue + 1);
+            newDrop.transform.parent = mapGenerator.drops;
+        }
+    }
+
+    /// <summary>
+    /// Destroys this enemy's gameObject (called by animator).
+    /// </summary>
+    private void DestroyAfterDeath()
+    {
+        Destroy(gameObject);
     }
 
     /// <summary>

@@ -24,7 +24,11 @@ MonoBehaviour:
   hitStunCooldown: 1
   walkSpeed: 5
   runSpeed: 15
-  drop: {fileID: 7635769434869574168, guid: 113ceeaf050b85e449592f9bc47589a4, type: 3}
-  dropRate: 30
+  essenceDrop: {fileID: 7635769434869574168, guid: 113ceeaf050b85e449592f9bc47589a4, type: 3}
+  essenceDropRate: 60
   minDropValue: 1
-  maxDropValue: 15
+  maxDropValue: 10
+  healthDrop: {fileID: 894858358205469445, guid: bba53813be16a1a42815311cecd0e987, type: 3}
+  healthDropRate: 20
+  minDropHealth: 20
+  maxDropHealth: 40

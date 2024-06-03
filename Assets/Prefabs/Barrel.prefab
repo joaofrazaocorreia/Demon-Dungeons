@@ -4875,11 +4875,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   essenceDrop: {fileID: 7635769434869574168, guid: 113ceeaf050b85e449592f9bc47589a4, type: 3}
+  healthDrop: {fileID: 894858358205469445, guid: bba53813be16a1a42815311cecd0e987, type: 3}
+  lifeDrop: {fileID: 2110735236132290044, guid: 08eeecdee1c17f64abb9d726c5d75871, type: 3}
   model: {fileID: 8685267369490716141}
   particles: {fileID: 4292954963045068298}
   hasBeenHit: 0
-  dropMinValue: 5
-  dropMaxValue: 25
+  minValue: 10
+  maxValue: 25
+  minHealth: 20
+  maxHealth: 40
+  livesAmount: 1
 --- !u!1 &8685267369490716141
 GameObject:
   m_ObjectHideFlags: 0

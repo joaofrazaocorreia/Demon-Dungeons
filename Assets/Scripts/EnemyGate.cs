@@ -19,15 +19,18 @@ public class EnemyGate : MonoBehaviour
 
     public void QueueEnemyForRespawn(PlayerHealth ph, MapGenerator mg, List<Transform> wp)
     {
-        GameObject newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
-        StartCoroutine(RespawnQueue(newEnemy, ph, mg, wp));
-
-        if(++deadEnemyCounter == extraEnemyRequirement)
+        if (enemies.childCount < mg.EnemyLimit)
         {
-            deadEnemyCounter = 0;
-            newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
-
+            GameObject newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
             StartCoroutine(RespawnQueue(newEnemy, ph, mg, wp));
+
+            if (++deadEnemyCounter == extraEnemyRequirement)
+            {
+                deadEnemyCounter = 0;
+                newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
+
+                StartCoroutine(RespawnQueue(newEnemy, ph, mg, wp));
+            }
         }
     }
 
@@ -51,12 +54,6 @@ public class EnemyGate : MonoBehaviour
 
             
             newEnemy.GetComponent<Enemy>().BecomeAlerted();
-            Debug.Log("Respawned " + newEnemy.name + " at " + newEnemy.transform.position);
         }
-        
-       
-
-        
-        
     }
 }

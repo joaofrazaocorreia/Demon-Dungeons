@@ -18,8 +18,12 @@ public class EnemyData : ScriptableObject
     public float hitStunCooldown;
     public float walkSpeed;
     public float runSpeed;
-    public GameObject drop;
-    public float dropRate;
+    public GameObject essenceDrop;
+    public float essenceDropRate;
     public int minDropValue;
     public int maxDropValue;
+    public GameObject healthDrop;
+    public float healthDropRate;
+    public int minDropHealth;
+    public int maxDropHealth;
 }
