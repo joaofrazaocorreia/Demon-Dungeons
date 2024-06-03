@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EssenceDrop : MonoBehaviour
+public class EssenceDrop : Drop
 {
     private int essenceValue;
     public int Value { get => essenceValue; set{ essenceValue = Mathf.Max(value, 0); }}
+
+    private void Start()
+    {
+        type = Type.Essence;
+    }
 
     private void OnTriggerEnter(Collider other)
     {

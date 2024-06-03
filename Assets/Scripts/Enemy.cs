@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     private enum State { Idle, Patrolling, Chasing, Attacking, Hurting, Dead };
     public PlayerHealth playerHealth;
+    public MapGenerator mapGenerator;
     public List<Transform> waypoints;
 
     private NavMeshAgent navMeshAgent;
@@ -139,6 +140,11 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
+        if (mapGenerator.CurrentGateTile.GetComponent<EnemyGate>() != null)
+        {
+            mapGenerator.CurrentGateTile.GetComponent<EnemyGate>().QueueEnemyForRespawn(playerHealth, mapGenerator, waypoints);
+        }
+
         state = State.Dead;
 
         navMeshAgent.isStopped = true;
@@ -146,11 +152,33 @@ public class Enemy : MonoBehaviour
 
         animator.SetTrigger("Die");
 
-        if(Random.Range(0f, 100f) <= enemyData.dropRate)
+        Vector3 displacement;
+
+        if(Random.Range(0f, 100f) <= enemyData.healthDropRate)
         {
-            GameObject newDrop = Instantiate(enemyData.drop, transform.position, Quaternion.identity);
-            newDrop.GetComponent<EssenceDrop>().Value = Random.Range(enemyData.minDropValue, enemyData.maxDropValue + 1);
+            displacement = new Vector3(Random.Range(-0.5f, 0.5f), 0, Random.Range(-0.5f, 0.5f));
+
+            GameObject newDrop = Instantiate(enemyData.healthDrop, transform.position + displacement, Quaternion.identity);
+            newDrop.GetComponent<HealthDrop>().Amount = Random.Range(enemyData.minDropHealth, enemyData.maxDropHealth + 1);
+            newDrop.transform.parent = mapGenerator.drops;
         }
+
+        else if(Random.Range(0f, 100f) <= enemyData.essenceDropRate)
+        {
+            displacement = new Vector3(Random.Range(-0.5f, 0.5f), 0, Random.Range(-0.5f, 0.5f));
+
+            GameObject newDrop = Instantiate(enemyData.essenceDrop, transform.position + displacement, Quaternion.identity);
+            newDrop.GetComponent<EssenceDrop>().Value = Random.Range(enemyData.minDropValue, enemyData.maxDropValue + 1);
+            newDrop.transform.parent = mapGenerator.drops;
+        }
+    }
+
+    /// <summary>
+    /// Destroys this enemy's gameObject (called by animator).
+    /// </summary>
+    private void DestroyAfterDeath()
+    {
+        Destroy(gameObject);
     }
 
     /// <summary>
@@ -307,7 +335,7 @@ public class Enemy : MonoBehaviour
     /// Alerts itself and all nearby enemies to start chasing and attacking
     /// the player when it sees him.
     /// </summary>
-    private void BecomeAlerted()
+    public void BecomeAlerted()
     {
         sawPlayer = true;
 

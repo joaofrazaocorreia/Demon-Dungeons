@@ -13,6 +13,7 @@ public class PlayerHealth : MonoBehaviour
 
     public float DefenseMultiplier { get; set; }
     public float HealthRegenMultiplier { get; set; }
+    public float MaxHealth { get => _maxHealth; set{ _maxHealth = value; } }
     public int Lives
     {
         get => _lives;
@@ -133,16 +134,6 @@ public class PlayerHealth : MonoBehaviour
     {
         _invulnerable = true;
         _invulnerabilityTimer = durationInSeconds;
-        UpdateUI();
-    }
-
-    /// <summary>
-    /// Sets the max health value.
-    /// </summary>
-    /// <param name="value">The value of the new max hp.</param>
-    public void SetMaxHealth(float value)
-    {
-        _maxHealth = value;
         UpdateUI();
     }
 

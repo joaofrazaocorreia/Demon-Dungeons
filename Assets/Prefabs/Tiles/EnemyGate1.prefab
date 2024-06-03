@@ -437,6 +437,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7157828524143818436}
   - component: {fileID: 8711975075350584509}
+  - component: {fileID: 3043199578926455135}
   m_Layer: 0
   m_Name: EnemyGate1
   m_TagString: Untagged
@@ -461,6 +462,7 @@ Transform:
   - {fileID: 5640472515643700594}
   - {fileID: 1722266090817551623}
   - {fileID: 794108006632805065}
+  - {fileID: 8638800060322683936}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8711975075350584509
@@ -479,6 +481,22 @@ MonoBehaviour:
   exits: {fileID: 5640472515643700594}
   model: {fileID: 3778318017175489523}
   tileCollision: {fileID: 0}
+--- !u!114 &3043199578926455135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731366486619747640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a182a9672b6d5e439e3ecf46799baba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extraEnemyRequirement: 5
+  respawnTime: 10
+  enemies: {fileID: 0}
+  spawnPos: {fileID: 8638800060322683936}
 --- !u!1 &5308322453163722262
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,6 +707,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5424520684581771155
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8638800060322683936}
+  m_Layer: 0
+  m_Name: EnemyRespawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8638800060322683936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5424520684581771155}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -18}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7157828524143818436}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6091272218416456061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,5 +1317,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 5, z: 1}
-  m_Center: {x: 0, y: -2, z: 0}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

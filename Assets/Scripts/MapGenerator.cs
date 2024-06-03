@@ -23,6 +23,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private Transform enemies;
     [SerializeField] private Transform waypoints;
     [SerializeField] private Transform breakables;
+    [SerializeField] public Transform drops;
     [SerializeField] private Transform boss;
     [SerializeField] private int seed = 0;
     [SerializeField] private float generationIntervals = 0.01f;
@@ -32,9 +33,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float minDistanceToEnding = 100f;
     [SerializeField] private float minTotalTiles = 80f;
     [SerializeField] private float enemyCount = 50f;
+    [SerializeField] private float enemyLimit = 250f;
     [SerializeField] private float breakableCount = 30f;
     [SerializeField] private float layerIncrements = 5f;
-
+    
     private Vector3 startingCoords;
     private bool hasEnemyGate;
     private bool hasEnding;
@@ -43,10 +45,15 @@ public class MapGenerator : MonoBehaviour
     private float coroutinesQueueDeadTimer;
     private Tile currentStartingTile;
     private Tile currentEndingTile;
+    private Tile currentGateTile;
+    private List<GameObject> currentEnemies;
 
     public Tile CurrentStartingTile { get => currentStartingTile; }
     public Tile CurrentEndingTile { get => currentEndingTile; }
+    public Tile CurrentGateTile { get => currentGateTile; }
     public int LayerCount { get; set; }
+    public List<GameObject> CurrentEnemies { get => currentEnemies; }
+    public float EnemyLimit { get => enemyLimit; }
 
     private void Awake()
     {
@@ -56,6 +63,8 @@ public class MapGenerator : MonoBehaviour
 
         coroutinesQueue = new List<Coroutine>();
         coroutinesQueueDeadTimer = 0f;
+
+        currentEnemies = new List<GameObject>();
 
         startingCoords = new Vector3(100f, 50f, 100f);
         hasEnemyGate = false;
@@ -165,6 +174,33 @@ public class MapGenerator : MonoBehaviour
         Tile start = Instantiate(startingTiles[Random.Range(0, startingTiles.Count)],
             parent: map, position: startingCoords, rotation: Quaternion.identity);
         currentStartingTile = start;
+
+        switch(LayerCount)
+                {
+                    case 1:
+                        foreach(GameObject go in layer1EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+
+                    case 2:
+                        foreach(GameObject go in layer2EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+
+                    case 3:
+                        foreach(GameObject go in layer3EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+
+                    default:
+                        foreach(GameObject go in layer1EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        foreach(GameObject go in layer2EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        foreach(GameObject go in layer3EnemyPrefabs)
+                            currentEnemies.Add(go);
+                        break;
+                }
 
         player.MoveTo(new Vector3(0, 20, 0));
 
@@ -326,6 +362,7 @@ public class MapGenerator : MonoBehaviour
                 if (newTile.TileData.type == TileData.Type.EnemyGate)
                 {
                     hasEnemyGate = true;
+                    currentGateTile = newTile;
                 }
 
                 if (newTile.TileData.type == TileData.Type.End)
@@ -368,6 +405,8 @@ public class MapGenerator : MonoBehaviour
         // Clear all current instances of tile generation to prevent softlocking the deletion while the map is being made
         coroutinesQueue = new List<Coroutine>();
         StartCoroutine(DeleteEnemies());
+        StartCoroutine(DeleteBreakables());
+        StartCoroutine(DeleteDrops());
 
         Debug.Log($"Deleting map ({map.childCount} tiles)");
         while(map.childCount > 0)
@@ -389,7 +428,7 @@ public class MapGenerator : MonoBehaviour
             if (createSafeRoom)
                 CreateSafeRoom();
 
-            else if (LayerCount > 3)
+            else if (LayerCount % 3 == 0)
                 CreateBossRoom();
 
             else
@@ -434,7 +473,7 @@ public class MapGenerator : MonoBehaviour
                 tilesWithEnemies.Add(map.GetChild(i));
         }
 
-        while(enemies.childCount < enemyCount + (LayerCount * layerIncrements) && tilesWithEnemies.Count > 0)
+        while(enemies.childCount < Mathf.Min(enemyCount + (LayerCount * layerIncrements), enemyLimit) && tilesWithEnemies.Count > 0)
         {
             // Choses the spot to spawn the enemy.
             Transform chosenSpot;
@@ -462,25 +501,11 @@ public class MapGenerator : MonoBehaviour
             // Instantiates the enemy.
             if(NavMesh.SamplePosition(chosenSpot.position + new Vector3(0, 1, 0), out closestHit, 500, 1))
             {
-                GameObject newEnemy;
-                switch(LayerCount)
-                {
-                    case 1:
-                        newEnemy = Instantiate(layer1EnemyPrefabs[Random.Range(0, layer1EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                    case 2:
-                        newEnemy = Instantiate(layer2EnemyPrefabs[Random.Range(0, layer2EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                    case 3:
-                        newEnemy = Instantiate(layer3EnemyPrefabs[Random.Range(0, layer3EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                    default:
-                        newEnemy = Instantiate(layer1EnemyPrefabs[Random.Range(0, layer1EnemyPrefabs.Count)], position:closestHit.position, Quaternion.identity);
-                        break;
-                }
+                GameObject newEnemy = Instantiate(currentEnemies[Random.Range(0, currentEnemies.Count)], position:closestHit.position, Quaternion.identity);
 
                 newEnemy.transform.parent = enemies;
                 newEnemy.GetComponent<Enemy>().playerHealth = player.GetComponent<PlayerHealth>();
+                newEnemy.GetComponent<Enemy>().mapGenerator = this;
                 newEnemy.name = "Enemy " + enemies.childCount;
 
                 foreach(Transform t in enemies)
@@ -493,6 +518,26 @@ public class MapGenerator : MonoBehaviour
         }
 
         coroutinesQueue = new List<Coroutine>();
+    }
+
+    private IEnumerator DeleteDrops()
+    {
+        Debug.Log($"Deleting drops ({drops.childCount} entities)");
+        while(drops.childCount > 0)
+        {
+            Destroy(drops.GetChild(0).gameObject);
+            yield return new WaitForSeconds(0.001f);
+        }
+    }
+    
+    private IEnumerator DeleteBreakables()
+    {
+        Debug.Log($"Deleting breakables ({breakables.childCount} entities)");
+        while(breakables.childCount > 0)
+        {
+            Destroy(breakables.GetChild(0).gameObject);
+            yield return new WaitForSeconds(0.001f);
+        }
     }
 
     /// <summary>
@@ -545,8 +590,12 @@ public class MapGenerator : MonoBehaviour
                 newBreakable = Instantiate(breakablesPrefabs[Random.Range(0, breakablesPrefabs.Count)], position:closestHit.position, Quaternion.identity);
 
                 newBreakable.transform.parent = breakables;
-                newBreakable.GetComponent<Breakable>().dropMinValue = 5;
-                newBreakable.GetComponent<Breakable>().dropMaxValue = 25;
+                newBreakable.GetComponent<Breakable>().minValue = 10;
+                newBreakable.GetComponent<Breakable>().maxValue = 25;
+                newBreakable.GetComponent<Breakable>().minHealth = 10;
+                newBreakable.GetComponent<Breakable>().maxHealth = 40;
+                newBreakable.GetComponent<Breakable>().livesAmount = 1;
+                newBreakable.GetComponent<Breakable>().drops = drops;
                 newBreakable.name = "Breakable " + breakables.childCount;
             }
         
