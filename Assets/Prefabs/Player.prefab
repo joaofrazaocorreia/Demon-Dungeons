@@ -868,6 +868,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4026492081025638106}
+  - component: {fileID: 8298283423762937549}
   - component: {fileID: 4643864463873785192}
   - component: {fileID: 520362707441542734}
   - component: {fileID: 9155410695107720046}
@@ -875,7 +876,6 @@ GameObject:
   - component: {fileID: 2428035177404125411}
   - component: {fileID: 4529615943281360390}
   - component: {fileID: 1712598735336558570}
-  - component: {fileID: 8298283423762937549}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -901,6 +901,24 @@ Transform:
   - {fileID: 6841299591232570490}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8298283423762937549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8668796094697979956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daa73ce335563a541a04e77dcb8a476d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableCheats: 1
+  playerMovement: {fileID: 180806522715282475}
+  playerHealth: {fileID: 9155410695107720046}
+  playerAttacks: {fileID: 520362707441542734}
+  playerCurrency: {fileID: 2428035177404125411}
+  mapGenerator: {fileID: 0}
 --- !u!143 &4643864463873785192
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1060,23 +1078,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 20
   m_CollisionDetection: 0
---- !u!114 &8298283423762937549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8668796094697979956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daa73ce335563a541a04e77dcb8a476d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerMovement: {fileID: 180806522715282475}
-  playerHealth: {fileID: 9155410695107720046}
-  playerAttacks: {fileID: 520362707441542734}
-  playerCurrency: {fileID: 2428035177404125411}
-  mapGenerator: {fileID: 0}
 --- !u!1 &8873750960738321172
 GameObject:
   m_ObjectHideFlags: 0
