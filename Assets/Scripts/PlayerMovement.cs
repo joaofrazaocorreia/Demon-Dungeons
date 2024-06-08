@@ -139,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Roll") && _stamina > _rollStaminaCost && _stamina >= _staggerLimit)
         {
             _roll = true;
+            _animator.ResetTrigger("Hurt");
             _animator.SetTrigger("Roll");
         }
     }
