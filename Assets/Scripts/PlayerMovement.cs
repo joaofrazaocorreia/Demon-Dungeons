@@ -5,10 +5,10 @@ using UnityEngine;
 /// </summary>
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private UIManager    _uiManager;
-    [SerializeField] private PlayerHealth _playerHealth;
-    [SerializeField] private PlayerAttacks  _playerAttacks;
-    [SerializeField] private Animator     _animator;
+    public UIManager                       _uiManager; 
+    [SerializeField] private PlayerHealth  _playerHealth;
+    [SerializeField] private PlayerAttacks _playerAttacks;
+    [SerializeField] private Animator      _animator;
 
     [SerializeField] private float  _forwardAcceleration;
     [SerializeField] private float  _backwardAcceleration;
@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float  _maxStrafeVelocity;
     [SerializeField] private float  _maxFallVelocity;
     [SerializeField] private float  _rotationVelocityFactor;
-    [SerializeField] private float  _maxStamina;
+    [SerializeField] private float  _baseMaxStamina;
     [SerializeField] private float  _staminaRegenRate;
     [SerializeField] private float  _staggerLimit;
     [SerializeField] private float  _staggerCooldown;
@@ -34,8 +34,8 @@ public class PlayerMovement : MonoBehaviour
     public float StaggerRegenMultiplier { get; set; }
     public float StaminaCostMultiplier { get; set; }
     public float SpeedMultiplier { get; set; }
+    public float BaseMaxStamina { get => _baseMaxStamina; }
     public bool Dead { get => _dead; set{ _dead = value; }}
-    
     public bool Attacking { get => _attacking; set{ _attacking = value; }}
     public Animator Animator { get => _animator; }
 
@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _acceleration;
     private Vector3 _velocity;
     private Vector3 _motion;
+    private float   _maxStamina;
     private bool    _dead;
     private bool    _moving;
     private bool    _attacking;
@@ -60,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
         _acceleration    = Vector3.zero;
         _velocity        = Vector3.zero;
         _motion          = Vector3.zero;
+        _maxStamina      = _baseMaxStamina;
         _stamina         = _maxStamina;
         _staggerTimer    = 0;
         _dead            = false;
@@ -81,9 +83,17 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// Locks the cursor on the screen's center.
     /// </summary>
-    private void HideCursor()
+    public void HideCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    /// <summary>
+    /// Unlocks the cursor on the screen.
+    /// </summary>
+    public void ShowCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
     }
 
     /// <summary>

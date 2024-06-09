@@ -8,12 +8,15 @@ public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private UIManager  _uiManager;
     [SerializeField] private int        _startingLives = 3;
-    [SerializeField] private float      _maxHealth = 100f;
+    [SerializeField] public float       _baseMaxHealth = 100f;
     [SerializeField] private Animator   _animator;
+
+    private float _maxHealth;
 
     public float DefenseMultiplier { get; set; }
     public float HealthRegenMultiplier { get; set; }
-    public float MaxHealth { get => _maxHealth; set{ _maxHealth = value; } }
+    public float BaseMaxHealth { get => _baseMaxHealth; }
+    public float MaxHealth { get => _maxHealth; set{ _maxHealth = value; UpdateUI(); } }
     public int Lives
     {
         get => _lives;
@@ -37,6 +40,7 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         _lives = _startingLives;
+        _maxHealth = _baseMaxHealth;
         Health = _maxHealth;
         DefenseMultiplier = 1.0f;
         HealthRegenMultiplier = 1.0f;
@@ -46,7 +50,8 @@ public class PlayerHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks whether the player is still invulnerable.
+    /// Checks whether the player is still invulnerable and forces them to die
+    /// if they're supposed to be dead.
     /// </summary>
     private void FixedUpdate()
     {

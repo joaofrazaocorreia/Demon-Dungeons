@@ -23,22 +23,18 @@ public class PlayerAttacks : MonoBehaviour
     private float   _baseAttackCooldownTimer;
 
     public float DamageMultiplier { get; set; }
-    public float CooldownMultiplier { get; set; }
-    public float ComboDelayMultiplier { get; set; }
-    public float ComboTimeLimitMultiplier { get; set; }
+    public float AttackSpeedMultiplier { get; set; }
 
     public float BaseAttackDamage { get => _baseAttackDamage * DamageMultiplier; set { _baseAttackDamage = value; } }
-    public float BaseAttackCooldown { get => _baseAttackCooldown / CooldownMultiplier; set { _baseAttackCooldown = value; } }
-    public float BaseAttackComboDelay { get => _baseAttackComboDelay / ComboDelayMultiplier; set { _baseAttackComboDelay = value; } }
-    public float BaseAttackComboTimeLimit { get => _baseAttackComboTimeLimit * ComboTimeLimitMultiplier; set { _baseAttackComboTimeLimit = value; } }
+    public float BaseAttackCooldown { get => _baseAttackCooldown / AttackSpeedMultiplier; set { _baseAttackCooldown = value; } }
+    public float BaseAttackComboDelay { get => _baseAttackComboDelay; set { _baseAttackComboDelay = value; } }
+    public float BaseAttackComboTimeLimit { get => _baseAttackComboTimeLimit; set { _baseAttackComboTimeLimit = value; } }
 
 
     private void Start()
     {
         DamageMultiplier = 1.0f;
-        CooldownMultiplier = 1.0f;
-        ComboDelayMultiplier = 1.0f;
-        ComboTimeLimitMultiplier = 1.0f;
+        AttackSpeedMultiplier = 1.0f;
         
         _baseAttack      = false;
         _baseAttackNum   = 1;

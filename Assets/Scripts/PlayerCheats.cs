@@ -13,6 +13,7 @@ public class PlayerCheats : MonoBehaviour
     public PlayerAttacks playerAttacks;
     public PlayerCurrency playerCurrency;
     public MapGenerator mapGenerator;
+    public BlessingManager blessingManager;
 
 
     // Update is called once per frame
@@ -73,6 +74,25 @@ public class PlayerCheats : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.M))
             {
                 playerHealth.Lives++;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                (string, Blessing) rand = blessingManager.GetRandomBlessings(1)[0];
+                blessingManager.AddBlessing(rand);
+
+                Debug.Log("Added " + rand.Item1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                blessingManager.AddSpecificBlessing("Lesser Endurance");
+
+                Debug.Log("Added Lesser Endurance");
+
+                blessingManager.AddSpecificBlessing("Lesser Energy");
+
+                Debug.Log("Added Lesser Energy");
             }
         }
     }
