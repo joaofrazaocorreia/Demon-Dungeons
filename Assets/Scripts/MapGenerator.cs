@@ -74,8 +74,9 @@ public class MapGenerator : MonoBehaviour
 
         if (seed != 0)
         {
+            // System.Random()
             Random.InitState(seed);
-            Debug.Log("seed init");
+            Debug.Log("seed init: " + seed);
         }
 
         if(startGeneratingOnPlay)

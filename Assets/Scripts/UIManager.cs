@@ -8,6 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private BlessingManager _blessingManager;
     [SerializeField] private Image _loadingScreen;
     [SerializeField] private TextMeshProUGUI _loadingText;
     [SerializeField] private RectTransform _healthFill;
@@ -25,6 +26,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _bossHealthBG;
     [SerializeField] private Color _bossHealthFillDefaultColor;
     [SerializeField] private Color _bossHealthFillVulnerableColor;
+    [SerializeField] private GameObject _blessingChoiceMenu;
+    [SerializeField] private Button _blessingChoice1;
+    [SerializeField] private Button _blessingChoice2;
+    [SerializeField] private Button _blessingChoice3;
+    [SerializeField] private GameObject _blessingUpgradeMenu;
+    [SerializeField] private Button _blessingUpgradeButton;
+    [SerializeField] private Transform _blessingsUpgradeList;
 
     private bool loading;
 
@@ -217,5 +225,15 @@ public class UIManager : MonoBehaviour
     public void FadeOutLoadingScreen()
     {
         StartCoroutine(FadeOutScreen(_loadingScreen));
+    }
+
+    public void OpenBlessingChoice()
+    {
+
+    }
+
+    public void OpenBlessingUpgrades()
+    {
+        
     }
 }

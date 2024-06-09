@@ -5,11 +5,41 @@ using UnityEngine;
 /// </summary>
 public class SafeRoomShrine : MonoBehaviour
 {
+    [SerializeField] private GameObject chooseBlessingMenu;
+    [SerializeField] private GameObject upgradeBlessingMenu;
+
+    private bool blessingReceived;
+    public bool BlessingReceived { get => blessingReceived; set { blessingReceived = value; } }
+
+    private void Start()
+    {
+        blessingReceived = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.GetComponent<PlayerHealth>() != null)
+        PlayerHealth ph = other.gameObject.GetComponent<PlayerHealth>();
+        if(ph != null)
         {
-            other.gameObject.GetComponent<PlayerHealth>().Regen(10000f);
+            ph.Regen(ph.MaxHealth);
         }
+
+        PlayerMovement pm = other.gameObject.GetComponent<PlayerMovement>();
+        if(pm != null)
+        {
+            pm.ShowCursor();
+        }
+
+        chooseBlessingMenu.SetActive(!blessingReceived);
+        upgradeBlessingMenu.SetActive(blessingReceived);
+    }
+
+    public void BlessingGiverUsed()
+    {
+        blessingReceived = true;
+    }
+
+    public void BlessingGiverReset()
+    {
+        blessingReceived = false;
     }
 }

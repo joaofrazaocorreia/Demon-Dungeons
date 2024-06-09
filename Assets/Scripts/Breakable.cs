@@ -33,7 +33,7 @@ public class Breakable : MonoBehaviour
 
             GameObject newDrop;
 
-            if(Random.Range(0, 100) < 5)
+            if(Random.Range(0, 100) < 7.5f)
             {
                 displacement = new Vector3(Random.Range(-0.5f, 0.5f), 0, Random.Range(-0.5f, 0.5f));
 
