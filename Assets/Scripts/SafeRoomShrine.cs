@@ -45,7 +45,7 @@ public class SafeRoomShrine : MonoBehaviour
             if(pm != null)
                 pm.ShowCursor();
 
-            uiManager.OpenBlessingsMenus(blessingReceived, blessingsToChoose, pm, this);
+            uiManager.OpenBlessingsMenus(blessingReceived, blessingsToChoose, this);
             menuCooldown = 2f;
         }
     }

@@ -11,7 +11,7 @@ public class SaveFile : MonoBehaviour
     [SerializeField] private TextMeshProUGUI fileNameText;
     [SerializeField] private TextMeshProUGUI lastFloorText;
     [SerializeField] private TextMeshProUGUI floorCount;
-    [SerializeField] private TextMeshProUGUI upgradeCount;
+    [SerializeField] private TextMeshProUGUI blessingCount;
     [SerializeField] private TextMeshProUGUI essenceCount;
     [SerializeField] private GameObject deleteFileButton;
     [SerializeField] private GameObject confirmationMenu;
@@ -21,16 +21,6 @@ public class SaveFile : MonoBehaviour
     private void Start()
     {
         confirmationTimer = 0f;
-
-        if (PlayerPrefs.GetInt("hasData" + saveFileNumber) == 0)
-        {
-            deleteFileButton.SetActive(false);
-        }
-
-        else
-        {
-            deleteFileButton.SetActive(true);
-        }
 
         UpdateValues();
     }
@@ -44,6 +34,18 @@ public class SaveFile : MonoBehaviour
 
     public void UpdateValues()
     {
+        Debug.Log(PlayerPrefs.GetInt("hasData" + saveFileNumber));
+        
+        if (PlayerPrefs.GetInt("hasData" + saveFileNumber) == 0)
+        {
+            deleteFileButton.SetActive(false);
+        }
+
+        else
+        {
+            deleteFileButton.SetActive(true);
+        }
+
         if(PlayerPrefs.GetInt("DungeonCount" + saveFileNumber) > 0)
             fileNameText.text = $"File {saveFileNumber} - Dungeon {PlayerPrefs.GetInt("DungeonCount" + saveFileNumber)}";
         
@@ -52,7 +54,7 @@ public class SaveFile : MonoBehaviour
 
         lastFloorText.text = $"Floor {PlayerPrefs.GetInt("FloorCount" + saveFileNumber)}";
         floorCount.text = $"{PlayerPrefs.GetInt("LayerCount" + saveFileNumber)} Floors";
-        upgradeCount.text = $"{PlayerPrefs.GetInt("UpgradeCount" + saveFileNumber)} Upgrades";
+        blessingCount.text = $"{PlayerPrefs.GetInt("BlessingCount" + saveFileNumber)} Blessings";
         essenceCount.text = $"{PlayerPrefs.GetInt("EssenceCount" + saveFileNumber)} Essence";
     }
 
@@ -75,6 +77,8 @@ public class SaveFile : MonoBehaviour
     public void DeleteFile()
     {
         Debug.Log("delete " + saveFileNumber);
-        //PlayerPrefs.SetInt("hasData" + saveFileNumber, 0);
+        confirmationMenu.SetActive(false);
+        PlayerPrefs.SetInt("hasData" + saveFileNumber, 0);
+        UpdateValues();
     }
 }

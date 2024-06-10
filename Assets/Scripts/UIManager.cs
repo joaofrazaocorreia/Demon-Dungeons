@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -9,7 +10,9 @@ using UnityEngine.UI;
 /// </summary>
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private PlayerCurrency playerCurrency;
+    [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private TextMeshProUGUI _blessingPausedStats;
+    [SerializeField] private GameObject _settingsMenu;
     [SerializeField] private Image _loadingScreen;
     [SerializeField] private TextMeshProUGUI _loadingText;
     [SerializeField] private RectTransform _healthFill;
@@ -27,7 +30,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _bossHealthBG;
     [SerializeField] private Color _bossHealthFillDefaultColor;
     [SerializeField] private Color _bossHealthFillVulnerableColor;
-    [SerializeField] private BlessingManager _blessingManager;
     [SerializeField] private GameObject _blessingChoiceMenu;
     [SerializeField] private Button _blessingChoice1;
     [SerializeField] private Button _blessingChoice2;
@@ -42,14 +44,71 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform _blessingsUpgradeList;
     [SerializeField] private SafeRoomShrine _safeRoomShrine;
 
+    private PlayerCurrency _playerCurrency;
+    private PlayerMovement _playerMovement;
+    private BlessingManager _blessingManager;
+    private SaveDataManager _saveDataManager;
     private bool loading;
-
+    private bool paused;
     private float _staminaFillSize;
+    private float originalTimeScale;
 
     private void Awake()
     {
+        _saveDataManager = FindObjectOfType<SaveDataManager>();
+
         _staminaFillSize = _staminaFill.rect.height;
         loading = false;
+        paused = false;
+        originalTimeScale = Time.timeScale;
+        _playerCurrency = FindObjectOfType<PlayerCurrency>();
+        _playerMovement = FindObjectOfType<PlayerMovement>();
+        _blessingManager = FindObjectOfType<BlessingManager>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (!paused)
+        {
+            Time.timeScale = 0;
+            _blessingPausedStats.text = WriteStatsText(_blessingManager.PlayerBlessings);
+            _pauseMenu.SetActive(true);
+            _playerMovement.ShowCursor();
+            paused = true;
+        }
+
+        else if (_settingsMenu.activeSelf)
+            ToggleSettingsMenu();
+            
+        else
+        {
+            Time.timeScale = originalTimeScale;
+            _pauseMenu.SetActive(false);
+            _playerMovement.HideCursor();
+            paused = false;
+        }
+    }
+
+    public void ToggleSettingsMenu()
+    {
+        _settingsMenu.SetActive(!_settingsMenu.activeSelf);
+        _pauseMenu.SetActive(!_settingsMenu.activeSelf);
+    }
+
+    public void SaveAndQuit()
+    {
+        _saveDataManager.SaveGameData();
+        PlayerPrefs.Save();
+        
+        SceneManager.LoadScene(0);
     }
 
     /// <summary>
@@ -235,24 +294,24 @@ public class UIManager : MonoBehaviour
         StartCoroutine(FadeOutScreen(_loadingScreen));
     }
 
-    public void OpenBlessingsMenus(bool hasChosenUpgrade, List<(string, Blessing)>  blessings, PlayerMovement _pm, SafeRoomShrine _shrine)
+    public void OpenBlessingsMenus(bool hasChosenUpgrade, List<(string, Blessing)>  blessings, SafeRoomShrine _shrine)
     {
         if(!hasChosenUpgrade)
         {
-            OpenBlessingChoiceMenu(blessings, _pm, _shrine);
+            OpenBlessingChoiceMenu(blessings, _shrine);
         }
 
         else
         {
-            OpenBlessingUpgradeMenu(_pm);
+            OpenBlessingUpgradeMenu();
         }
     }
 
-    private void OpenBlessingChoiceMenu(List<(string, Blessing)>  blessings, PlayerMovement _pm, SafeRoomShrine _shrine)
+    private void OpenBlessingChoiceMenu(List<(string, Blessing)>  blessings, SafeRoomShrine _shrine)
     {
         _blessingChoiceMenu.SetActive(true);
         _blessingUpgradeMenu.SetActive(false);
-        _pm.ShowCursor();
+        _playerMovement.ShowCursor();
 
         List<Button> choiceButtons = new List<Button>
         {
@@ -269,7 +328,7 @@ public class UIManager : MonoBehaviour
             choiceButtons[i].onClick.RemoveAllListeners();
             choiceButtons[i].onClick.AddListener(() => _blessingManager.AddBlessing(blessings[index]));
             choiceButtons[i].onClick.AddListener(() => _blessingChoiceMenu.SetActive(false));
-            choiceButtons[i].onClick.AddListener(() => OpenBlessingUpgradeMenu(_pm));
+            choiceButtons[i].onClick.AddListener(() => OpenBlessingUpgradeMenu());
             choiceButtons[i].onClick.AddListener(() => _shrine.BlessingReceived = true);
 
             bData._name.text = blessings[index].Item1;
@@ -277,11 +336,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void OpenBlessingUpgradeMenu(PlayerMovement _pm)
+    private void OpenBlessingUpgradeMenu()
     {
         _blessingChoiceMenu.SetActive(false);
         _blessingUpgradeMenu.SetActive(true);
-        _pm.ShowCursor();
+        _playerMovement.ShowCursor();
 
         _blessingUpgradeName.text = "";
         _blessingUpgradeStats.text = "";
@@ -318,7 +377,7 @@ public class UIManager : MonoBehaviour
             button.onClick.AddListener(() => _blessingUpgradeCost.text = 
             $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence");
             button.onClick.AddListener(() => _blessingUpgradeCost.color = 
-                playerCurrency.Essence >= _blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier ?
+                _playerCurrency.Essence >= _blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier ?
                     Color.black : Color.red);
 
             button.onClick.AddListener(() => _blessingUpgradeButton.onClick.RemoveAllListeners());
@@ -338,7 +397,7 @@ public class UIManager : MonoBehaviour
                 _blessingUpgradeCost.text = $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence"));
 
             button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() =>
-                _blessingUpgradeCost.color = playerCurrency.Essence >= _blessingManager.
+                _blessingUpgradeCost.color = _playerCurrency.Essence >= _blessingManager.
                     IncrementalUpgradeCost * kv.Item2.UpgradeTier ? Color.black : Color.red));
         }
 
@@ -355,6 +414,34 @@ public class UIManager : MonoBehaviour
             
             if (stat.Item2 < 0.0f)
                 text += $"-{stat.Item2 * 100}% {stat.Item1} \n";
+        }
+
+        return text;
+    }
+
+    private string WriteStatsText(List<(string, Blessing)> blessingList)
+    {
+        Blessing reference = new Blessing(0, 0f);
+
+        string text = $"Blessings received: {blessingList.Count} \n\n";
+        for(int i = 0; i < reference.Stats.Count; i++)
+        {
+            float totalValue = 0.0f;
+
+            foreach((string, Blessing) b in blessingList)
+            {
+                totalValue += b.Item2.Stats[i].Item2;
+            }
+
+            text += $"{100 + (totalValue * 100)}% {reference.Stats[i].Item1} ";
+
+            if (totalValue > 0f)
+                text += $" (+{totalValue * 100}%)";
+            
+            if (totalValue < 0f)
+                text += $" (-{totalValue * 100}%)";
+
+            text += "\n";
         }
 
         return text;

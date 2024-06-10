@@ -36,7 +36,8 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float enemyLimit = 250f;
     [SerializeField] private float breakableCount = 30f;
     [SerializeField] private float layerIncrements = 5f;
-    
+
+    private SaveDataManager saveDataManager;
     private Vector3 startingCoords;
     private bool hasEnemyGate;
     private bool hasEnding;
@@ -52,6 +53,9 @@ public class MapGenerator : MonoBehaviour
     public Tile CurrentEndingTile { get => currentEndingTile; }
     public Tile CurrentGateTile { get => currentGateTile; }
     public int LayerCount { get; set; }
+    public int FloorCount { get; set; }
+    public int DungeonCount { get; set; }
+    public bool IsInSafeRoom{ get; set; }
     public List<GameObject> CurrentEnemies { get => currentEnemies; }
     public float EnemyLimit { get => enemyLimit; }
 
@@ -60,6 +64,7 @@ public class MapGenerator : MonoBehaviour
         foreach (Tile t in tiles)
             t.Setup();
 
+        saveDataManager = FindObjectOfType<SaveDataManager>();
 
         coroutinesQueue = new List<Coroutine>();
         coroutinesQueueDeadTimer = 0f;
@@ -70,7 +75,9 @@ public class MapGenerator : MonoBehaviour
         hasEnemyGate = false;
         hasEnding = false;
         validMap = false;
-        LayerCount = 0;
+        LayerCount = saveDataManager.CheckLayerCountData(0);
+        FloorCount = saveDataManager.CheckFloorCountData(0);
+        DungeonCount = saveDataManager.CheckDungeonCountData(1);
 
         if (seed != 0)
         {
@@ -614,6 +621,8 @@ public class MapGenerator : MonoBehaviour
     private void CreateSafeRoom()
     {
         uIManager.FadeInLoadingScreen();
+
+        IsInSafeRoom = true;
 
         List<Tile> safeRoomTiles = tiles.Where(tile => tile.TileData.type == TileData.Type.SafeRoom).ToList();
         currentStartingTile = Instantiate(safeRoomTiles[Random.Range(0, safeRoomTiles.Count)], parent: map, position: startingCoords, rotation: Quaternion.identity);
