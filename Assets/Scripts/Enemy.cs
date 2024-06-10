@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private EnemyData enemyData;
-    [SerializeField] private GameObject selfPrefab;
 
     private enum State { Idle, Patrolling, Chasing, Attacking, Hurting, Dead };
     public PlayerHealth playerHealth;
@@ -141,10 +140,15 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        EnemyGate egate = mapGenerator.CurrentGateTile.GetComponent<EnemyGate>();
-        if (mapGenerator.CurrentGateTile != null && egate != null)
+        EnemyGate egate = new EnemyGate();
+        if (mapGenerator.CurrentGateTile != null)
         {
-            egate.QueueEnemyForRespawn(selfPrefab, playerHealth, mapGenerator, waypoints);
+            egate = mapGenerator.CurrentGateTile.GetComponent<EnemyGate>();
+
+            if (egate != null)
+            {
+                egate.QueueEnemyForRespawn(playerHealth, mapGenerator, waypoints);
+            }
         }
 
         state = State.Dead;

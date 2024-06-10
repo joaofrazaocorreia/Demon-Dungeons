@@ -6851,14 +6851,6 @@ PrefabInstance:
       propertyPath: enemies
       value: 
       objectReference: {fileID: 1879378063}
-    - target: {fileID: 3043199578926455135, guid: 41cd3fee1bcc0474c86728d48d859df6, type: 3}
-      propertyPath: respawnTime
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 3043199578926455135, guid: 41cd3fee1bcc0474c86728d48d859df6, type: 3}
-      propertyPath: extraEnemyRequirement
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 4731366486619747640, guid: 41cd3fee1bcc0474c86728d48d859df6, type: 3}
       propertyPath: m_Name
       value: EnemyGate1

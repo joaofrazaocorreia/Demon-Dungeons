@@ -429,7 +429,7 @@ public class MapGenerator : MonoBehaviour
             if (createSafeRoom)
                 CreateSafeRoom();
 
-            else if (LayerCount % 3 == 0)
+            else if (LayerCount % 4 == 0)
                 CreateBossRoom();
 
             else
