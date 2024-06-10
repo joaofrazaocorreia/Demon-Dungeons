@@ -140,10 +140,15 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        EnemyGate egate = mapGenerator.CurrentGateTile.GetComponent<EnemyGate>();
-        if (mapGenerator.CurrentGateTile != null && egate != null)
+        EnemyGate egate = new EnemyGate();
+        if (mapGenerator.CurrentGateTile != null)
         {
-            egate.QueueEnemyForRespawn(playerHealth, mapGenerator, waypoints);
+            egate = mapGenerator.CurrentGateTile.GetComponent<EnemyGate>();
+
+            if (egate != null)
+            {
+                egate.QueueEnemyForRespawn(playerHealth, mapGenerator, waypoints);
+            }
         }
 
         state = State.Dead;

@@ -5135,7 +5135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98432feca405f348b3129c3e90166e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startGeneratingOnPlay: 1
+  startGeneratingOnPlay: 0
   uIManager: {fileID: 954843815567441965}
   player: {fileID: 8355673827681031805}
   layer1EnemyPrefabs:
