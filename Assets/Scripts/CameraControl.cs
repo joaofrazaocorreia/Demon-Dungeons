@@ -35,9 +35,12 @@ public class CameraControl : MonoBehaviour
 
     private void Update()
     {
-        UpdatePitch();
-        UpdateYaw();
-        UpdateZoom();
+        if(Cursor.lockState == CursorLockMode.Locked)
+        {
+            UpdatePitch();
+            UpdateYaw();
+            UpdateZoom();
+        }
 
         PreventOcclusion();
     }
