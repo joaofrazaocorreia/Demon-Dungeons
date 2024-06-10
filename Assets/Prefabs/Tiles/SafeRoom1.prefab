@@ -1619,6 +1619,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chooseBlessingMenu: {fileID: 0}
   upgradeBlessingMenu: {fileID: 0}
+  uiManager: {fileID: 0}
+  blessingManager: {fileID: 0}
 --- !u!1 &3404884193853903766
 GameObject:
   m_ObjectHideFlags: 0
@@ -1679,10 +1681,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.5
-  m_Height: 48
+  m_Radius: 1.4669819
+  m_Height: 47.295284
   m_Direction: 1
-  m_Center: {x: 0, y: -22.25, z: 0}
+  m_Center: {x: -0.033018112, y: -22.602358, z: 0}
 --- !u!1 &3549366941127832691
 GameObject:
   m_ObjectHideFlags: 0
