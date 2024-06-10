@@ -36,7 +36,7 @@ public class Blessing
     public List<(string, float)> Stats { get => new List<(string, float)>() { ("Attack", Attack),
         ("Defense", Defense), ("Speed", Speed), ("Max Health", MaxHealth), ("Max Stamina", MaxStamina),
         ("Attack Speed", AttackSpeed), ("Health Regen", HealthRegen), ("Stamina Regen", StaminaRegen),
-        ("Stagger", Stagger),("Stamina Cost", StaminaCost), ("Money", Money) }; }
+        ("Stagger", Stagger),("Stamina Cost", StaminaCost), ("Extra Essence", Money) }; }
 
     public Blessing(float rarity, float attack = 0.0f, float defense = 0.0f, float speed = 0.0f, float maxHealth = 0.0f,
         float maxStamina = 0.0f, float attackSpeed = 0.0f, float healthRegen = 0.0f, float staminaRegen = 0.0f,
