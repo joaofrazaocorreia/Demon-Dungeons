@@ -16,7 +16,7 @@ public class Blessing
     private float stagger;
     private float staminaCost;
     private float money;
-    private float upgradeTier;
+    private int upgradeTier;
     private float rarity;
 
     public float Attack { get => attack * upgradeTier; }
@@ -30,8 +30,13 @@ public class Blessing
     public float Stagger { get => stagger * upgradeTier; }
     public float StaminaCost { get => staminaCost * upgradeTier; }
     public float Money { get => money * upgradeTier; }
-    public float UpgradeTier { get => upgradeTier; set{ upgradeTier = Mathf.Min(value, rarity); }}
+    public int UpgradeTier { get => upgradeTier; set{ upgradeTier = (int) Mathf.Min(value, rarity); }}
     public float Rarity { get => rarity; }
+
+    public List<(string, float)> Stats { get => new List<(string, float)>() { ("Attack", Attack),
+        ("Defense", Defense), ("Speed", Speed), ("Max Health", MaxHealth), ("Max Stamina", MaxStamina),
+        ("Attack Speed", AttackSpeed), ("Health Regen", HealthRegen), ("Stamina Regen", StaminaRegen),
+        ("Stagger", Stagger),("Stamina Cost", StaminaCost), ("Money", Money) }; }
 
     public Blessing(float rarity, float attack = 0.0f, float defense = 0.0f, float speed = 0.0f, float maxHealth = 0.0f,
         float maxStamina = 0.0f, float attackSpeed = 0.0f, float healthRegen = 0.0f, float staminaRegen = 0.0f,
@@ -59,7 +64,12 @@ public class Blessing
 
     public void InitializeMisc(float rar)
     {
-        upgradeTier = 1.0f;
+        upgradeTier = 1;
         rarity = rar;
+    }
+
+    public void Upgrade()
+    {
+        upgradeTier = (int) Mathf.Min(upgradeTier + 1, rarity);
     }
 }

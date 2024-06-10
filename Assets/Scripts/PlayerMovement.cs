@@ -101,7 +101,8 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        UpdateRotation();
+        if(Cursor.lockState == CursorLockMode.Locked)
+            UpdateRotation();
 
         if (!_dead)
         {

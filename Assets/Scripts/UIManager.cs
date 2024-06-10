@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 /// </summary>
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private BlessingManager _blessingManager;
+    [SerializeField] private PlayerCurrency playerCurrency;
     [SerializeField] private Image _loadingScreen;
     [SerializeField] private TextMeshProUGUI _loadingText;
     [SerializeField] private RectTransform _healthFill;
@@ -26,13 +27,20 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _bossHealthBG;
     [SerializeField] private Color _bossHealthFillDefaultColor;
     [SerializeField] private Color _bossHealthFillVulnerableColor;
+    [SerializeField] private BlessingManager _blessingManager;
     [SerializeField] private GameObject _blessingChoiceMenu;
     [SerializeField] private Button _blessingChoice1;
     [SerializeField] private Button _blessingChoice2;
     [SerializeField] private Button _blessingChoice3;
     [SerializeField] private GameObject _blessingUpgradeMenu;
     [SerializeField] private Button _blessingUpgradeButton;
+    [SerializeField] private TextMeshProUGUI _blessingUpgradeCost;
+    [SerializeField] private TextMeshProUGUI _blessingUpgradeName;
+    [SerializeField] private TextMeshProUGUI _blessingUpgradeStats;
+    [SerializeField] private Image _blessingUpgradeImage;
+    [SerializeField] private GameObject _blessingInventoryPrefab;
     [SerializeField] private Transform _blessingsUpgradeList;
+    [SerializeField] private SafeRoomShrine _safeRoomShrine;
 
     private bool loading;
 
@@ -227,13 +235,128 @@ public class UIManager : MonoBehaviour
         StartCoroutine(FadeOutScreen(_loadingScreen));
     }
 
-    public void OpenBlessingChoice()
+    public void OpenBlessingsMenus(bool hasChosenUpgrade, List<(string, Blessing)>  blessings, PlayerMovement _pm, SafeRoomShrine _shrine)
     {
+        if(!hasChosenUpgrade)
+        {
+            OpenBlessingChoiceMenu(blessings, _pm, _shrine);
+        }
 
+        else
+        {
+            OpenBlessingUpgradeMenu(_pm);
+        }
     }
 
-    public void OpenBlessingUpgrades()
+    private void OpenBlessingChoiceMenu(List<(string, Blessing)>  blessings, PlayerMovement _pm, SafeRoomShrine _shrine)
     {
-        
+        _blessingChoiceMenu.SetActive(true);
+        _blessingUpgradeMenu.SetActive(false);
+        _pm.ShowCursor();
+
+        List<Button> choiceButtons = new List<Button>
+        {
+            _blessingChoice1,
+            _blessingChoice2,
+            _blessingChoice3
+        };
+
+        for (int i = 0; i < choiceButtons.Count; i++)
+        {
+            int index = i;
+            BlessingChoiceButton bData = choiceButtons[index].GetComponent<BlessingChoiceButton>();
+
+            choiceButtons[i].onClick.RemoveAllListeners();
+            choiceButtons[i].onClick.AddListener(() => _blessingManager.AddBlessing(blessings[index]));
+            choiceButtons[i].onClick.AddListener(() => _blessingChoiceMenu.SetActive(false));
+            choiceButtons[i].onClick.AddListener(() => OpenBlessingUpgradeMenu(_pm));
+            choiceButtons[i].onClick.AddListener(() => _shrine.BlessingReceived = true);
+
+            bData._name.text = blessings[index].Item1;
+            bData._info.text = WriteStatsText(blessings[index]);
+        }
+    }
+
+    private void OpenBlessingUpgradeMenu(PlayerMovement _pm)
+    {
+        _blessingChoiceMenu.SetActive(false);
+        _blessingUpgradeMenu.SetActive(true);
+        _pm.ShowCursor();
+
+        _blessingUpgradeName.text = "";
+        _blessingUpgradeStats.text = "";
+        _blessingUpgradeButton.gameObject.SetActive(false);
+        _blessingUpgradeImage.gameObject.SetActive(false);
+
+        List<GameObject> toDestroy = new List<GameObject>();
+
+        for(int i = 0; i < _blessingsUpgradeList.childCount; i++)
+        {
+            toDestroy.Add(_blessingsUpgradeList.GetChild(i).gameObject);
+        }
+
+        foreach (GameObject go in toDestroy)
+        {
+            Destroy(go);
+        }
+
+
+        foreach((string, Blessing) kv in _blessingManager.PlayerBlessings)
+        {
+            GameObject blessingButton = Instantiate(_blessingInventoryPrefab, _blessingsUpgradeList);
+
+            TextMeshProUGUI[] texts = blessingButton.GetComponentsInChildren<TextMeshProUGUI>();
+
+            texts[0].text = kv.Item1;
+            texts[1].text = $"Tier {kv.Item2.UpgradeTier}";
+
+            Button button = blessingButton.GetComponent<Button>();
+
+            button.onClick.AddListener(() => _blessingUpgradeName.text = kv.Item1);
+            button.onClick.AddListener(() => _blessingUpgradeStats.text = WriteStatsText(kv));
+            button.onClick.AddListener(() => _blessingUpgradeButton.gameObject.SetActive(kv.Item2.UpgradeTier < kv.Item2.Rarity));
+            button.onClick.AddListener(() => _blessingUpgradeCost.text = 
+            $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence");
+            button.onClick.AddListener(() => _blessingUpgradeCost.color = 
+                playerCurrency.Essence >= _blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier ?
+                    Color.black : Color.red);
+
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.RemoveAllListeners());
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() => 
+                _blessingManager.UpgradeBlessing(kv)));
+
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() => 
+                texts[1].text = $"Tier {kv.Item2.UpgradeTier}"));
+
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() => 
+                _blessingUpgradeButton.gameObject.SetActive(kv.Item2.UpgradeTier < kv.Item2.Rarity)));
+
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() => 
+                _blessingUpgradeStats.text = WriteStatsText(kv)));
+
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() =>
+                _blessingUpgradeCost.text = $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence"));
+
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() =>
+                _blessingUpgradeCost.color = playerCurrency.Essence >= _blessingManager.
+                    IncrementalUpgradeCost * kv.Item2.UpgradeTier ? Color.black : Color.red));
+        }
+
+        _blessingsUpgradeList.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 110 / 2 * _blessingsUpgradeList.childCount);
+    }
+
+    private string WriteStatsText((string, Blessing) kv)
+    {
+        string text = $"Tier {kv.Item2.UpgradeTier} / {kv.Item2.Rarity} \n";
+        foreach ((string, float) stat in kv.Item2.Stats)
+        {
+            if (stat.Item2 > 0.0f)
+                text += $"+{stat.Item2 * 100}% {stat.Item1} \n";
+            
+            if (stat.Item2 < 0.0f)
+                text += $"-{stat.Item2 * 100}% {stat.Item1} \n";
+        }
+
+        return text;
     }
 }

@@ -25,9 +25,11 @@ public class DamageHitbox : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
-        Enemy enemy = other.gameObject.GetComponent<Enemy>();
+        Enemy enemy = other.gameObject.GetComponentInParent<Enemy>();
         EnemyBoss boss = other.gameObject.GetComponent<EnemyBoss>();
         Breakable breakable = other.gameObject.GetComponentInParent<Breakable>();
+
+        Debug.Log($"{enemy}, {boss}, {breakable}");
 
         // Stores enemies hit in a list after damaging them
         if (enemy != null && enemy.Health > 0 && !enemiesHit.Contains(enemy))
