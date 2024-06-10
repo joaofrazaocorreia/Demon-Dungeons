@@ -635,14 +635,14 @@ public class MapGenerator : MonoBehaviour
         GetComponent<NavMeshSurface>().BuildNavMesh();
 
         NavMeshHit closestHit;
-        if (NavMesh.SamplePosition(currentStartingTile.transform.position + new Vector3(0,0,50), out closestHit, 500, 1))
+        if (NavMesh.SamplePosition(currentStartingTile.transform.position + new Vector3(0,0,30), out closestHit, 500, 1))
         {
             GameObject newBoss = Instantiate(bossPrefab, position: closestHit.position, Quaternion.Euler(new Vector3(0, 180, 0)));
             newBoss.transform.parent = boss;
             newBoss.name = "Demon General";
         }
 
-        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -50));
+        player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -25));
 
         uIManager.FadeOutLoadingScreen();
     }
