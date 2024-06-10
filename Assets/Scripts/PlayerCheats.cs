@@ -21,11 +21,6 @@ public class PlayerCheats : MonoBehaviour
     {
         if (enableCheats)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Application.Quit();
-            }
-
             if (Input.GetKeyDown(KeyCode.T))
             {
                 playerHealth.Damage(15);
