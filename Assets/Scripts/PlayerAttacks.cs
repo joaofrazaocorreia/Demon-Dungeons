@@ -47,7 +47,7 @@ public class PlayerAttacks : MonoBehaviour
     /// </summary>
     private void CheckForBaseAttack()
     {
-        if(Input.GetButton("BaseAttack"))
+        if(Input.GetButton("BaseAttack") && Cursor.lockState == CursorLockMode.Locked)
         {
             if(_baseAttackCooldownTimer <= 0)
             {

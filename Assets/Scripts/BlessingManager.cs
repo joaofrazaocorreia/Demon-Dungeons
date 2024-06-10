@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class BlessingManager : MonoBehaviour
 {
-    [SerializeField] PlayerHealth playerHealth;
-    [SerializeField] PlayerMovement playerMovement;
-    [SerializeField] PlayerAttacks playerAttacks;
-    [SerializeField] PlayerCurrency playerCurrency;
-    [SerializeField] int incrementalUpgradeCost;
+    [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private PlayerAttacks playerAttacks;
+    [SerializeField] private PlayerCurrency playerCurrency;
+    [SerializeField] private int incrementalUpgradeCost;
 
     private Dictionary<string, Blessing> blessingsList;
     private List<(string, Blessing)> playerBlessings;
+    public List<(string, Blessing)> PlayerBlessings { get => playerBlessings; }
+    public int IncrementalUpgradeCost { get => incrementalUpgradeCost; }
 
     private void Start()
     {
@@ -21,8 +23,8 @@ public class BlessingManager : MonoBehaviour
             {"Instant Strength", new Blessing(1f, attack: 0.2f)},
             {"Instant Sturdy", new Blessing(1f, defense: 0.2f)},
             {"Instant Swiftness", new Blessing(1f, speed: 0.2f)},
-            {"Instant Vitality", new Blessing(1f, maxHealth: 20f)},
-            {"Instant Endurance", new Blessing(1f, maxStamina: 20f)},
+            {"Instant Vitality", new Blessing(1f, maxHealth: 0.2f)},
+            {"Instant Endurance", new Blessing(1f, maxStamina: 0.2f)},
             {"Instant Regeneration", new Blessing(1f, healthRegen: 0.15f)},
             {"Instant Energy", new Blessing(1f, staminaRegen: 0.15f)},
             {"Instant Conviction", new Blessing(1f, stagger: 0.2f)},
@@ -31,8 +33,8 @@ public class BlessingManager : MonoBehaviour
             {"Lesser Strength", new Blessing(3f, attack: 0.1f)},
             {"Lesser Sturdy", new Blessing(3f, defense: 0.1f)},
             {"Lesser Swiftness", new Blessing(3f, speed: 0.1f)},
-            {"Lesser Vitality", new Blessing(3f, maxHealth: 10f)},
-            {"Lesser Endurance", new Blessing(3f, maxStamina: 10f)},
+            {"Lesser Vitality", new Blessing(3f, maxHealth: 0.1f)},
+            {"Lesser Endurance", new Blessing(3f, maxStamina: 0.1f)},
             {"Lesser Handling", new Blessing(3f, attackSpeed: 0.1f)},
             {"Lesser Regeneration", new Blessing(3f, healthRegen: 0.05f)},
             {"Lesser Energy", new Blessing(3f, staminaRegen: 0.05f)},
@@ -91,6 +93,23 @@ public class BlessingManager : MonoBehaviour
         return chosenBlessings;
     }
 
+    public (string, Blessing) GetRandomBlessing(bool differentFromOwned = false)
+    {
+        return GetRandomBlessings(1, differentFromOwned)[0];
+    }
+
+    public void UpgradeBlessing((string, Blessing) kv)
+    {
+        if(playerCurrency.Essence >= incrementalUpgradeCost * kv.Item2.UpgradeTier)
+        {
+            playerCurrency.Essence -= incrementalUpgradeCost * kv.Item2.UpgradeTier;
+
+            kv.Item2.Upgrade();
+
+            UpdateValues();
+        }
+    }
+
     public void UpdateValues()
     {
         float atkMult = 1.0f;
@@ -120,17 +139,19 @@ public class BlessingManager : MonoBehaviour
         float maxHPMult = playerHealth.BaseMaxHealth;
         foreach ((string,Blessing) kv in playerBlessings)
         {
-            maxHPMult += kv.Item2.MaxHealth;
+            maxHPMult += kv.Item2.MaxHealth * playerHealth.BaseMaxHealth;
         }
         playerHealth.MaxHealth = maxHPMult;
+        playerHealth.Regen(maxHPMult);
 
 
         float maxStaMult = playerMovement.BaseMaxStamina;
         foreach ((string,Blessing) kv in playerBlessings)
         {
-            maxStaMult += kv.Item2.MaxStamina;
+            maxStaMult += kv.Item2.MaxStamina * playerMovement.BaseMaxStamina;
         }
         playerMovement.SetMaxStamina(maxStaMult);
+        playerMovement.AddStamina(maxStaMult);
 
         
         float atkSpeMult = 1.0f;
@@ -180,6 +201,8 @@ public class BlessingManager : MonoBehaviour
         }
         playerCurrency.EssenceMultiplier = mon;
 
-        Debug.Log($"atk {atkMult}, def {defMult}, speed {speMult}, maxHP {maxHPMult}, maxStamina {maxStaMult}, atkSpeed {atkSpeMult}, HPregen {HPreg}, staminaRegen {staReg}, stagger {stag}, staminaCost {staCst}, money {mon}");
+        Debug.Log($"atk {atkMult}, def {defMult}, speed {speMult}, maxHP {maxHPMult}," + 
+            $" maxStamina {maxStaMult}, atkSpeed {atkSpeMult}, HPregen {HPreg}, " + 
+            $"staminaRegen {staReg}, stagger {stag}, staminaCost {staCst}, money {mon}");
     }
 }
