@@ -106,7 +106,6 @@ QualitySettings:
     terrainMaxTrees: 50
     excludedTargetPlatforms:
     - Server
-    - Standalone
   - serializedVersion: 3
     name: Medium
     pixelLightCount: 1
@@ -206,7 +205,6 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms:
-    - Standalone
     - Server
   - serializedVersion: 3
     name: Very High
@@ -257,7 +255,6 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms:
-    - Standalone
     - Server
   - serializedVersion: 3
     name: Ultra
