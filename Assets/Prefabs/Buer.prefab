@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData: {fileID: 11400000, guid: a22f0e6231c388c4ba3631799d7fc25f, type: 2}
-  selfPrefab: {fileID: 0}
+  selfPrefab: {fileID: 392346913364636492}
   playerHealth: {fileID: 0}
   mapGenerator: {fileID: 0}
   waypoints: []

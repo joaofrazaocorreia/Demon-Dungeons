@@ -1321,7 +1321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData: {fileID: 11400000, guid: 78aacf206efb10b439c44ef5526d0224, type: 2}
-  selfPrefab: {fileID: 0}
+  selfPrefab: {fileID: 5364281744724755236}
   playerHealth: {fileID: 0}
   mapGenerator: {fileID: 0}
   waypoints: []

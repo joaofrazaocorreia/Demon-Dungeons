@@ -69,6 +69,7 @@ public class BlessingManager : MonoBehaviour
     public List<(string, Blessing)> GetRandomBlessings(int amount, bool differentFromOwned = false)
     {
         List<(string, Blessing)> chosenBlessings = new List<(string, Blessing)>();
+        List<(string, Blessing)> blessingsToCopy = new List<(string, Blessing)>();
 
         for(int i = 0; i < amount; i++)
         {
@@ -77,17 +78,26 @@ public class BlessingManager : MonoBehaviour
 
             foreach(KeyValuePair<string, Blessing> kv in blessingsList)
             {
-                if (kv.Value.Rarity <= roll && kv.Value.Rarity > 0 && (differentFromOwned && !playerBlessings.Contains((kv.Key, kv.Value)) || !differentFromOwned))
+                if (kv.Value.Rarity <= roll && kv.Value.Rarity > 0 && !blessingsToCopy.Contains((kv.Key, kv.Value)) && (differentFromOwned && !playerBlessings.Contains((kv.Key, kv.Value)) || !differentFromOwned))
                 {
                     blessings.Add((kv.Key, kv.Value));
                 }
             }
 
-            if (blessings.Count > 0)
-                chosenBlessings.Add(blessings[Random.Range(0, blessings.Count)]);
+            if (blessings.Count > 0){
+                blessingsToCopy.Add(blessings[Random.Range(0, blessings.Count)]);}
 
             else
-                chosenBlessings.Add(("Null", new Blessing(0f)));
+                blessingsToCopy.Add(("Null", new Blessing(0f)));
+        }
+
+
+        foreach((string, Blessing) kv in blessingsToCopy)
+        {
+            chosenBlessings.Add((kv.Item1, new Blessing(kv.Item2.Rarity,
+                kv.Item2.Attack, kv.Item2.Defense, kv.Item2.Speed, kv.Item2.MaxHealth,
+                kv.Item2.MaxStamina, kv.Item2.AttackSpeed, kv.Item2.HealthRegen,
+                kv.Item2.StaminaRegen, kv.Item2.Stagger, kv.Item2.StaminaCost, kv.Item2.Money)));
         }
 
         return chosenBlessings;
