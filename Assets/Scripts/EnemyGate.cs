@@ -17,16 +17,18 @@ public class EnemyGate : MonoBehaviour
         deadEnemyCounter = 0;
     }
 
-    public void QueueEnemyForRespawn(GameObject prefab, PlayerHealth ph, MapGenerator mg, List<Transform> wp)
+    public void QueueEnemyForRespawn(PlayerHealth ph, MapGenerator mg, List<Transform> wp)
     {
         if (enemies.childCount < mg.EnemyLimit)
         {
-            StartCoroutine(RespawnQueue(prefab, ph, mg, wp));
+            GameObject newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
+            StartCoroutine(RespawnQueue(newEnemy, ph, mg, wp));
 
             if (++deadEnemyCounter == extraEnemyRequirement)
             {
                 deadEnemyCounter = 0;
-                GameObject newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
+                
+                newEnemy = mg.CurrentEnemies[Random.Range(0, mg.CurrentEnemies.Count)];
 
                 StartCoroutine(RespawnQueue(newEnemy, ph, mg, wp));
             }

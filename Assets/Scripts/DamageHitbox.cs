@@ -29,10 +29,8 @@ public class DamageHitbox : MonoBehaviour
         EnemyBoss boss = other.gameObject.GetComponent<EnemyBoss>();
         Breakable breakable = other.gameObject.GetComponentInParent<Breakable>();
 
-        Debug.Log($"{enemy}, {boss}, {breakable}");
-
         // Stores enemies hit in a list after damaging them
-        if (enemy != null && enemy.Health > 0 && !enemiesHit.Contains(enemy))
+        if (enemy != null && enemy.Health > 0 && !enemiesHit.Contains(enemy) && (transform.position - enemy.transform.position).magnitude < 3f)
         {
             enemy.Damage(playerAttacks.BaseAttackDamage);
             Debug.Log($"hit {enemy.name} for {playerAttacks.BaseAttackDamage} damage, {enemy.Health} HP");
