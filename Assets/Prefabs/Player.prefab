@@ -4024,6 +4024,7 @@ MonoBehaviour:
   playerAttacks: {fileID: 520362707441542734}
   playerCurrency: {fileID: 2428035177404125411}
   mapGenerator: {fileID: 0}
+  blessingManager: {fileID: 0}
 --- !u!143 &4643864463873785192
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4085,7 +4086,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _uiManager: {fileID: 0}
   _startingLives: 3
-  _maxHealth: 100
+  _baseMaxHealth: 100
   _animator: {fileID: 4529615943281360390}
 --- !u!114 &180806522715282475
 MonoBehaviour:
@@ -4112,7 +4113,7 @@ MonoBehaviour:
   _maxStrafeVelocity: 6
   _maxFallVelocity: -20
   _rotationVelocityFactor: 2
-  _maxStamina: 100
+  _baseMaxStamina: 0
   _staminaRegenRate: 7
   _staggerLimit: 20
   _staggerCooldown: 20

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pilar
-  m_Shader: {fileID: -6465566751694194690, guid: dc39b06d354d7f74db2f3ea4477f9202, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 9dc3beb827f0d0b4d840853cbea93f09, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -56,7 +56,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Metal:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 546faadf2e928574b96c28dc12a83a7a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -80,7 +80,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Smooth:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e4919272cfef55f4fa0cfccae9184366, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:

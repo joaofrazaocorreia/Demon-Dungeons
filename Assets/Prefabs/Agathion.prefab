@@ -199,7 +199,6 @@ Transform:
   - {fileID: 8876980579691662989}
   - {fileID: 4208107552397186423}
   - {fileID: 1022320892065951060}
-  - {fileID: 766569005202154901}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7235430564857212226
@@ -215,6 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData: {fileID: 11400000, guid: d112c04765f487c4db585ca90887e200, type: 2}
+  selfPrefab: {fileID: 0}
   playerHealth: {fileID: 0}
   mapGenerator: {fileID: 0}
   waypoints: []
@@ -354,59 +354,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8742906219689798432}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3204259243520322853
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 766569005202154901}
-  - component: {fileID: 6829343780613611171}
-  m_Layer: 0
-  m_Name: Attack
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &766569005202154901
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3204259243520322853}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.15, y: 0.869707, z: 0.9898214}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5750070466589305823}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &6829343780613611171
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3204259243520322853}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1, y: 3.1141806, z: 1.3182817}
-  m_Center: {x: 0, y: -0.1953268, z: 0.089785784}
 --- !u!1 &3543738248787759053
 GameObject:
   m_ObjectHideFlags: 0
