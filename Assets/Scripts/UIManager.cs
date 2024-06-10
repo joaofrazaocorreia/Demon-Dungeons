@@ -47,6 +47,7 @@ public class UIManager : MonoBehaviour
     private PlayerCurrency _playerCurrency;
     private PlayerMovement _playerMovement;
     private BlessingManager _blessingManager;
+    private SaveDataManager _saveDataManager;
     private bool loading;
     private bool paused;
     private float _staminaFillSize;
@@ -54,6 +55,8 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
+        _saveDataManager = FindObjectOfType<SaveDataManager>();
+
         _staminaFillSize = _staminaFill.rect.height;
         loading = false;
         paused = false;
@@ -102,7 +105,9 @@ public class UIManager : MonoBehaviour
 
     public void SaveAndQuit()
     {
+        _saveDataManager.SaveGameData();
         PlayerPrefs.Save();
+        
         SceneManager.LoadScene(0);
     }
 
@@ -416,7 +421,7 @@ public class UIManager : MonoBehaviour
 
     private string WriteStatsText(List<(string, Blessing)> blessingList)
     {
-        Blessing reference = new Blessing(0f);
+        Blessing reference = new Blessing(0, 0f);
 
         string text = $"Blessings received: {blessingList.Count} \n\n";
         for(int i = 0; i < reference.Stats.Count; i++)

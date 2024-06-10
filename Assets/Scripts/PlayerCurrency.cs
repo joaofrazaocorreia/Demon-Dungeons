@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerCurrency : MonoBehaviour
 {
     [SerializeField] private UIManager  uiManager;
+    
+    private SaveDataManager saveDataManager;
     private int essence;
     public float EssenceMultiplier {get; set;}
     public int Essence
@@ -18,11 +20,11 @@ public class PlayerCurrency : MonoBehaviour
         }
     }
 
-
-
     private void Awake()
     {
-        essence = 0;
+        saveDataManager = FindObjectOfType<SaveDataManager>();
+
+        essence = saveDataManager.CheckEssenceCountData(0);
         EssenceMultiplier = 1.0f;
     }
 

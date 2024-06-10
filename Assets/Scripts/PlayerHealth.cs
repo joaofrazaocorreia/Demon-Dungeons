@@ -12,6 +12,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Animator   _animator;
 
     private float _maxHealth;
+    private SaveDataManager _saveDataManager;
 
     public float DefenseMultiplier { get; set; }
     public float HealthRegenMultiplier { get; set; }
@@ -24,6 +25,7 @@ public class PlayerHealth : MonoBehaviour
         set
         { 
             _lives = Mathf.Clamp(value, 0, 99);
+            _saveDataManager.SaveGameData();
             UpdateUI();
         }  
     }
@@ -39,7 +41,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
-        _lives = _startingLives;
+        _saveDataManager = FindObjectOfType<SaveDataManager>();
+        _lives = _saveDataManager.CheckLivesCountData(_startingLives);
         _maxHealth = _baseMaxHealth;
         Health = _maxHealth;
         DefenseMultiplier = 1.0f;

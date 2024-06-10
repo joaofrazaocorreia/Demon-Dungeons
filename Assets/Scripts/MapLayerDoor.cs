@@ -12,10 +12,12 @@ public class MapLayerDoor : MonoBehaviour
 
     [SerializeField] private TypeOfDoor typeOfDoor;
     private MapGenerator mapGenerator;
+    private SaveDataManager saveDataManager;
 
     private void Start()
     {
-        mapGenerator = GameObject.Find("World").GetComponent<MapGenerator>();
+        mapGenerator = FindObjectOfType<MapGenerator>();
+        saveDataManager = FindObjectOfType<SaveDataManager>();
     }
     
     /// <summary>
@@ -31,13 +33,17 @@ public class MapLayerDoor : MonoBehaviour
             if (typeOfDoor == TypeOfDoor.LayerExit)
             {
                 mapGenerator.StartDeletingMap(true, true);
+                mapGenerator.IsInSafeRoom = true;
             }
 
             else if (typeOfDoor == TypeOfDoor.SafeRoomExit)
             {
                 mapGenerator.LayerCount++;
                 mapGenerator.StartDeletingMap(true, false);
+                mapGenerator.IsInSafeRoom = false;
             }
         }
+
+        saveDataManager.SaveGameData();
     }
 }

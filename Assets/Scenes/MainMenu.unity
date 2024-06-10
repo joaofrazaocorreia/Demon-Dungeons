@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 29539387}
   - component: {fileID: 29539386}
   m_Layer: 5
-  m_Name: UpgradeCount
+  m_Name: BlessingCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -984,7 +984,7 @@ GameObject:
   - component: {fileID: 155378551}
   - component: {fileID: 155378550}
   m_Layer: 5
-  m_Name: UpgradeCount
+  m_Name: BlessingCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1118,6 +1118,7 @@ GameObject:
   - component: {fileID: 194521284}
   - component: {fileID: 194521283}
   - component: {fileID: 194521282}
+  - component: {fileID: 194521286}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -1210,6 +1211,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &194521286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 194521281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c657564675bc3488381e0ed7aaf69d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &202749302
 GameObject:
   m_ObjectHideFlags: 0
@@ -3047,7 +3060,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 621853603}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 194521286}
+        m_TargetAssemblyTypeName: MainMenuScripts, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &621853603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3318,7 +3343,7 @@ GameObject:
   - component: {fileID: 651513889}
   - component: {fileID: 651513888}
   m_Layer: 5
-  m_Name: UpgradeCount
+  m_Name: BlessingCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4539,7 +4564,7 @@ MonoBehaviour:
   fileNameText: {fileID: 404007581}
   lastFloorText: {fileID: 1877458673}
   floorCount: {fileID: 917024013}
-  upgradeCount: {fileID: 155378550}
+  blessingCount: {fileID: 155378550}
   essenceCount: {fileID: 957482365}
   deleteFileButton: {fileID: 1413894667}
   confirmationMenu: {fileID: 1569638953}
@@ -5326,7 +5351,7 @@ MonoBehaviour:
   fileNameText: {fileID: 1326366639}
   lastFloorText: {fileID: 2057810641}
   floorCount: {fileID: 122355641}
-  upgradeCount: {fileID: 651513888}
+  blessingCount: {fileID: 651513888}
   essenceCount: {fileID: 2070535850}
   deleteFileButton: {fileID: 142519772}
   confirmationMenu: {fileID: 2007058463}
@@ -6393,7 +6418,7 @@ MonoBehaviour:
   fileNameText: {fileID: 1217887855}
   lastFloorText: {fileID: 1213830864}
   floorCount: {fileID: 301474732}
-  upgradeCount: {fileID: 29539386}
+  blessingCount: {fileID: 29539386}
   essenceCount: {fileID: 888575753}
   deleteFileButton: {fileID: 2122645380}
   confirmationMenu: {fileID: 1690722080}
@@ -8350,7 +8375,6 @@ Transform:
   - {fileID: 7675779229479664924}
   - {fileID: 3771367783522254757}
   - {fileID: 2548360260675739854}
-  - {fileID: 5515453434921948607}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1292650683846910394
@@ -8631,24 +8655,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3771367783522254757}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1698680549403045737
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5515453434921948607}
-  - component: {fileID: 5400555796630495904}
-  - component: {fileID: 3199743588172719259}
-  m_Layer: 0
-  m_Name: LayerExitTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!4 &1712586385509169063
 Transform:
   m_ObjectHideFlags: 0
@@ -9752,19 +9758,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &3199743588172719259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1698680549403045737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4429546491a068443b8e3c05ce7ed268, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  typeOfDoor: 0
 --- !u!33 &3212264515232325655
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -10966,27 +10959,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &5400555796630495904
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1698680549403045737}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 15, y: 8, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5478361869872919276
 GameObject:
   m_ObjectHideFlags: 0
@@ -11026,21 +10998,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5515453434921948607
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1698680549403045737}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: -9}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1281972870628356054}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5521367354261920905
 GameObject:
   m_ObjectHideFlags: 0
