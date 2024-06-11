@@ -1,6 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 public class BlessingManager : MonoBehaviour
@@ -59,8 +58,9 @@ public class BlessingManager : MonoBehaviour
 
     public void AddBlessing((string, Blessing) kv, int tier = 1)
     {
-        playerBlessings.Add(kv);
+        playerBlessings.Add((kv.Item1, kv.Item2));
         playerBlessings[playerBlessings.Count-1].Item2.UpgradeTier = tier;
+
         UpdateValues();
     }
 
@@ -100,7 +100,8 @@ public class BlessingManager : MonoBehaviour
 
             foreach(KeyValuePair<string, Blessing> kv in blessingsList)
             {
-                if (kv.Value.Rarity <= roll && kv.Value.Rarity > 0 && !blessingsToCopy.Contains((kv.Key, kv.Value)) && (differentFromOwned && !playerBlessings.Contains((kv.Key, kv.Value)) || !differentFromOwned))
+                if (kv.Value.Rarity <= roll && kv.Value.Rarity > 0 && !blessingsToCopy.Contains((kv.Key, kv.Value))
+                    && (differentFromOwned && !playerBlessings.Contains((kv.Key, kv.Value)) || !differentFromOwned))
                 {
                     blessings.Add((kv.Key, kv.Value));
                 }
@@ -236,5 +237,48 @@ public class BlessingManager : MonoBehaviour
         Debug.Log($"atk {atkMult}, def {defMult}, speed {speMult}, maxHP {maxHPMult}," + 
             $" maxStamina {maxStaMult}, atkSpeed {atkSpeMult}, HPregen {HPreg}, " + 
             $"staminaRegen {staReg}, stagger {stag}, staminaCost {staCst}, money {mon}");
+    }
+
+    [System.Serializable]
+    public struct SaveData
+    {
+        public List<int> blessings;
+    }
+
+    public SaveData GetSaveData()
+    {
+        SaveData saveData;
+
+        saveData.blessings = new List<int>();
+
+        for(int i = 0; i < playerBlessings.Count; i++)
+        {
+            int id = playerBlessings[i].Item2.ID;
+            int tier = playerBlessings[i].Item2.UpgradeTier;
+
+            saveData.blessings.Add((id * 1000) + tier);
+        }
+
+        return saveData;
+    }
+
+    public void LoadSaveData(SaveData saveData)
+    {
+        ClearPlayerBlessings();
+
+        foreach(int i in saveData.blessings)
+        {
+            int id = (int) Mathf.Floor(i / 1000);
+            int tier = 1;
+
+            int inverseData = int.Parse(i.ToString().Reverse().ToList()[0].ToString());
+
+            // tier = (int)inverseData[0] + (int)inverseData[1] * 10;
+            tier = inverseData;
+
+            Debug.Log(inverseData);
+
+            AddSpecificBlessing(id, tier); 
+        }
     }
 }

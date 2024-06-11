@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -75,9 +76,9 @@ public class MapGenerator : MonoBehaviour
         hasEnemyGate = false;
         hasEnding = false;
         validMap = false;
-        LayerCount = saveDataManager.CheckLayerCountData(0);
-        FloorCount = saveDataManager.CheckFloorCountData(0);
-        DungeonCount = saveDataManager.CheckDungeonCountData(1);
+        LayerCount = 0;
+        FloorCount = 0;
+        DungeonCount = 1;
 
         if (seed != 0)
         {
@@ -654,5 +655,37 @@ public class MapGenerator : MonoBehaviour
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -25));
 
         uIManager.FadeOutLoadingScreen();
+    }
+
+    [System.Serializable]
+    public struct SaveData
+    {
+        public int layers;
+        public int floors;
+        public int dungeons;
+    }
+
+    public SaveData GetSaveData()
+    {
+        SaveData saveData;
+
+        saveData.layers = LayerCount;
+        saveData.floors = FloorCount;
+        saveData.dungeons = DungeonCount;
+
+        return saveData;
+    }
+
+    public void LoadSaveData(SaveData saveData)
+    {
+        LayerCount = saveData.layers;
+        FloorCount = saveData.floors;
+        saveData.dungeons = DungeonCount;
+
+        if(!IsInSafeRoom)
+        {
+            saveData.layers--;
+            saveData.floors--;
+        }
     }
 }

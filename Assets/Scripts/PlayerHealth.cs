@@ -25,12 +25,12 @@ public class PlayerHealth : MonoBehaviour
         set
         { 
             _lives = Mathf.Clamp(value, 0, 99);
-            _saveDataManager.SaveGameData();
+            if(_saveDataManager) _saveDataManager.SaveGameData();
             UpdateUI();
         }  
     }
 
-    public float Health { get => _health; set{ _health = Mathf.Clamp(value, 0f, _maxHealth); } }
+    public float Health { get => _health; set{ _health = Mathf.Clamp(value, 0f, _maxHealth); UpdateUI(); } }
 
     private int _lives;
     private float _health;
@@ -42,7 +42,7 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         _saveDataManager = FindObjectOfType<SaveDataManager>();
-        _lives = _saveDataManager.CheckLivesCountData(_startingLives);
+        _lives = _startingLives;
         _maxHealth = _baseMaxHealth;
         Health = _maxHealth;
         DefenseMultiplier = 1.0f;
@@ -158,5 +158,25 @@ public class PlayerHealth : MonoBehaviour
     {
         _godmode = !_godmode;
         UpdateUI();
+    }
+
+    [System.Serializable]
+    public struct SaveData
+    {
+        public int lives;
+    }
+
+    public SaveData GetSaveData()
+    {
+        SaveData saveData;
+
+        saveData.lives = Lives;
+
+        return saveData;
+    }
+
+    public void LoadSaveData(SaveData saveData)
+    {
+        Lives = saveData.lives;
     }
 }

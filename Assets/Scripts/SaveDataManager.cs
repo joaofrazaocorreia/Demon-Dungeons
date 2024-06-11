@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 public class SaveDataManager : MonoBehaviour
@@ -11,6 +9,8 @@ public class SaveDataManager : MonoBehaviour
     private PlayerHealth playerHealth;
     private MapGenerator mapGenerator;
     private PlayerCurrency playerCurrency;
+    private SafeRoomShrine safeRoomShrine;
+    private string saveFilePath;
 
     public int SaveFileNumber { get; private set; }
     public int DungeonCount { get; set; }
@@ -20,210 +20,89 @@ public class SaveDataManager : MonoBehaviour
     public int EssenceCount { get; set; }
     public int LivesCount { get; set; }
 
-    private IEnumerator Start()
+
+    private void Start()
     {
         blessingManager = FindObjectOfType<BlessingManager>();
         playerHealth = FindObjectOfType<PlayerHealth>();
         mapGenerator = FindObjectOfType<MapGenerator>();
         playerCurrency = FindObjectOfType<PlayerCurrency>();
+        safeRoomShrine = FindObjectOfType<SafeRoomShrine>();
 
-        yield return new WaitForSeconds(0.5f);
-
-
-        if (PlayerPrefs.HasKey("CurrentSaveFile"))
-            SaveFileNumber = PlayerPrefs.GetInt("CurrentSaveFile");
-        else
-            SaveFileNumber = 1;
-
-
-        if (PlayerPrefs.HasKey("hasData" + SaveFileNumber))
+        switch (File.ReadLines(Application.persistentDataPath + "/SaveFileNumber").First())
         {
-            if (PlayerPrefs.GetInt("hasData" + SaveFileNumber) != 0)
-            {
-                hasData = true;
-            }
-
-            else hasData = false;
+            case "1":
+                SaveFileNumber = 1;
+                break;
+            case "2":
+                SaveFileNumber = 2;
+                break;
+            case "3":
+                SaveFileNumber = 3;
+                break;
+            default:
+                SaveFileNumber = 1;
+                break;
         }
 
-        else hasData = false;
+        saveFilePath = Application.persistentDataPath + "/SaveFile" + SaveFileNumber;
 
-        Debug.Log($"has data on this file? {hasData}");
+        LoadGameData();
+        SaveGameData();
+    }
 
-        if(hasData)
-        {
-            LoadData(0);
-            UpdateGameData();
-        }
+    public void SetCurrentSafeRoom(SafeRoomShrine s)
+    {
+        safeRoomShrine = s;
+        
+        string jsonSaveData = File.ReadAllText(saveFilePath);
+        GameSaveData saveData = JsonUtility.FromJson<GameSaveData>(jsonSaveData);
 
-        else
-        {
-            hasData = true;
+        s.LoadSaveData(saveData.safeRoomShrine);
+    }
 
-            SaveGameData();
-        }
+    private struct GameSaveData
+    {
+        public PlayerHealth.SaveData playerHealth;
+        public PlayerCurrency.SaveData playerCurrency;
+        public MapGenerator.SaveData mapGenerator;
+        public BlessingManager.SaveData blessingManager;
+        public SafeRoomShrine.SaveData safeRoomShrine;
     }
 
     public void SaveGameData()
     {
-        DungeonCount = mapGenerator.DungeonCount;
-        FloorCount = mapGenerator.FloorCount;
-        LayerCount = mapGenerator.LayerCount;
-        BlessingCount = blessingManager.PlayerBlessings.Count;
-        EssenceCount = playerCurrency.Essence;
-        LivesCount = playerHealth.Lives;
+        GameSaveData saveData;
 
-        if(!mapGenerator.IsInSafeRoom)
-        {
-            FloorCount--;
-            LayerCount--;
-        }
+        saveData.playerHealth = playerHealth.GetSaveData();
+        saveData.playerCurrency = playerCurrency.GetSaveData();
+        saveData.mapGenerator = mapGenerator.GetSaveData();
+        saveData.blessingManager = blessingManager.GetSaveData();
+        saveData.safeRoomShrine = safeRoomShrine.GetSaveData();
 
-        PlayerPrefs.SetInt("hasData", 1);
-        PlayerPrefs.SetInt("DungeonCount", DungeonCount);
-        PlayerPrefs.SetInt("FloorCount", FloorCount);
-        PlayerPrefs.SetInt("LayerCount", LayerCount);
-        PlayerPrefs.SetInt("BlessingCount", BlessingCount);
-        PlayerPrefs.SetInt("EssenceCount", EssenceCount);
-        PlayerPrefs.SetInt("LivesCount", LivesCount);
-        
-        PlayerPrefs.Save();
+        string jsonSaveData = JsonUtility.ToJson(saveData, true);
+        File.WriteAllText(saveFilePath, jsonSaveData);
 
-
-        SaveBlessings();
-        
-        PlayerPrefs.Save();
+        print("Game saved.");
     }
 
-    public void UpdateGameData()
+    public void LoadGameData()
     {
-        mapGenerator.DungeonCount = DungeonCount;
-        mapGenerator.FloorCount = FloorCount;
-        mapGenerator.LayerCount = LayerCount;
-        playerCurrency.Essence = EssenceCount;
-        playerHealth.Lives = LivesCount;
-
-        if(BlessingCount == 0)
+        if (File.Exists(saveFilePath))
         {
-            blessingManager.ClearPlayerBlessings();
+            string jsonSaveData = File.ReadAllText(saveFilePath);
+            GameSaveData saveData = JsonUtility.FromJson<GameSaveData>(jsonSaveData);
+
+            playerHealth.LoadSaveData(saveData.playerHealth);
+            playerCurrency.LoadSaveData(saveData.playerCurrency);
+            mapGenerator.LoadSaveData(saveData.mapGenerator);
+            blessingManager.LoadSaveData(saveData.blessingManager);
+            safeRoomShrine.LoadSaveData(saveData.safeRoomShrine);
+
+            print("Game loaded.");
         }
 
-        SaveGameData();
-    }
-
-    public void LoadData(int defaultValue)
-    {
-        DungeonCount = PlayerPrefs.GetInt("DungeonCount", defaultValue);
-        FloorCount = PlayerPrefs.GetInt("FloorCount", defaultValue);
-        LayerCount = PlayerPrefs.GetInt("LayerCount", defaultValue);
-        BlessingCount = PlayerPrefs.GetInt("BlessingCount", defaultValue);
-        EssenceCount = PlayerPrefs.GetInt("EssenceCount", defaultValue);
-        LivesCount = PlayerPrefs.GetInt("LivesCount", defaultValue);
-
-        LoadBlessings();
-    }
-
-    public void LoadBlessings()
-    {
-        blessingManager.ClearPlayerBlessings();
-
-        for(int i = 1; i < blessingManager.TotalBlessingCount; i++)
-        {
-            for (int j = 0; j < blessingManager.MaxUpgradeTier; j++)
-            {
-                string saveName = "Blessing" + i + "Tier" + j + "File" + SaveFileNumber;
-                if (PlayerPrefs.HasKey(saveName))
-                {   
-                    for(int k = 0; i < PlayerPrefs.GetInt(saveName); k++)
-                        blessingManager.AddSpecificBlessing(i, j);
-                }
-            }
-        }
-    }
-
-    public void SaveBlessings()
-    {
-        string saveName;
-
-        for (int i = 1; i < blessingManager.TotalBlessingCount; i++)
-        {
-            for (int j = 0; j < blessingManager.MaxUpgradeTier; j++)
-            {
-                saveName = "Blessing" + i + "Tier" + j + "File" + SaveFileNumber;
-                PlayerPrefs.SetInt(saveName, 0);
-            }
-        }
-
-        foreach((string, Blessing) kv in blessingManager.PlayerBlessings)
-        {
-            saveName = "Blessing" + kv.Item2.ID + "Tier" + kv.Item2.UpgradeTier + "File" + SaveFileNumber;
-
-            PlayerPrefs.SetInt(saveName, PlayerPrefs.GetInt(saveName) + 1);
-        }
-
-        BlessingCount = blessingManager.PlayerBlessings.Count;
-        PlayerPrefs.SetInt("BlessingCount", BlessingCount);
-  
-        PlayerPrefs.Save();
-    }
-
-    public int CheckFloorCountData(int defaultValue)
-    {
-        if (PlayerPrefs.HasKey("FloorCount"))
-        {
-            return PlayerPrefs.GetInt("FloorCount");
-        }
-
-        else return defaultValue;
-    }
-
-    public int CheckDungeonCountData(int defaultValue)
-    {
-        if (PlayerPrefs.HasKey("DungeonCount"))
-        {
-            return PlayerPrefs.GetInt("DungeonCount");
-        }
-
-        else return defaultValue;
-    }
-
-    public int CheckLayerCountData(int defaultValue)
-    {
-        if (PlayerPrefs.HasKey("LayerCount"))
-        {
-            return PlayerPrefs.GetInt("LayerCount");
-        }
-
-        else return defaultValue;
-    }
-
-    public int CheckBlessingCountData(int defaultValue)
-    {
-        if (PlayerPrefs.HasKey("BlessingCount"))
-        {
-            return PlayerPrefs.GetInt("BlessingCount");
-        }
-
-        else return defaultValue;
-    }
-
-    public int CheckEssenceCountData(int defaultValue)
-    {
-        if (PlayerPrefs.HasKey("EssenceCount"))
-        {
-            return PlayerPrefs.GetInt("EssenceCount");
-        }
-
-        else return defaultValue;
-    }
-
-    public int CheckLivesCountData(int defaultValue)
-    {
-        if (PlayerPrefs.HasKey("LivesCount"))
-        {
-            return PlayerPrefs.GetInt("LivesCount");
-        }
-
-        else return defaultValue;
+        else
+            print("File not found.");
     }
 }
