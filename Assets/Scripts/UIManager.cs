@@ -378,7 +378,7 @@ public class UIManager : MonoBehaviour
             $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence");
             button.onClick.AddListener(() => _blessingUpgradeCost.color = 
                 _playerCurrency.Essence >= _blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier ?
-                    Color.black : Color.red);
+                    Color.white : Color.red);
 
             button.onClick.AddListener(() => _blessingUpgradeButton.onClick.RemoveAllListeners());
             button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() => 
@@ -396,9 +396,9 @@ public class UIManager : MonoBehaviour
             button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() =>
                 _blessingUpgradeCost.text = $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence"));
 
-            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() =>
+            button.onClick.AddListener(() => _blessingUpgradeButton.onClick.AddListener(() => 
                 _blessingUpgradeCost.color = _playerCurrency.Essence >= _blessingManager.
-                    IncrementalUpgradeCost * kv.Item2.UpgradeTier ? Color.black : Color.red));
+                    IncrementalUpgradeCost * kv.Item2.UpgradeTier ? Color.white : Color.red));
         }
 
         _blessingsUpgradeList.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 110 / 2 * _blessingsUpgradeList.childCount);
