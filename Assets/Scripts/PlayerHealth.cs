@@ -128,10 +128,16 @@ public class PlayerHealth : MonoBehaviour
     public void Respawn()
     {
         if(--Lives > 0)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
         
         else
+        {
+            Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene(0);
+        }
     }
 
     /// <summary>

@@ -140,7 +140,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Die()
     {
-        EnemyGate egate = new EnemyGate();
+        EnemyGate egate; 
         if (mapGenerator.CurrentGateTile != null)
         {
             egate = mapGenerator.CurrentGateTile.GetComponent<EnemyGate>();

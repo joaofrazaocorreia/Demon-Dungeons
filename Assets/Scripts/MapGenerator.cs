@@ -183,7 +183,7 @@ public class MapGenerator : MonoBehaviour
             parent: map, position: startingCoords, rotation: Quaternion.identity);
         currentStartingTile = start;
 
-        switch(LayerCount)
+        switch(LayerCount % 3)
                 {
                     case 1:
                         foreach(GameObject go in layer1EnemyPrefabs)
@@ -195,7 +195,7 @@ public class MapGenerator : MonoBehaviour
                             currentEnemies.Add(go);
                         break;
 
-                    case 3:
+                    case 0:
                         foreach(GameObject go in layer3EnemyPrefabs)
                             currentEnemies.Add(go);
                         break;
