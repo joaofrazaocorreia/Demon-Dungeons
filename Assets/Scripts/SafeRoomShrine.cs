@@ -20,10 +20,11 @@ public class SafeRoomShrine : MonoBehaviour
     private void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
+        FindObjectOfType<SaveDataManager>().SetCurrentSafeRoom(this);
         menuCooldown = 0f;
         blessingReceived = false;
 
-        blessingsToChoose = blessingManager.GetRandomBlessings(3);
+        blessingsToChoose = blessingManager.GetRandomBlessings(3, true);
     }
 
     private void Update()
@@ -60,5 +61,25 @@ public class SafeRoomShrine : MonoBehaviour
 
         if(pm != null)
             pm.HideCursor();
+    }
+
+    [System.Serializable]
+    public struct SaveData
+    {
+        public bool gotBlessing;
+    }
+
+    public SaveData GetSaveData()
+    {
+        SaveData saveData;
+
+        saveData.gotBlessing = blessingReceived;
+
+        return saveData;
+    }
+
+    public void LoadSaveData(SaveData saveData)
+    {
+        blessingReceived = saveData.gotBlessing;
     }
 }

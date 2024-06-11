@@ -106,7 +106,6 @@ public class UIManager : MonoBehaviour
     public void SaveAndQuit()
     {
         _saveDataManager.SaveGameData();
-        PlayerPrefs.Save();
         
         SceneManager.LoadScene(0);
     }

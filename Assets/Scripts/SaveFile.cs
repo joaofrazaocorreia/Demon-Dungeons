@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class SaveFile : MonoBehaviour
@@ -17,9 +15,13 @@ public class SaveFile : MonoBehaviour
     [SerializeField] private GameObject confirmationMenu;
 
     private float confirmationTimer;
+    private MainMenuScripts mainMenuScripts;
+    private string saveFilePath;
 
     private void Start()
     {
+        mainMenuScripts = FindObjectOfType<MainMenuScripts>();
+        saveFilePath = Application.persistentDataPath + "/SaveFile" + saveFileNumber.ToString();
         confirmationTimer = 0f;
 
         UpdateValues();
@@ -28,34 +30,41 @@ public class SaveFile : MonoBehaviour
     public void LoadFile()
     {
         Debug.Log("load " + saveFileNumber);
-        PlayerPrefs.SetInt("CurrentSaveFile", saveFileNumber);
+        mainMenuScripts.SetSaveFileText(saveFileNumber);
+        
         SceneManager.LoadScene(1);
     }
 
     public void UpdateValues()
     {
-        Debug.Log(PlayerPrefs.GetInt("hasData" + saveFileNumber));
+        Debug.Log(File.Exists(saveFilePath));
         
-        if (PlayerPrefs.GetInt("hasData" + saveFileNumber) == 0)
-        {
-            deleteFileButton.SetActive(false);
-        }
-
-        else
+        if (File.Exists(saveFilePath))
         {
             deleteFileButton.SetActive(true);
+
+            string jsonSaveData = File.ReadAllText(saveFilePath);
+            GameSaveData saveData = JsonUtility.FromJson<GameSaveData>(jsonSaveData);
+
+            fileNameText.text = $"File {saveFileNumber} - Dungeon {saveData.mapGenerator.dungeons}";
+
+            lastFloorText.text = $"Floor {saveData.mapGenerator.layers}";
+            floorCount.text = $"{saveData.mapGenerator.floors} Floors";
+            blessingCount.text = $"{saveData.blessingManager.blessings.Count} Blessings";
+            essenceCount.text = $"{saveData.playerCurrency.essence} Essence";
         }
 
-        if(PlayerPrefs.GetInt("DungeonCount" + saveFileNumber) > 0)
-            fileNameText.text = $"File {saveFileNumber} - Dungeon {PlayerPrefs.GetInt("DungeonCount" + saveFileNumber)}";
-        
         else
+        {
+            deleteFileButton.SetActive(false);
+
             fileNameText.text = $"File {saveFileNumber} - Empty";
 
-        lastFloorText.text = $"Floor {PlayerPrefs.GetInt("FloorCount" + saveFileNumber)}";
-        floorCount.text = $"{PlayerPrefs.GetInt("LayerCount" + saveFileNumber)} Floors";
-        blessingCount.text = $"{PlayerPrefs.GetInt("BlessingCount" + saveFileNumber)} Blessings";
-        essenceCount.text = $"{PlayerPrefs.GetInt("EssenceCount" + saveFileNumber)} Essence";
+            lastFloorText.text = $"Floor 0";
+            floorCount.text = $"0 Floors";
+            blessingCount.text = $"0 Blessings";
+            essenceCount.text = $"0 Essence";
+        }
     }
 
     public void AskToConfirmDeletion()
@@ -77,8 +86,18 @@ public class SaveFile : MonoBehaviour
     public void DeleteFile()
     {
         Debug.Log("delete " + saveFileNumber);
+
         confirmationMenu.SetActive(false);
-        PlayerPrefs.SetInt("hasData" + saveFileNumber, 0);
+        File.Delete(saveFilePath);
+        
         UpdateValues();
+    }
+
+    private struct GameSaveData
+    {
+        public PlayerHealth.SaveData    playerHealth;
+        public PlayerCurrency.SaveData  playerCurrency;
+        public MapGenerator.SaveData    mapGenerator;
+        public BlessingManager.SaveData   blessingManager;
     }
 }

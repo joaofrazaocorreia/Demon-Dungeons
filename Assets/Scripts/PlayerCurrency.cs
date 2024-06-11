@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCurrency : MonoBehaviour
@@ -24,12 +22,33 @@ public class PlayerCurrency : MonoBehaviour
     {
         saveDataManager = FindObjectOfType<SaveDataManager>();
 
-        essence = saveDataManager.CheckEssenceCountData(0);
+        essence = 0;
         EssenceMultiplier = 1.0f;
     }
 
     private void UpdateUI()
     {
         uiManager.SetEssenceText(Essence);
+    }
+
+
+    [System.Serializable]
+    public struct SaveData
+    {
+        public int essence;
+    }
+
+    public SaveData GetSaveData()
+    {
+        SaveData saveData;
+
+        saveData.essence = Essence;
+
+        return saveData;
+    }
+
+    public void LoadSaveData(SaveData saveData)
+    {
+        Essence = saveData.essence;
     }
 }
