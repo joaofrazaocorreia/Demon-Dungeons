@@ -39,6 +39,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float layerIncrements = 5f;
 
     private SaveDataManager saveDataManager;
+    private SoundManager soundManager;
     private Vector3 startingCoords;
     private bool hasEnemyGate;
     private bool hasEnding;
@@ -66,6 +67,7 @@ public class MapGenerator : MonoBehaviour
             t.Setup();
 
         saveDataManager = FindObjectOfType<SaveDataManager>();
+        soundManager = FindObjectOfType<SoundManager>();
 
         coroutinesQueue = new List<Coroutine>();
         coroutinesQueueDeadTimer = 0f;
@@ -162,7 +164,8 @@ public class MapGenerator : MonoBehaviour
 
                     player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -5));
                     Debug.Log($"Finished map with {map.childCount} tiles");
-                    
+
+                    soundManager.InitLevelAudio();
                     uIManager.FadeOutLoadingScreen();
                 }
             }
@@ -630,6 +633,7 @@ public class MapGenerator : MonoBehaviour
 
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -19f));
 
+        soundManager.InitSafeRoomAudio();
         uIManager.FadeOutLoadingScreen();
     }
 
@@ -654,6 +658,7 @@ public class MapGenerator : MonoBehaviour
 
         player.MoveTo(currentStartingTile.transform.position + new Vector3(0, 2, -25));
 
+        soundManager.InitBossRoomAudio();
         uIManager.FadeOutLoadingScreen();
     }
 
