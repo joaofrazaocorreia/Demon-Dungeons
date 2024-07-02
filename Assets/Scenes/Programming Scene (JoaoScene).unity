@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.03286813, g: 0.043477952, b: 0.063513935, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3766,7 +3766,7 @@ RectTransform:
   m_GameObject: {fileID: 776838823}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.59344, y: 0.59344, z: 0.59344}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 936131294}
@@ -5065,7 +5065,7 @@ RectTransform:
   m_GameObject: {fileID: 1219732295}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.62319183, y: 0.62319183, z: 0.62319183}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1993177785}
@@ -5217,7 +5217,7 @@ RectTransform:
   m_GameObject: {fileID: 1231075233}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6553, y: 0.6553, z: 0.6553}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1437920680}
@@ -9731,7 +9731,8 @@ PrefabInstance:
       value: StartingTile1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 30282928756384461, guid: 72ac5044b95f68a43afe5cf3518fc862, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ac5044b95f68a43afe5cf3518fc862, type: 3}
@@ -9792,7 +9793,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5745539487779803114, guid: 41cd3fee1bcc0474c86728d48d859df6, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41cd3fee1bcc0474c86728d48d859df6, type: 3}
@@ -10386,7 +10388,9 @@ PrefabInstance:
       value: EndingTile1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2924617999382713376, guid: aec6e75c12d95824db855481fd20d5ef, type: 3}
+    - {fileID: 4241013823608617290, guid: aec6e75c12d95824db855481fd20d5ef, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aec6e75c12d95824db855481fd20d5ef, type: 3}
