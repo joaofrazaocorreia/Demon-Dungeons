@@ -6699,7 +6699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1515468982
 Transform:
   m_ObjectHideFlags: 0
@@ -11508,10 +11508,6 @@ PrefabInstance:
       propertyPath: _uiManager
       value: 
       objectReference: {fileID: 954843815567441965}
-    - target: {fileID: 180806522715282475, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
-      propertyPath: _baseMaxStamina
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 520362707441542734, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
       propertyPath: _uiManager
       value: 
