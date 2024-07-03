@@ -6699,7 +6699,16 @@ MonoBehaviour:
     Room Music - "Midnight Forest" by Syouki Takahashi from Pixabay
 
     Boss Room
-    Music - "Metalcore, hardrock, rock, metal music" by u_1gmi54jhyg from Pixabay'
+    Music - "Metalcore, hardrock, rock, metal music" by u_1gmi54jhyg from Pixabay
+
+
+    Ukobach
+    Attack - Sound Effect by David Dumais from Pixabay
+
+    Other Ukobach sound effects
+    from Pixabay
+
+    Buer sound effects from Pixabay'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6726,8 +6735,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
