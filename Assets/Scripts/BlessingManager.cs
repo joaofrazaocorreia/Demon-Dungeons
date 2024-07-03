@@ -44,11 +44,11 @@ public class BlessingManager : MonoBehaviour
             {"Lesser Ability", new Blessing(19, 3f, staminaCost: -0.1f)},
             {"Lesser Wealth", new Blessing(20, 3f, money: 0.1f)},
 
-            {"Enhanced Strength", new Blessing(21, 5f, attack: 0.15f, maxStamina: -2, maxHealth: -2)},
+            {"Enhanced Strength", new Blessing(21, 5f, attack: 0.15f, maxStamina: -0.15f, maxHealth: -0.15f)},
             {"Enhanced Sturdy", new Blessing(22, 5f, defense: 0.15f, attack: -0.05f, speed: -0.05f)},
-            {"Enhanced Swiftness", new Blessing(23, 5f, attack: 0.15f, defense: -0.05f, maxHealth: -2)},
+            {"Enhanced Swiftness", new Blessing(23, 5f, attack: 0.15f, defense: -0.05f, maxHealth: -0.15f)},
 
-            {"Greater Strength", new Blessing(24, 7f, attack: 0.25f, maxStamina: -5, maxHealth: -5, attackSpeed: -0.10f)},
+            {"Greater Strength", new Blessing(24, 7f, attack: 0.25f, maxStamina: -0.3f, maxHealth: -0.3f, attackSpeed: -0.10f)},
 
             {"GodMode", new Blessing(0, 0f, attack: 100f, maxStamina: 100000f, maxHealth: 100000f)},
         };

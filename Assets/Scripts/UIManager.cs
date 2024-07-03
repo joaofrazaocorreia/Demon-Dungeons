@@ -138,7 +138,10 @@ public class UIManager : MonoBehaviour
     /// <param name="ratio">Current health divided by the max health value.</param>
     public void SetHealthFill(float ratio)
     {
-        _healthFill.localScale = new Vector3(1, ratio, 1);
+        if(ratio != float.NaN)
+            _healthFill.localScale = new Vector3(1, ratio, 1);
+        else 
+            _healthFill.localScale = new Vector3(1, 1, 1);
     }
 
     /// <summary>
