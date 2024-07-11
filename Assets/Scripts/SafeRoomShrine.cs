@@ -12,6 +12,7 @@ public class SafeRoomShrine : MonoBehaviour
     [SerializeField] private BlessingManager blessingManager;
 
     private PlayerMovement pm;
+    private SaveDataManager saveDataManager;
     private float menuCooldown;
     private bool blessingReceived;
     public bool BlessingReceived { get => blessingReceived; set { blessingReceived = value; } }
@@ -20,9 +21,14 @@ public class SafeRoomShrine : MonoBehaviour
     private void Start()
     {
         pm = FindObjectOfType<PlayerMovement>();
-        FindObjectOfType<SaveDataManager>().SetCurrentSafeRoom(this);
+        saveDataManager = FindObjectOfType<SaveDataManager>();
+        saveDataManager.SetCurrentSafeRoom(this);
+
+        if (saveDataManager.GetSaveGameData().safeRoomShrine.gotBlessing)
+            GotBlessing();
+        else AllowNewBlessing();
+
         menuCooldown = 0f;
-        blessingReceived = false;
 
         blessingsToChoose = blessingManager.GetRandomBlessings(3, true);
     }
@@ -61,6 +67,23 @@ public class SafeRoomShrine : MonoBehaviour
 
         if(pm != null)
             pm.HideCursor();
+    }
+
+    public void GotBlessing()
+    {
+        blessingReceived = true;
+        Debug.Log("Got blessing");
+    }
+
+    public void AllowNewBlessing()
+    {
+        blessingReceived = false;
+        Debug.Log("New blessing available");
+    }
+
+    private void OnDestroy()
+    {
+        AllowNewBlessing();
     }
 
     [System.Serializable]

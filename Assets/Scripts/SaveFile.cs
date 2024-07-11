@@ -83,12 +83,13 @@ public class SaveFile : MonoBehaviour
         else confirmationTimer -= Time.deltaTime;
     }
 
-    public void DeleteFile()
+    public void DeleteFile(int saveFileNumber)
     {
         Debug.Log("delete " + saveFileNumber);
-
         confirmationMenu.SetActive(false);
-        File.Delete(saveFilePath);
+
+        string filePath = Application.persistentDataPath + "/SaveFile" + saveFileNumber.ToString();
+        File.Delete(filePath);
         
         UpdateValues();
     }

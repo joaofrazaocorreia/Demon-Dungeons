@@ -10,6 +10,7 @@ public class BlessingManager : MonoBehaviour
     [SerializeField] private PlayerCurrency playerCurrency;
     [SerializeField] private int incrementalUpgradeCost = 125;
     [SerializeField] private int maxTier = 10;
+    [SerializeField] private Sprite[] sprites;
 
     private Dictionary<string, Blessing> blessingsList;
     private List<(string, Blessing)> playerBlessings;
@@ -22,35 +23,37 @@ public class BlessingManager : MonoBehaviour
     {
         blessingsList = new Dictionary<string, Blessing>()
         {
-            {"Instant Strength", new Blessing(1, 1f, attack: 0.2f)},
-            {"Instant Sturdy", new Blessing(2, 1f, defense: 0.2f)},
-            {"Instant Swiftness", new Blessing(3, 1f, speed: 0.2f)},
-            {"Instant Vitality", new Blessing(4, 1f, maxHealth: 0.2f)},
-            {"Instant Endurance", new Blessing(5, 1f, maxStamina: 0.2f)},
-            {"Instant Regeneration", new Blessing(6, 1f, healthRegen: 0.15f)},
-            {"Instant Energy", new Blessing(7, 1f, staminaRegen: 0.15f)},
-            {"Instant Conviction", new Blessing(8, 1f, stagger: 0.2f)},
-            {"Instant Wealth", new Blessing(9, 1f, money: 0.2f)},
+            {"Instant Strength", new Blessing(1, 1f, sprites[0], attack: 0.2f)},
+            {"Instant Sturdy", new Blessing(2, 1f, sprites[1], defense: 0.2f)},
+            {"Instant Swiftness", new Blessing(3, 1f, sprites[2], speed: 0.2f)},
+            {"Instant Vitality", new Blessing(4, 1f, sprites[1], maxHealth: 0.2f)},
+            {"Instant Endurance", new Blessing(5, 1f, sprites[1], maxStamina: 0.2f)},
+            {"Instant Regeneration", new Blessing(6, 1f, sprites[1], healthRegen: 0.15f)},
+            {"Instant Energy", new Blessing(7, 1f, sprites[2], staminaRegen: 0.15f)},
+            {"Instant Conviction", new Blessing(8, 1f, sprites[2], stagger: 0.2f)},
+            {"Instant Wealth", new Blessing(9, 1f, sprites[3], money: 0.2f)},
 
-            {"Lesser Strength", new Blessing(10, 3f, attack: 0.1f)},
-            {"Lesser Sturdy", new Blessing(11, 3f, defense: 0.1f)},
-            {"Lesser Swiftness", new Blessing(12, 3f, speed: 0.1f)},
-            {"Lesser Vitality", new Blessing(13, 3f, maxHealth: 0.1f)},
-            {"Lesser Endurance", new Blessing(14, 3f, maxStamina: 0.1f)},
-            {"Lesser Handling", new Blessing(15, 3f, attackSpeed: 0.1f)},
-            {"Lesser Regeneration", new Blessing(16, 3f, healthRegen: 0.05f)},
-            {"Lesser Energy", new Blessing(17, 3f, staminaRegen: 0.05f)},
-            {"Lesser Conviction", new Blessing(18, 3f, stagger: 0.05f)},
-            {"Lesser Ability", new Blessing(19, 3f, staminaCost: -0.1f)},
-            {"Lesser Wealth", new Blessing(20, 3f, money: 0.1f)},
+            {"Lesser Strength", new Blessing(10, 3f, sprites[0], attack: 0.1f)},
+            {"Lesser Sturdy", new Blessing(11, 3f, sprites[1], defense: 0.1f)},
+            {"Lesser Swiftness", new Blessing(12, 3f, sprites[2], speed: 0.1f)},
+            {"Lesser Vitality", new Blessing(13, 3f, sprites[1], maxHealth: 0.1f)},
+            {"Lesser Endurance", new Blessing(14, 3f, sprites[1], maxStamina: 0.1f)},
+            {"Lesser Handling", new Blessing(15, 3f, sprites[0], attackSpeed: 0.1f)},
+            {"Lesser Regeneration", new Blessing(16, 3f, sprites[1], healthRegen: 0.05f)},
+            {"Lesser Energy", new Blessing(17, 3f, sprites[2], staminaRegen: 0.05f)},
+            {"Lesser Conviction", new Blessing(18, 3f, sprites[2], stagger: 0.05f)},
+            {"Lesser Ability", new Blessing(19, 3f, sprites[2], staminaCost: -0.1f)},
+            {"Lesser Wealth", new Blessing(20, 3f, sprites[3], money: 0.1f)},
 
-            {"Enhanced Strength", new Blessing(21, 5f, attack: 0.15f, maxStamina: -0.15f, maxHealth: -0.15f)},
-            {"Enhanced Sturdy", new Blessing(22, 5f, defense: 0.15f, attack: -0.05f, speed: -0.05f)},
-            {"Enhanced Swiftness", new Blessing(23, 5f, attack: 0.15f, defense: -0.05f, maxHealth: -0.15f)},
+            {"Enhanced Strength", new Blessing(21, 5f, sprites[0], attack: 0.15f, maxStamina: -0.15f, maxHealth: -0.15f)},
+            {"Enhanced Sturdy", new Blessing(22, 5f, sprites[1], defense: 0.15f, attack: -0.15f, speed: -0.15f)},
+            {"Enhanced Swiftness", new Blessing(23, 5f, sprites[2], speed: 0.15f, defense: -0.05f, maxHealth: -0.15f)},
 
-            {"Greater Strength", new Blessing(24, 7f, attack: 0.25f, maxStamina: -0.3f, maxHealth: -0.3f, attackSpeed: -0.10f)},
+            {"Greater Strength", new Blessing(24, 7f, sprites[0], attack: 0.3f, maxStamina: -0.3f, maxHealth: -0.3f, stagger: -0.10f)},
+            {"Greater Sturdy", new Blessing(25, 7f, sprites[1], defense: 0.3f, attack: -0.3f, speed: -0.3f, attackSpeed: -0.10f)},
+            {"Greater Swiftness", new Blessing(26, 7f, sprites[2], speed: 0.3f, defense: -0.3f, maxHealth: -0.3f, healthRegen: -0.10f)},
 
-            {"GodMode", new Blessing(0, 0f, attack: 100f, maxStamina: 100000f, maxHealth: 100000f)},
+            {"GodMode", new Blessing(0, 0f, sprites[3], attack: 100f, maxStamina: 100000f, maxHealth: 100000f)},
         };
 
         playerBlessings = new List<(string, Blessing)>();
@@ -111,13 +114,13 @@ public class BlessingManager : MonoBehaviour
                 blessingsToCopy.Add(blessings[Random.Range(0, blessings.Count)]);}
 
             else
-                blessingsToCopy.Add(("Null", new Blessing(0, 0f)));
+                blessingsToCopy.Add(("Null", new Blessing(0, 0f, sprites[0])));
         }
 
 
         foreach((string, Blessing) kv in blessingsToCopy)
         {
-            chosenBlessings.Add((kv.Item1, new Blessing(kv.Item2.ID, kv.Item2.Rarity,
+            chosenBlessings.Add((kv.Item1, new Blessing(kv.Item2.ID, kv.Item2.Rarity, kv.Item2.Sprite,
                 kv.Item2.Attack, kv.Item2.Defense, kv.Item2.Speed, kv.Item2.MaxHealth,
                 kv.Item2.MaxStamina, kv.Item2.AttackSpeed, kv.Item2.HealthRegen,
                 kv.Item2.StaminaRegen, kv.Item2.Stagger, kv.Item2.StaminaCost, kv.Item2.Money)));

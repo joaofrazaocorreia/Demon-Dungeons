@@ -106,6 +106,7 @@ public class MapGenerator : MonoBehaviour
         CreateSafeRoom();
     }
 
+#if UNITY_EDITOR
     /// <summary>
     /// Checks two player cheats to manually generate and delete maps.
     /// </summary>
@@ -124,6 +125,7 @@ public class MapGenerator : MonoBehaviour
 
         UpdateCoroutines();
     }
+#endif
 
     /// <summary>
     /// Checks if the coroutine queue is empty or dead to mark it as finished.

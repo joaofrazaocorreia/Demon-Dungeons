@@ -17,6 +17,7 @@ public class Blessing
     private int upgradeTier;
     private float rarity;
     private int id;
+    private Sprite sprite;
 
     public float Attack { get => attack * upgradeTier; }
     public float Defense { get => defense * upgradeTier; }
@@ -32,18 +33,19 @@ public class Blessing
     public int UpgradeTier { get => upgradeTier; set{ upgradeTier = (int) Mathf.Min(value, rarity); }}
     public float Rarity { get => rarity; }
     public int ID { get => id; private set { id = value; } }
+    public Sprite Sprite { get => sprite; }
 
     public List<(string, float)> Stats { get => new List<(string, float)>() { ("Attack", Attack),
         ("Defense", Defense), ("Speed", Speed), ("Max Health", MaxHealth), ("Max Stamina", MaxStamina),
         ("Attack Speed", AttackSpeed), ("Health Regen", HealthRegen), ("Stamina Regen", StaminaRegen),
         ("Stagger Resistance", Stagger),("Stamina Cost", StaminaCost), ("Extra Essence", Money) }; }
 
-    public Blessing(int ID, float rarity, float attack = 0.0f, float defense = 0.0f, float speed = 0.0f, float maxHealth = 0.0f,
+    public Blessing(int ID, float rarity, Sprite sprite, float attack = 0.0f, float defense = 0.0f, float speed = 0.0f, float maxHealth = 0.0f,
         float maxStamina = 0.0f, float attackSpeed = 0.0f, float healthRegen = 0.0f, float staminaRegen = 0.0f,
             float stagger = 0.0f, float staminaCost = 0.0f, float money = 0.0f)
     {
         InitializeStats(attack, defense, speed, maxHealth, maxStamina, attackSpeed, healthRegen, staminaRegen, stagger, staminaCost, money);
-        InitializeMisc(ID, rarity);
+        InitializeMisc(ID, rarity, sprite);
     }
 
     public void InitializeStats(float atk, float def, float spe, float maxHP, float maxSta,
@@ -62,11 +64,12 @@ public class Blessing
         money = mon;
     }
 
-    public void InitializeMisc(int id, float rar)
+    public void InitializeMisc(int id, float rar, Sprite spri)
     {
         upgradeTier = 1;
         ID = id;
         rarity = rar;
+        sprite = spri;
     }
 
     public void Upgrade()
