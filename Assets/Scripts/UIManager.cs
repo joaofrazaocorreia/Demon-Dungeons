@@ -335,6 +335,7 @@ public class UIManager : MonoBehaviour
             choiceButtons[i].onClick.AddListener(() => OpenBlessingUpgradeMenu());
 
             bData._name.text = blessings[index].Item1;
+            bData._image.sprite = blessings[index].Item2.Sprite;
             bData._info.text = WriteStatsText(blessings[index]);
         }
     }
@@ -376,6 +377,8 @@ public class UIManager : MonoBehaviour
 
             button.onClick.AddListener(() => _blessingUpgradeName.text = kv.Item1);
             button.onClick.AddListener(() => _blessingUpgradeStats.text = WriteStatsText(kv));
+            button.onClick.AddListener(() => _blessingUpgradeImage.sprite = kv.Item2.Sprite);
+            button.onClick.AddListener(() => _blessingUpgradeImage.gameObject.SetActive(true));
             button.onClick.AddListener(() => _blessingUpgradeButton.gameObject.SetActive(kv.Item2.UpgradeTier < kv.Item2.Rarity));
             button.onClick.AddListener(() => _blessingUpgradeCost.text = 
             $"{_blessingManager.IncrementalUpgradeCost * kv.Item2.UpgradeTier} Essence");
@@ -424,7 +427,7 @@ public class UIManager : MonoBehaviour
 
     private string WriteStatsText(List<(string, Blessing)> blessingList)
     {
-        Blessing reference = new Blessing(0, 0f);
+        Blessing reference = new Blessing(0, 0f, null);
 
         string text = $"Blessings received: {blessingList.Count} \n\n";
         for(int i = 0; i < reference.Stats.Count; i++)
