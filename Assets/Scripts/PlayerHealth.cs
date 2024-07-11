@@ -33,7 +33,7 @@ public class PlayerHealth : MonoBehaviour
     public float Health { get => _health; set{ _health = Mathf.Clamp(value, 0f, _maxHealth); UpdateUI(); } }
 
     private int _lives;
-    private float _health;
+    private float _health = 100f;
     private bool _invulnerable;
     
     private bool _godmode;
@@ -42,7 +42,11 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         _saveDataManager = FindObjectOfType<SaveDataManager>();
-        _lives = _startingLives;
+        if (_saveDataManager.GetSaveGameData().playerHealth.lives == 0)
+            _lives = _startingLives;
+        else
+            _lives = _saveDataManager.GetSaveGameData().playerHealth.lives;
+
         _maxHealth = _baseMaxHealth;
         Health = _maxHealth;
         DefenseMultiplier = 1.0f;
@@ -78,7 +82,7 @@ public class PlayerHealth : MonoBehaviour
     /// </summary>
     private void UpdateUI()
     {
-        _uiManager.SetHealthFill(Health / _maxHealth);
+        _uiManager.SetHealthFill(_health / _maxHealth);
         _uiManager.SetHealthColor(Health, _maxHealth * 0.25f, _invulnerable || _godmode);
         _uiManager.SetLivesText(Lives);
     }
@@ -127,7 +131,9 @@ public class PlayerHealth : MonoBehaviour
     /// </summary>
     public void Respawn()
     {
-        if(--Lives > 0)
+        --Lives;
+
+        if(Lives > 0)
         {
             Cursor.lockState = CursorLockMode.Locked;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -135,6 +141,7 @@ public class PlayerHealth : MonoBehaviour
         
         else
         {
+            _saveDataManager.ScheduleSaveFileForDeletion();
             Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene(0);
         }

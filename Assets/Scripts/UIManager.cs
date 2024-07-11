@@ -105,6 +105,9 @@ public class UIManager : MonoBehaviour
 
     public void SaveAndQuit()
     {
+        if(Time.timeScale != 1)
+            Time.timeScale = 1;
+
         _saveDataManager.SaveGameData();
         
         SceneManager.LoadScene(0);
@@ -138,10 +141,7 @@ public class UIManager : MonoBehaviour
     /// <param name="ratio">Current health divided by the max health value.</param>
     public void SetHealthFill(float ratio)
     {
-        if(ratio != float.NaN)
-            _healthFill.localScale = new Vector3(1, ratio, 1);
-        else 
-            _healthFill.localScale = new Vector3(1, 1, 1);
+        _healthFill.localScale = new Vector3(1, Mathf.Clamp(ratio, 0f, 1f), 1);
     }
 
     /// <summary>
@@ -330,8 +330,9 @@ public class UIManager : MonoBehaviour
             choiceButtons[i].onClick.RemoveAllListeners();
             choiceButtons[i].onClick.AddListener(() => _blessingManager.AddBlessing(blessings[index]));
             choiceButtons[i].onClick.AddListener(() => _blessingChoiceMenu.SetActive(false));
+            choiceButtons[i].onClick.AddListener(() => _shrine.GotBlessing());
+            choiceButtons[i].onClick.AddListener(() => _saveDataManager.SaveGameData());
             choiceButtons[i].onClick.AddListener(() => OpenBlessingUpgradeMenu());
-            choiceButtons[i].onClick.AddListener(() => _shrine.BlessingReceived = true);
 
             bData._name.text = blessings[index].Item1;
             bData._info.text = WriteStatsText(blessings[index]);

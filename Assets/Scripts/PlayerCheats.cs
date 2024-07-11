@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 /// <summary>
@@ -89,4 +90,5 @@ public class PlayerCheats : MonoBehaviour
             }
         }
     }
+#endif
 }
