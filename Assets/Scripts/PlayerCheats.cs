@@ -16,13 +16,13 @@ public class PlayerCheats : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {       
         if (Input.GetKeyDown(KeyCode.U))
         {
-                mapGenerator.LayerCount = 3;
-                mapGenerator.StartDeletingMap(true, true);
+            mapGenerator.LayerCount = 3;
+            mapGenerator.StartDeletingMap(true, true);
         }
-        
+
         if (enableCheats)
         {
             if (Input.GetKeyDown(KeyCode.T))
@@ -40,6 +40,16 @@ public class PlayerCheats : MonoBehaviour
                 if (mapGenerator.CurrentEndingTile != null)
                     playerMovement.MoveTo(mapGenerator.CurrentEndingTile.transform.position + new Vector3(0, 5, 0));
             }
+
+            if(Input.GetKeyDown(KeyCode.J))
+            {
+                mapGenerator.GenerateMapCheat();
+            }
+
+            if(Input.GetKeyDown(KeyCode.H))
+            {
+                mapGenerator.DeleteMapCheat();
+            } 
 
             // This cheat will later be turned into an Upgrade instead, to better work
             // with the multipliers.

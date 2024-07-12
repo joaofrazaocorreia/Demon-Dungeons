@@ -12203,10 +12203,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8298283423762937549, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
-      propertyPath: enableCheats
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8298283423762937549, guid: 7c750b025354789488ba38ac5deb4260, type: 3}
       propertyPath: mapGenerator
       value: 
       objectReference: {fileID: 1798149614}

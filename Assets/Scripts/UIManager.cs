@@ -439,13 +439,13 @@ public class UIManager : MonoBehaviour
                 totalValue += b.Item2.Stats[i].Item2;
             }
 
-            text += $"{100 + (totalValue * 100)}% {reference.Stats[i].Item1} ";
+            text += $"{100 + Mathf.Floor(totalValue * 100)}% {reference.Stats[i].Item1} ";
 
             if (totalValue > 0f)
-                text += $" (+{totalValue * 100}%)";
+                text += $" (+{Mathf.Floor(totalValue * 100)}%)";
             
             if (totalValue < 0f)
-                text += $" (-{totalValue * 100}%)";
+                text += $" ({Mathf.Floor(totalValue * 100)}%)";
 
             text += "\n";
         }
