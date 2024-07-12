@@ -142,6 +142,8 @@ public class PlayerHealth : MonoBehaviour
         else
         {
             _saveDataManager.ScheduleSaveFileForDeletion();
+            FindObjectOfType<SaveFileHandler>().TriggerLoseScreen = true;
+            
             Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene(0);
         }
