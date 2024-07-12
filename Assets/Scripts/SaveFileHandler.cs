@@ -38,17 +38,22 @@ public class SaveFileHandler : MonoBehaviour
             MainMenuScripts mainMenuScripts = FindObjectOfType<MainMenuScripts>();
 
             if (triggerLoseScreen)
+            {
                 mainMenuScripts.LoseScreen();
+                triggerLoseScreen = false;
+            }
 
             if (triggerWinScreen)
+            {
                 mainMenuScripts.WinScreen();
+                triggerWinScreen = false;
+            }
                 
             if (saveFileScheduledForDeletion > 0)
             {
                 mainMenuScripts.DeleteSaveFile(saveFileScheduledForDeletion);
                 saveFileScheduledForDeletion = 0;
-            }
-                
+            }   
         }
     }
  
