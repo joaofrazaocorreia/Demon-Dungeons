@@ -36,9 +36,9 @@ public class EnemyBoss : MonoBehaviour
     {
         // {index, (name, range, damage, cooldown)}
 
-        {0, ("DoubleAxeSlash", 4f, 20f, 5f)},
-        {1, ("BullCharge", 5f, 45f, 10f)},
-        {2, ("QuakingStomp", 6f, 15f, 12f)},
+        {0, ("DoubleAxeSlash", 4f, 8f, 5f)},
+        {1, ("BullCharge", 5f, 20f, 10f)},
+        {2, ("QuakingStomp", 6f, 10f, 12f)},
     };
     private List<float> attackCooldowns;
 

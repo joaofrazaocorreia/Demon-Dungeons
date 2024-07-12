@@ -106,13 +106,12 @@ public class MapGenerator : MonoBehaviour
         CreateSafeRoom();
     }
 
-#if UNITY_EDITOR
     /// <summary>
     /// Checks two player cheats to manually generate and delete maps.
     /// </summary>
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.H))
+        /*if(Input.GetKeyDown(KeyCode.H))
         {
             StopAllCoroutines();
             StartCoroutine(DeleteMap(false));
@@ -121,11 +120,10 @@ public class MapGenerator : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.J))
         {
             CreateMapStart();
-        }
+        }*/
 
         UpdateCoroutines();
     }
-#endif
 
     /// <summary>
     /// Checks if the coroutine queue is empty or dead to mark it as finished.
@@ -442,7 +440,7 @@ public class MapGenerator : MonoBehaviour
             if (createSafeRoom)
                 CreateSafeRoom();
 
-            else if (LayerCount % 4 == 0)
+            else if (LayerCount >= 4)
                 CreateBossRoom();
 
             else
@@ -676,7 +674,7 @@ public class MapGenerator : MonoBehaviour
     {
         SaveData saveData;
 
-        saveData.layers = LayerCount;
+        saveData.layers = LayerCount-1;
         saveData.floors = FloorCount;
         saveData.dungeons = DungeonCount;
 

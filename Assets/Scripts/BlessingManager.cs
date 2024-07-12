@@ -45,13 +45,13 @@ public class BlessingManager : MonoBehaviour
             {"Lesser Ability", new Blessing(19, 3f, sprites[2], staminaCost: -0.1f)},
             {"Lesser Wealth", new Blessing(20, 3f, sprites[3], money: 0.1f)},
 
-            {"Enhanced Strength", new Blessing(21, 5f, sprites[0], attack: 0.15f, maxStamina: -0.15f, maxHealth: -0.15f)},
-            {"Enhanced Sturdy", new Blessing(22, 5f, sprites[1], defense: 0.15f, attack: -0.15f, speed: -0.15f)},
-            {"Enhanced Swiftness", new Blessing(23, 5f, sprites[2], speed: 0.15f, defense: -0.05f, maxHealth: -0.15f)},
+            {"Enhanced Strength", new Blessing(21, 5f, sprites[0], attack: 0.15f, maxStamina: -0.08f, maxHealth: -0.08f)},
+            {"Enhanced Sturdy", new Blessing(22, 5f, sprites[1], defense: 0.15f, attack: -0.08f, speed: -0.08f)},
+            {"Enhanced Swiftness", new Blessing(23, 5f, sprites[2], speed: 0.15f, defense: -0.08f, maxHealth: -0.08f)},
 
-            {"Greater Strength", new Blessing(24, 7f, sprites[0], attack: 0.3f, maxStamina: -0.3f, maxHealth: -0.3f, stagger: -0.10f)},
-            {"Greater Sturdy", new Blessing(25, 7f, sprites[1], defense: 0.3f, attack: -0.3f, speed: -0.3f, attackSpeed: -0.10f)},
-            {"Greater Swiftness", new Blessing(26, 7f, sprites[2], speed: 0.3f, defense: -0.3f, maxHealth: -0.3f, healthRegen: -0.10f)},
+            {"Greater Strength", new Blessing(24, 7f, sprites[0], attack: 0.3f, maxStamina: -0.15f, maxHealth: -0.15f, stagger: -0.08f)},
+            {"Greater Sturdy", new Blessing(25, 7f, sprites[1], defense: 0.3f, attack: -0.15f, speed: -0.15f, attackSpeed: -0.08f)},
+            {"Greater Swiftness", new Blessing(26, 7f, sprites[2], speed: 0.3f, defense: -0.15f, maxHealth: -0.15f, healthRegen: -0.08f)},
 
             {"GodMode", new Blessing(0, 0f, sprites[3], attack: 100f, maxStamina: 100000f, maxHealth: 100000f)},
         };
