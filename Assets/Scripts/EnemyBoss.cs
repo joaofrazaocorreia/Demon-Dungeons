@@ -325,4 +325,12 @@ public class EnemyBoss : MonoBehaviour
 
         UpdateUI();
     }
+
+    public void EndGameTrigger()
+    {
+        SaveFileHandler saveFileHandler = FindObjectOfType<SaveFileHandler>();
+        saveFileHandler.TriggerWinScreen = true;
+        Cursor.lockState = CursorLockMode.None;
+        uiManager.SaveAndQuit();
+    }
 }
