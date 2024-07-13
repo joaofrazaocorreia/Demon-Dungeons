@@ -18,7 +18,7 @@ public class EssenceDrop : Drop
         if (playerCurrency)
         {
             playerCurrency.Essence += essenceValue;
-            GetComponent<AudioSource>().PlayOneShot(pickupSound);
+            FindObjectOfType<PlayerMovement>().GetComponent<AudioSource>().PlayOneShot(pickupSound);
             
             Destroy(gameObject);
         }

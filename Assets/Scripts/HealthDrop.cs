@@ -18,7 +18,7 @@ public class HealthDrop : Drop
         if (playerHealth && playerHealth.Health != playerHealth.MaxHealth)
         {
             playerHealth.Regen(healthAmount);
-            GetComponent<AudioSource>().PlayOneShot(pickupSound);
+            FindObjectOfType<PlayerMovement>().GetComponent<AudioSource>().PlayOneShot(pickupSound);
             
             Destroy(gameObject);
         }

@@ -18,7 +18,7 @@ public class LifeDrop : Drop
         if (playerHealth)
         {
             playerHealth.Lives += lifesCount;
-            GetComponent<AudioSource>().PlayOneShot(pickupSound);
+            FindObjectOfType<PlayerMovement>().GetComponent<AudioSource>().PlayOneShot(pickupSound);
             
             Destroy(gameObject);
         }
