@@ -122,7 +122,7 @@ public class SaveDataManager : MonoBehaviour
             print("File not found.");
     }
 
-    public GameSaveData GetSaveGameData()
+    public GameSaveData GetSavedGameData()
     {
         
         string jsonSaveData = File.ReadAllText(saveFilePath);

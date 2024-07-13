@@ -42,10 +42,10 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         _saveDataManager = FindObjectOfType<SaveDataManager>();
-        if (_saveDataManager.GetSaveGameData().playerHealth.lives == 0)
+        if (_saveDataManager.GetSavedGameData().playerHealth.lives == 0)
             _lives = _startingLives;
         else
-            _lives = _saveDataManager.GetSaveGameData().playerHealth.lives;
+            _lives = _saveDataManager.GetSavedGameData().playerHealth.lives;
 
         _maxHealth = _baseMaxHealth;
         Health = _maxHealth;

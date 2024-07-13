@@ -24,7 +24,7 @@ public class SafeRoomShrine : MonoBehaviour
         saveDataManager = FindObjectOfType<SaveDataManager>();
         saveDataManager.SetCurrentSafeRoom(this);
 
-        if (saveDataManager.GetSaveGameData().safeRoomShrine.gotBlessing)
+        if (saveDataManager.GetSavedGameData().safeRoomShrine.gotBlessing)
             GotBlessing();
         else AllowNewBlessing();
 
