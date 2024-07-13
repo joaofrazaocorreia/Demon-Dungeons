@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 
 /// <summary>
 /// Class that defines the enemy boss and their behaviours.
@@ -10,6 +11,20 @@ public class EnemyBoss : MonoBehaviour
     public float maxHealth;
     public float maxIdleTime;
     public float runSpeed;
+    [SerializeField] private AudioClip slash1;
+    [SerializeField] private AudioClip slash2;
+    [SerializeField] private AudioClip[] footsteps;
+    [SerializeField] private AudioClip death;
+    [SerializeField] private AudioClip stomp;
+    [SerializeField] private AudioClip charge;
+    [SerializeField] private AudioClip unstun;
+    [SerializeField] private AudioMixerGroup slash1Mixer;
+    [SerializeField] private AudioMixerGroup slash2Mixer;
+    [SerializeField] private AudioMixerGroup stepsMixer;
+    [SerializeField] private AudioMixerGroup deathMixer;
+    [SerializeField] private AudioMixerGroup stompMixer;
+    [SerializeField] private AudioMixerGroup chargeMixer;
+    [SerializeField] private AudioMixerGroup unstunMixer;
 
     private enum State { Idle, Chasing, Attacking, Stunned, Dead };
     
@@ -24,6 +39,13 @@ public class EnemyBoss : MonoBehaviour
     private float stunTimer;
     private float health;
     private int prevAttack;
+    private AudioSource slash1AudioSource;
+    private AudioSource slash2AudioSource;
+    private AudioSource deathAudioSource;
+    private AudioSource stepsAudioSource;
+    private AudioSource stompAudioSource;
+    private AudioSource chargeAudioSource;
+    private AudioSource unstunAudioSource;
 
     public float Health { get => health; set{ health = Mathf.Max(value, 0f); }}
     
@@ -54,6 +76,35 @@ public class EnemyBoss : MonoBehaviour
         prevAttack = 1;
         attackCooldowns = new List<float>();
         hitboxes = GetComponentsInChildren<BossDamageHitbox>();
+
+        slash1AudioSource = gameObject.AddComponent<AudioSource>();
+        slash1AudioSource.outputAudioMixerGroup = slash1Mixer;
+        slash1AudioSource.spatialBlend = 1.0f;
+
+        slash2AudioSource = gameObject.AddComponent<AudioSource>();
+        slash2AudioSource.outputAudioMixerGroup = slash2Mixer;
+        slash2AudioSource.spatialBlend = 1.0f;
+        
+        stepsAudioSource = gameObject.AddComponent<AudioSource>();
+        stepsAudioSource.outputAudioMixerGroup = stepsMixer;
+        stepsAudioSource.spatialBlend = 1.0f;
+        
+        deathAudioSource = gameObject.AddComponent<AudioSource>();
+        deathAudioSource.outputAudioMixerGroup = deathMixer;
+        deathAudioSource.spatialBlend = 1.0f;
+        
+        stompAudioSource = gameObject.AddComponent<AudioSource>();
+        stompAudioSource.outputAudioMixerGroup = stompMixer;
+        stompAudioSource.spatialBlend = 1.0f;
+        
+        chargeAudioSource = gameObject.AddComponent<AudioSource>();
+        chargeAudioSource.outputAudioMixerGroup = chargeMixer;
+        chargeAudioSource.spatialBlend = 1.0f;
+        
+        unstunAudioSource = gameObject.AddComponent<AudioSource>();
+        unstunAudioSource.outputAudioMixerGroup = unstunMixer;
+        unstunAudioSource.spatialBlend = 1.0f;
+        
 
         foreach (KeyValuePair<int, (string, float, float, float)> kv in attacks)
         {
@@ -332,5 +383,46 @@ public class EnemyBoss : MonoBehaviour
         saveFileHandler.TriggerWinScreen = true;
         Cursor.lockState = CursorLockMode.None;
         uiManager.SaveAndQuit();
+    }
+
+    public void PlaySlash1()
+    {
+        slash1AudioSource.pitch = Random.Range(0.9f, 1.1f);
+        slash1AudioSource.PlayOneShot(slash1);
+    }
+
+    public void PlaySlash2()
+    {
+        slash2AudioSource.pitch = Random.Range(0.9f, 1.1f);
+        slash2AudioSource.PlayOneShot(slash2);
+    }
+
+    public void PlayDeath()
+    {
+        deathAudioSource.PlayOneShot(death);
+    }
+
+    public void PlayStep()
+    {
+        stepsAudioSource.pitch = Random.Range(0.85f, 1.15f);
+        stepsAudioSource.PlayOneShot(footsteps[Random.Range(0, footsteps.Length)]);
+    }
+
+    public void PlayStomp()
+    {
+        stompAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        stompAudioSource.PlayOneShot(stomp);
+    }
+
+    public void PlayCharge()
+    {
+        chargeAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        chargeAudioSource.PlayOneShot(charge);
+    }
+
+    public void PlayUnstun()
+    {
+        unstunAudioSource.pitch = Random.Range(0.9f, 1.1f);
+        unstunAudioSource.PlayOneShot(unstun);
     }
 }

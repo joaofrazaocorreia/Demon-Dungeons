@@ -4,6 +4,7 @@ public class EssenceDrop : Drop
 {
     private int essenceValue;
     public int Value { get => essenceValue; set{ essenceValue = Mathf.Max(value, 0); }}
+    [SerializeField] private AudioClip pickupSound;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class EssenceDrop : Drop
         if (playerCurrency)
         {
             playerCurrency.Essence += essenceValue;
+            GetComponent<AudioSource>().PlayOneShot(pickupSound);
             
             Destroy(gameObject);
         }

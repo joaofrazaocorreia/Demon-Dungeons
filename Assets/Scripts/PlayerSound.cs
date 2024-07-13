@@ -27,18 +27,23 @@ public class PlayerSound : MonoBehaviour
     {
         stepsAudioSource = gameObject.AddComponent<AudioSource>();
         stepsAudioSource.outputAudioMixerGroup = stepsMixer;
+        stepsAudioSource.spatialBlend = 0.5f;
 
         attackAudioSource = gameObject.AddComponent<AudioSource>();
         attackAudioSource.outputAudioMixerGroup = attackMixer;
+        attackAudioSource.spatialBlend = 0.5f;
 
         hurtAudioSource = gameObject.AddComponent<AudioSource>();
         hurtAudioSource.outputAudioMixerGroup = hurtMixer;
+        hurtAudioSource.spatialBlend = 0.5f;
 
         deathAudioSource = gameObject.AddComponent<AudioSource>();
         deathAudioSource.outputAudioMixerGroup = deathMixer;
+        deathAudioSource.spatialBlend = 0.5f;
 
         rollAudioSource = gameObject.AddComponent<AudioSource>();
         rollAudioSource.outputAudioMixerGroup = rollMixer;
+        rollAudioSource.spatialBlend = 0.5f;
     }
     
     public void PlayStep()

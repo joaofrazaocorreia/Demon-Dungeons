@@ -4,6 +4,7 @@ public class HealthDrop : Drop
 {
     private int healthAmount;
     public int Amount { get => healthAmount; set{ healthAmount = Mathf.Max(value, 0); }}
+    [SerializeField] private AudioClip pickupSound;
 
     private void Start()
     {
@@ -17,7 +18,7 @@ public class HealthDrop : Drop
         if (playerHealth && playerHealth.Health != playerHealth.MaxHealth)
         {
             playerHealth.Regen(healthAmount);
-            Debug.Log("Health: " + healthAmount);
+            GetComponent<AudioSource>().PlayOneShot(pickupSound);
             
             Destroy(gameObject);
         }

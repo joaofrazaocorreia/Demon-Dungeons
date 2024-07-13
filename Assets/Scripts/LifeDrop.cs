@@ -4,6 +4,7 @@ public class LifeDrop : Drop
 {
     private int lifesCount;
     public int Count { get => lifesCount; set{ lifesCount = Mathf.Max(value, 0); }}
+    [SerializeField] private AudioClip pickupSound;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class LifeDrop : Drop
         if (playerHealth)
         {
             playerHealth.Lives += lifesCount;
+            GetComponent<AudioSource>().PlayOneShot(pickupSound);
             
             Destroy(gameObject);
         }
