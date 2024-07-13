@@ -1957,6 +1957,27 @@ MonoBehaviour:
   maxHealth: 400
   maxIdleTime: 3
   runSpeed: 8
+  slash1: {fileID: 8300000, guid: 9b1d2171be42cf544b404bbf7c8a67fd, type: 3}
+  slash2: {fileID: 8300000, guid: e5da2ff5fa18184458c444e3cf53e881, type: 3}
+  footsteps:
+  - {fileID: 8300000, guid: a65cb4ad3746d9f4cbcf5d1695c59379, type: 3}
+  - {fileID: 8300000, guid: d2aaedb2885ea8d4eb6278f8a877669d, type: 3}
+  - {fileID: 8300000, guid: 16d0f8536a408944c8143accb249780a, type: 3}
+  - {fileID: 8300000, guid: baf360feb16d7ba41a9f26e8eff82480, type: 3}
+  - {fileID: 8300000, guid: 928d02edadd4a784e928c1432ea3461f, type: 3}
+  - {fileID: 8300000, guid: 25e692c71db8186418fdd468f611e496, type: 3}
+  - {fileID: 8300000, guid: 908212e0bbf34794e89b7917ee5fba29, type: 3}
+  death: {fileID: 8300000, guid: 9dc038d65bda66741a2abedb2c4cb410, type: 3}
+  stomp: {fileID: 8300000, guid: ff603e8813eb8c6409e54042bf10bdc1, type: 3}
+  charge: {fileID: 8300000, guid: 267fc4a433a200140a9e9651eec743e7, type: 3}
+  unstun: {fileID: 8300000, guid: 34382ebd242bbad4c8c785960a845e8f, type: 3}
+  slash1Mixer: {fileID: 8544974354506505426, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
+  slash2Mixer: {fileID: -3829833806467059451, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
+  stepsMixer: {fileID: 4843671363597603091, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
+  deathMixer: {fileID: 253210254441536757, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
+  stompMixer: {fileID: -8222908977715306714, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
+  chargeMixer: {fileID: 5540383748297754318, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
+  unstunMixer: {fileID: 1116638291903701651, guid: cbeffabe734695948897066ea3bf67ed, type: 2}
 --- !u!95 &4524750807826629201
 Animator:
   serializedVersion: 5

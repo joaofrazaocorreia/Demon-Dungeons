@@ -14,10 +14,13 @@ public class Breakable : MonoBehaviour
     public int maxHealth = 40;
     public int livesAmount = 1;
     public Transform drops;
+    public AudioClip[] breakSounds;
+    private AudioSource audioSource;
 
     private void Start()
     {
         hasBeenHit = false;
+        audioSource = GetComponent<AudioSource>();
     }
     
     public void Break()
@@ -60,6 +63,8 @@ public class Breakable : MonoBehaviour
 
             model.SetActive(false);
             particles.SetActive(true);
+            audioSource.pitch = Random.Range(0.85f, 1.15f);
+            audioSource.PlayOneShot(breakSounds[Random.Range(0, breakSounds.Length)]);
         }
     }
 }

@@ -280,10 +280,20 @@ MonoBehaviour:
   attackMixer: {fileID: -8702447658754189604, guid: 5c46d6f251875ed49b357e85857815be, type: 2}
   idleMixer: {fileID: -9025591618280672919, guid: 5c46d6f251875ed49b357e85857815be, type: 2}
   footsteps: []
-  hurt: []
-  death: {fileID: 0}
-  attack: []
-  idleSounds: []
+  hurt:
+  - {fileID: 8300000, guid: ad14d5961239b7442bab84be90bab35f, type: 3}
+  - {fileID: 8300000, guid: 9adf59b73e983574ebb15aa043b10272, type: 3}
+  - {fileID: 8300000, guid: 20e07994eed78fb4b8f64ea9c29e03bc, type: 3}
+  - {fileID: 8300000, guid: 5bb354e04cb239349b1d80f9a3a4e8bb, type: 3}
+  death: {fileID: 8300000, guid: 56761e6011f83d745b23e24d4a5d8c26, type: 3}
+  attack:
+  - {fileID: 8300000, guid: 6e873297ff5d7f541a363c1c6abd23e6, type: 3}
+  - {fileID: 8300000, guid: 6e7d5a2a2427c3c43ab81d981a3424c3, type: 3}
+  - {fileID: 8300000, guid: 652145c91f8a49244a97b5ac2177bad8, type: 3}
+  idleSounds:
+  - {fileID: 8300000, guid: 4b88545ec97b36040b235b2d22a538db, type: 3}
+  - {fileID: 8300000, guid: b43a87e152bd40e4682d5f522116812e, type: 3}
+  - {fileID: 8300000, guid: 3889bda5b90ad224b8f005d438832208, type: 3}
 --- !u!82 &4623854770822754448
 AudioSource:
   m_ObjectHideFlags: 0

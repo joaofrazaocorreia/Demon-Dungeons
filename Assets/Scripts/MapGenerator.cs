@@ -111,18 +111,18 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        /*if(Input.GetKeyDown(KeyCode.H))
-        {
-            StopAllCoroutines();
-            StartCoroutine(DeleteMap(false));
-        }
-
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            CreateMapStart();
-        }*/
-
         UpdateCoroutines();
+    }
+
+    public void GenerateMapCheat()
+    {
+        CreateMapStart();
+    }
+
+    public void DeleteMapCheat()
+    {
+        StopAllCoroutines();
+        StartCoroutine(DeleteMap(false));
     }
 
     /// <summary>
@@ -187,7 +187,8 @@ public class MapGenerator : MonoBehaviour
             parent: map, position: startingCoords, rotation: Quaternion.identity);
         currentStartingTile = start;
 
-        switch(LayerCount % 3)
+        currentEnemies = new List<GameObject>();
+        switch(LayerCount % 4)
                 {
                     case 1:
                         foreach(GameObject go in layer1EnemyPrefabs)
@@ -199,7 +200,7 @@ public class MapGenerator : MonoBehaviour
                             currentEnemies.Add(go);
                         break;
 
-                    case 0:
+                    case 3:
                         foreach(GameObject go in layer3EnemyPrefabs)
                             currentEnemies.Add(go);
                         break;
@@ -440,7 +441,7 @@ public class MapGenerator : MonoBehaviour
             if (createSafeRoom)
                 CreateSafeRoom();
 
-            else if (LayerCount >= 4)
+            else if (LayerCount % 4 == 0)
                 CreateBossRoom();
 
             else
