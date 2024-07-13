@@ -6,6 +6,12 @@ public class MainMenuScripts : MonoBehaviour
     [SerializeField] private GameObject winScreen;
     [SerializeField] private GameObject loseScreen;
     [SerializeField] private SaveFile[] saveFiles;
+    [SerializeField] private GameObject settingsMenu;
+
+    private void Awake()
+    {
+        settingsMenu.SetActive(true);
+    }
 
     public void QuitGame()
     {

@@ -66,6 +66,43 @@ AudioMixerGroupController:
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0
+--- !u!243 &-4505191836120329050
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Music
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 4029655f3474b6c4db83932a7fa08d6f
+  m_Children:
+  - {fileID: -6121304416853630978}
+  - {fileID: -7606463968469179640}
+  - {fileID: 4595587790900362295}
+  - {fileID: 8038856124504098456}
+  m_Volume: 50e26fa098650f748b3bcbdbbd279b38
+  m_Pitch: 1f83a4fe40ed34f4dbad7238f69e1cf4
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -3953836060986036946}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &-3953836060986036946
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: de839af027f3cb94799c2fc4373135c0
+  m_EffectName: Attenuation
+  m_MixLevel: 1e5cb1f2f08392a41b5502d33e7c24ed
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!241 &24100000
 AudioMixerController:
   m_ObjectHideFlags: 0
@@ -81,7 +118,11 @@ AudioMixerController:
   m_SuspendThreshold: -80
   m_EnableSuspend: 1
   m_UpdateMode: 0
-  m_ExposedParameters: []
+  m_ExposedParameters:
+  - guid: 456a598f083006949b2c960bb5acfaef
+    name: MasterVolume
+  - guid: 50e26fa098650f748b3bcbdbbd279b38
+    name: MusicVolume
   m_AudioMixerGroupViews:
   - guids:
     - 7085e9d1ccd2120498cbf746219777c0
@@ -89,6 +130,7 @@ AudioMixerController:
     - 1eaf0c26c42255946aa2c89ab35bb851
     - ecc1121a01c5d5142a2fe5ebd5b60e8a
     - 677897cc1a80ee843a18d0d4640b7dc7
+    - 4029655f3474b6c4db83932a7fa08d6f
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -102,10 +144,7 @@ AudioMixerGroupController:
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 7085e9d1ccd2120498cbf746219777c0
   m_Children:
-  - {fileID: -6121304416853630978}
-  - {fileID: -7606463968469179640}
-  - {fileID: 4595587790900362295}
-  - {fileID: 8038856124504098456}
+  - {fileID: -4505191836120329050}
   m_Volume: 456a598f083006949b2c960bb5acfaef
   m_Pitch: c65a7637c0b43ac4ebc3962055cd2c14
   m_Send: 00000000000000000000000000000000
